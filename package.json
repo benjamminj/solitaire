@@ -1,0 +1,31 @@
+{
+  "name": "solitaire",
+  "version": "1.0.0",
+  "description": "Solitaire with hyperapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjaminj6/solitaire.git"
+  },
+  "keywords": [
+    "hyperapp",
+    "games"
+  ],
+  "author": "Benjamin Johnson <benjamin.d.johnson@icloud.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjaminj6/solitaire/issues"
+  },
+  "homepage": "https://github.com/benjaminj6/solitaire#readme",
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "babel-preset-env": "^1.5.1",
+    "nyc": "^11.0.2",
+    "prettier": "^1.4.2",
+    "rollup": "^0.42.0",
+    "rollup-plugin-babel": "^2.7.1"
+  }
+}
