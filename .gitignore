@@ -9,8 +9,11 @@ node_modules
 
 # coverage
 coverage
-lcov-report
+.nyc_output
 
 # misc.
 sandbox
 **.todo.**
+
+# build
+dist

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "ava",
-    "build": "webpack --config webpack/config-base.babel.js"
+    "build": "webpack --config webpack/config-base.babel.js",
+    "cov": "nyc --reporter=lcov --reporter=text npm test"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,12 @@
   "bugs": {
     "url": "https://github.com/benjaminj6/solitaire/issues"
   },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
   "homepage": "https://github.com/benjaminj6/solitaire#readme",
   "devDependencies": {
     "ava": "^0.19.1",
@@ -27,6 +34,7 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.5.1",
+    "babel-register": "^6.24.1",
     "nyc": "^11.0.2",
     "prettier": "^1.4.2",
     "webpack": "^2.6.1"

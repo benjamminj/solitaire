@@ -1,7 +1,8 @@
 import { app, h } from 'hyperapp'
+import state from './state'
 
 // Initialize / render hyperapp app
 app({
-  state: xdef,
+  state,
   view: state => <div>{state}</div>
 })
