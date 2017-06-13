@@ -1,13 +1,11 @@
 import deck from './deck'
+import foundation from './foundation'
 
 // Provides the initial state / the store structure for the app
 const state = {
-  deck
+  deck,
+  foundation
   /**
-   * tableau: [
-   *    Column: Array<card.id>
-   * ]
-   *
    * foundation:
    *    hearts: Array<card.id>
    *    clubs: Array<card.id>
