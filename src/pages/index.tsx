@@ -1,14 +1,36 @@
-import * as React from 'react'
-import Link from 'gatsby-link'
+import * as React from 'react';
+import Link from 'gatsby-link';
+import { connect, DispatchProp } from 'react-redux';
+import { State } from '../store/reducer';
+import { shuffleDeck } from '../store/modules/cards';
+import { ActionCreator } from 'redux';
+import { ActionThunkCreator } from '../store/types';
 
-const IndexPage = () => (
+type Props = {
+  cards: State['cards'];
+  shuffleDeck: ActionThunkCreator;
+};
+
+const IndexPage: React.SFC<Props> = (props: Props) => (
   <div className="p-4">
     now for solitaire!
-    
-    <div className="border">foundation cards</div>
-    <div className="border">tableau / waste cards</div>
-    <div className="border">cards & stacks of cards</div>
+    <div>
+      <button
+        className="bg-blue text-white p-2 my-2"
+        onClick={props.shuffleDeck}
+      >
+        shuffle
+      </button>
+    </div>
+    <div>
+      <pre>
+        <code>{JSON.stringify(props.cards, null, 4)}</code>
+      </pre>
+    </div>
   </div>
-)
+);
 
-export default IndexPage
+const mapStateToProps = (state: State) => ({ cards: state.cards });
+const mapDispatchToProps = { shuffleDeck };
+
+export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);

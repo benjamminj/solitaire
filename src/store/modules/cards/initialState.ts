@@ -1,7 +1,8 @@
 import * as range from 'lodash/fp/range';
 import { Card, CardRank, CardRankNumber, Deck, State, Suit } from './types';
 
-export const getRank = (num: CardRankNumber): CardRank => {
+type GetRankFromRemainder = (x: CardRankNumber) => CardRank;
+export const getRankFromRemainder: GetRankFromRemainder = num => {
   switch (num) {
     case '0':
       return 'K';
@@ -12,7 +13,7 @@ export const getRank = (num: CardRankNumber): CardRank => {
     case '12':
       return 'A';
     default:
-      return <CardRank>`${13 - +num}`;
+      return `${13 - +num}` as CardRank;
   }
 };
 
@@ -20,13 +21,14 @@ type GetInitialSuit = (x: Suit) => Deck;
 export const getInitialSuit: GetInitialSuit = suitName => {
   return range(1, 14)
     .map((num: number) => {
-      const value = <CardRankNumber>`${num % 13}`;
-      const rank = getRank(value);
+      const value = `${num % 13}` as CardRankNumber;
+      const rank = getRankFromRemainder(value);
 
-      return <Card>{
+      return {
         id: `${suitName}-${rank}`,
-        value: 13 - +value,
         rank,
+        suit: suitName,
+        value: 13 - +value,
         visible: false,
       };
     })
@@ -38,7 +40,7 @@ export const getInitialSuit: GetInitialSuit = suitName => {
 };
 
 type GetInitialDeck = () => Deck;
-const getInitialDeck: GetInitialDeck = () => {
+export const getInitialDeck: GetInitialDeck = () => {
   const suits = ['hearts', 'spades', 'diamonds', 'clubs'];
   return suits.reduce(
     (obj: Deck, suitName: Suit) => ({
@@ -49,8 +51,7 @@ const getInitialDeck: GetInitialDeck = () => {
   );
 };
 
-
-export default <State>{
+export default {
   deck: getInitialDeck(),
   shuffledDeck: [],
-};
+} as State;
