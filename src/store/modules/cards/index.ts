@@ -1,6 +1,7 @@
 import * as range from 'lodash/fp/range';
 import { Reducer, ActionCreator, ActionThunkCreator } from '../../types';
 import { State } from './types';
+import {get} from 'lodash';
 
 import initialState from './initialState';
 
@@ -14,9 +15,11 @@ const reducer: Reducer<State> = (state = initialState, action) => {
 };
 
 export const shuffleDeck: ActionThunkCreator = () => (dispatch, getState) => {
-  console.log(getState());
-  console.log('here');
+  const state = getState();
+  const deck = get(state, 'cards.deck');
   
+  const ids = Object.keys(deck)
+
   return {
     type: SHUFFLEDECK,
     result: {}
