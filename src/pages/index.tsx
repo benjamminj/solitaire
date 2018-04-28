@@ -2,35 +2,37 @@ import * as React from 'react';
 import Link from 'gatsby-link';
 import { connect, DispatchProp } from 'react-redux';
 import { State } from '../store/reducer';
-import { shuffleDeck } from '../store/modules/cards';
+import { dealCards } from '../store/modules/cards';
 import { ActionCreator } from 'redux';
 import { ActionThunkCreator } from '../store/types';
 
 type Props = {
   cards: State['cards'];
-  shuffleDeck: ActionThunkCreator;
+  dealCards: ActionThunkCreator;
 };
 
 const IndexPage: React.SFC<Props> = (props: Props) => (
   <div className="p-4">
     now for solitaire!
-    <div>
+    <div className="my-2">
       <button
-        className="bg-blue text-white p-2 my-2"
-        onClick={props.shuffleDeck}
+        className="bg-blue text-white p-2"
+        onClick={props.dealCards}
       >
-        shuffle
+        deal cards
+      </button>
+      <button
+        className="bg-green text-white p-2"
+        onClick={() => console.log(props.cards)}
+      >
+        log state.cards
       </button>
     </div>
-    <div>
-      <pre>
-        <code>{JSON.stringify(props.cards, null, 4)}</code>
-      </pre>
-    </div>
+    <div />
   </div>
 );
 
 const mapStateToProps = (state: State) => ({ cards: state.cards });
-const mapDispatchToProps = { shuffleDeck };
+const mapDispatchToProps = { dealCards };
 
 export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);

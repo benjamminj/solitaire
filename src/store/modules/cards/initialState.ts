@@ -2,7 +2,7 @@ import * as range from 'lodash/fp/range';
 import { Card, CardRank, CardRankNumber, Deck, State, Suit } from './types';
 
 type GetRankFromRemainder = (x: CardRankNumber) => CardRank;
-export const getRankFromRemainder: GetRankFromRemainder = num => {
+export const getRankFromRemainder: GetRankFromRemainder = (num) => {
   switch (num) {
     case '0':
       return 'K';
@@ -18,8 +18,8 @@ export const getRankFromRemainder: GetRankFromRemainder = num => {
 };
 
 type GetInitialSuit = (x: Suit) => Deck;
-export const getInitialSuit: GetInitialSuit = suitName => {
-  return range(1, 14)
+export const getInitialSuit: GetInitialSuit = suitName =>
+  range(1, 14)
     .map((num: number) => {
       const value = `${num % 13}` as CardRankNumber;
       const rank = getRankFromRemainder(value);
@@ -37,7 +37,6 @@ export const getInitialSuit: GetInitialSuit = suitName => {
       obj[card.id] = card;
       return obj;
     }, {});
-};
 
 type GetInitialDeck = () => Deck;
 export const getInitialDeck: GetInitialDeck = () => {
@@ -47,11 +46,32 @@ export const getInitialDeck: GetInitialDeck = () => {
       ...obj,
       ...getInitialSuit(suitName),
     }),
-    {}
+    {},
   );
 };
 
-export default {
+const initialState: State = {
   deck: getInitialDeck(),
-  shuffledDeck: [],
-} as State;
+  // Cards that are "on the table"
+  tableau: {
+    '1': [],
+    '2': [],
+    '3': [],
+    '4': [],
+    '5': [],
+    '6': [],
+    '7': [],
+  },
+  // Any cards that aren't dealt yet & are face down
+  stock: [],
+  // Cards that are face up after being drawn from the `stock` pile
+  hand: [],
+  foundation: {
+    'hearts': [],
+    'spades': [],
+    'clubs': [],
+    'diamonds': [],
+  },
+};
+
+export default initialState;
