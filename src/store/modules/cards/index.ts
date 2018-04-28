@@ -20,52 +20,71 @@ const reducer: Reducer<State> = (state = initialState, action) => {
   }
 };
 
+const getNonEmptyRow = (tableau: Tableau): string | null => {
+  const keys = Object.keys(tableau).sort((a, b) => +a - +b);
+  const rowNumber = keys.find((key: TableauRow) => tableau[key].length < +key);
+  return rowNumber ? `${rowNumber}` : null;
+};
+
 type DealTableauCards = (cards: CardRefArray, tableau: Tableau) => Tableau;
 const dealTableauCards: DealTableauCards = (cards, originalTableau) => {
-  const { tableau } = cards.reduce(
+  const { tableau: dealtTableau } = cards.reduce(
     (acc: { row: TableauRow; tableau: Tableau }, card, i) => {
       const { row, tableau } = acc;
 
-      const getNonEmptyRow = (tableau: Tableau): string => {
-        const keys = Object.keys(tableau).sort((a, b) => +a - +b);
-        const rowNumber = keys.find((key: TableauRow) => tableau[key].length < +key);
-        return `${rowNumber}`;
-      };
-
-      tableau[row].push(card);
+      if (row) {
+        tableau[row].push(card);
+      }
 
       return {
-        row: row === '7' ? getNonEmptyRow(acc.tableau) : `${+row + 1}`,
+        row:
+          row === '7' || row === null
+            ? getNonEmptyRow(acc.tableau)
+            : `${+row + 1}`,
         tableau: acc.tableau,
       };
     },
     {
-      row: '1',
+      row: getNonEmptyRow(originalTableau),
       tableau: originalTableau,
     },
   );
 
-  return tableau;
+  return dealtTableau;
 };
 
 export const dealCards: ActionThunkCreator = () => (dispatch, getState) => {
   const state = getState();
-  const deck = get(state, 'cards.deck');
+  const dealt = getDealt(state);
+
+  const deck = getDeck(state);
 
   const shuffledDeck = shuffleArray(Object.keys(deck));
-  const tableauCards = shuffledDeck.slice(0, 28);
 
+  const tableauCards = shuffledDeck.slice(0, 28);
   const stockPile = shuffledDeck.slice(28);
 
-  const tableau = dealTableauCards(tableauCards, get(state, 'cards.tableau'));
+  const tableau = dealTableauCards(tableauCards, getTableau(state));
   console.log(tableau);
   return {
     type: DEALCARDS,
     result: {
-      stock: stockPile,
+      dealt: true,
+      ...(dealt
+        ? {}
+        : {
+          tableau,
+          stock: stockPile,
+        }),
     },
   };
 };
+
+// Selectors
+const getDealt = (state: State) => get(state, 'cards.dealt');
+const getDeck = (state: State) => get(state, 'cards.deck');
+const getTableau = (state: State) => get(state, 'cards.tableau');
+const getStock = (state: State) => get(state, 'cards.stock');
 
 export type State = State;
 export default reducer;

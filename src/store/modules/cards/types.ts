@@ -59,6 +59,7 @@ export type Foundation = { [suit in Suit]: CardRefArray };
 
 export type State = {
   deck: Deck;
+  dealt: boolean,
   tableau: Tableau;
   stock: Stock;
   hand: Hand;

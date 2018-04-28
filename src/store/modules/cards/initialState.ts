@@ -51,6 +51,7 @@ export const getInitialDeck: GetInitialDeck = () => {
 };
 
 const initialState: State = {
+  dealt: false,
   deck: getInitialDeck(),
   // Cards that are "on the table"
   tableau: {
