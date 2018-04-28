@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dealTableauCards should disperse the cards to the tableau rows 1`] = `
+Object {
+  "1": Array [
+    "0",
+  ],
+  "2": Array [
+    "1",
+    "7",
+  ],
+  "3": Array [
+    "2",
+    "8",
+    "13",
+  ],
+  "4": Array [
+    "3",
+    "9",
+    "14",
+    "18",
+  ],
+  "5": Array [
+    "4",
+    "10",
+    "15",
+    "19",
+    "22",
+  ],
+  "6": Array [
+    "5",
+    "11",
+    "16",
+    "20",
+    "23",
+  ],
+  "7": Array [
+    "6",
+    "12",
+    "17",
+    "21",
+    "24",
+  ],
+}
+`;

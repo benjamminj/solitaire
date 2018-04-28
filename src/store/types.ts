@@ -3,7 +3,7 @@ import { Store, Dispatch } from 'redux';
 
 export type Action = {
   type: string;
-  result: {
+  result?: {
     [x: string]: any;
   };
 };
