@@ -43,3 +43,36 @@ Object {
   ],
 }
 `;
+
+exports[`turnCards should make the cards with the matching IDs visible in the deck 1`] = `
+Object {
+  "diamonds-10": Object {
+    "id": "diamonds-10",
+    "rank": "10",
+    "suit": "diamonds",
+    "value": 10,
+    "visible": true,
+  },
+  "hearts-3": Object {
+    "id": "hearts-3",
+    "rank": "3",
+    "suit": "hearts",
+    "value": 3,
+    "visible": false,
+  },
+  "hearts-A": Object {
+    "id": "hearts-A",
+    "rank": "A",
+    "suit": "hearts",
+    "value": 1,
+    "visible": true,
+  },
+  "spades-5": Object {
+    "id": "spades-5",
+    "rank": "5",
+    "suit": "spades",
+    "value": 5,
+    "visible": false,
+  },
+}
+`;

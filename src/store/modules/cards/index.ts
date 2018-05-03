@@ -1,10 +1,17 @@
 import * as range from 'lodash/fp/range';
 import { Reducer, ActionCreator, ActionThunkCreator } from '../../types';
-import { State, CardRefArray, Tableau, TableauRow } from './types';
+import {
+  State,
+  CardRefArray,
+  Tableau,
+  TableauRow,
+  CardId,
+  Deck,
+} from './types';
 import { get, cloneDeep } from 'lodash';
 import { shuffleArray } from './utils';
 import initialState from './initialState';
-import { dealTableauCards } from './utils';
+import { dealTableauCards, turnCards } from './utils';
 
 // Actions
 export const DEALCARDS = 'DEALCARDS';
@@ -22,9 +29,14 @@ const reducer: Reducer<State> = (state = initialState, action) => {
       const stockPile = shuffledDeck.slice(28);
 
       const tableau = dealTableauCards(tableauCards, cloneDeep(state.tableau));
+      // TODO - encapsulate in a function
+      const cardsToTurn = Object.values(tableau)
+        .map((value) => value.slice(-1))
+        .reduce((acc, arr) => acc.concat(arr), [])
 
       return {
         ...state,
+        deck: turnCards(cardsToTurn, deck),
         dealt: true,
         tableau,
         stock: stockPile,
