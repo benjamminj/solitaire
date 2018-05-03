@@ -16,12 +16,12 @@ import { dealTableauCards, turnCards } from './utils';
 // Actions
 export const DEALCARDS = 'DEALCARDS';
 export const DEALCARDS_INVALID = 'DEALCARDS_INVALID';
+export const DEAL_HAND = 'DEAL_HAND';
 
 const reducer: Reducer<State> = (state = initialState, action) => {
   switch (action.type) {
     case DEALCARDS: {
-      const dealt = state.dealt;
-      const deck = state.deck;
+      const { deck, dealt } = state;
 
       const shuffledDeck = shuffleArray(Object.keys(deck));
 
@@ -31,8 +31,8 @@ const reducer: Reducer<State> = (state = initialState, action) => {
       const tableau = dealTableauCards(tableauCards, cloneDeep(state.tableau));
       // TODO - encapsulate in a function
       const cardsToTurn = Object.values(tableau)
-        .map((value) => value.slice(-1))
-        .reduce((acc, arr) => acc.concat(arr), [])
+        .map(value => value.slice(-1))
+        .reduce((acc, arr) => acc.concat(arr), []);
 
       return {
         ...state,
@@ -41,6 +41,16 @@ const reducer: Reducer<State> = (state = initialState, action) => {
         tableau,
         stock: stockPile,
       };
+    }
+    case DEAL_HAND: {
+      const { hand, stock } = state;
+      const HAND_SIZE = 3;
+      
+      return {
+        ...state,
+        hand: hand.concat(stock.slice(0, HAND_SIZE)),
+        stock: stock.slice(HAND_SIZE)
+      }
     }
     case DEALCARDS_INVALID:
     default:
@@ -55,6 +65,16 @@ export const dealCards: ActionThunkCreator = () => (dispatch, getState) => {
     type: dealt ? DEALCARDS_INVALID : DEALCARDS,
   };
 };
+
+// deal from deck to hand
+export const dealHand: ActionCreator = () => ({
+  type: DEAL_HAND,
+});
+// recycle the hand back into the deck
+// move a single card / group of cards to a tableau row
+// --> will need to include both the location the card is currently in & the tableau row it is going to
+// move a single card to the foundation
+// --> will need to include the location the card is currently in as well as the card ID
 
 // Selectors
 export const getDealt = (state: State) => get(state, 'cards.dealt');

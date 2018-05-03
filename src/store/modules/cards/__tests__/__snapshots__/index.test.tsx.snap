@@ -1,6 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`reducer should return the state for DEALCARDS_INVALID 1`] = `
+exports[`reducer DEAL_HAND should add 3 cards to the beginning of the hand array 1`] = `
+Array [
+  "hearts-A",
+  "hearts-2",
+  "hearts-3",
+]
+`;
+
+exports[`reducer DEAL_HAND should remove 3 cards from the front of the stock array 1`] = `
+Array [
+  "hearts-4",
+  "hearts-5",
+  "hearts-6",
+  "hearts-7",
+  "hearts-8",
+]
+`;
+
+exports[`reducer DEALERCARDS_INVALID should return the state 1`] = `
 Object {
   "dealt": false,
   "deck": Object {

@@ -2,27 +2,30 @@ import * as React from 'react';
 import Link from 'gatsby-link';
 import { connect, DispatchProp } from 'react-redux';
 import { State } from '../store/reducer';
-import { dealCards } from '../store/modules/cards';
-import { ActionCreator } from 'redux';
-import { ActionThunkCreator } from '../store/types';
+import { dealCards, dealHand } from '../store/modules/cards';
+import { ActionThunkCreator, ActionCreator } from '../store/types';
+
+const buttonClasses = ({ text = 'white', bg = 'blue' } = {}) =>
+  `bg-${bg} text-${text} p-2 mr-2`;
 
 type Props = {
   cards: State['cards'];
   dealCards: ActionThunkCreator;
+  dealHand: ActionCreator;
 };
 
 const IndexPage: React.SFC<Props> = (props: Props) => (
   <div className="p-4">
     now for solitaire!
     <div className="my-2">
-      <button
-        className="bg-blue text-white p-2"
-        onClick={props.dealCards}
-      >
+      <button className={buttonClasses()} onClick={props.dealCards}>
         deal cards
       </button>
+      <button className={buttonClasses({ bg: 'red' })} onClick={props.dealHand}>
+        deal hand from stock
+      </button>
       <button
-        className="bg-green text-white p-2"
+        className={buttonClasses({ bg: 'green' })}
         onClick={() => console.log(props.cards)}
       >
         log state.cards
@@ -33,6 +36,6 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
 );
 
 const mapStateToProps = (state: State) => ({ cards: state.cards });
-const mapDispatchToProps = { dealCards };
+const mapDispatchToProps = { dealCards, dealHand };
 
 export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);
