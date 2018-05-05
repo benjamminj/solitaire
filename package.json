@@ -5,7 +5,9 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "@types/lodash": "^4.14.106",
+    "@types/react-redux": "^5.0.16",
     "autoprefixer": "^8.1.0",
+    "babel-jest": "^22.4.3",
     "gatsby": "^1.9.236",
     "gatsby-link": "^1.6.39",
     "gatsby-plugin-react-helmet": "^2.0.8",
@@ -28,7 +30,7 @@
     "build": "npm run build:css && gatsby build",
     "dev": "npm run watch:css & gatsby develop",
     "format": "prettier --write 'src/**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",

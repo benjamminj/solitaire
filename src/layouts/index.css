@@ -1,3 +1,9 @@
 @tailwind preflight;
 @tailwind components;
 @tailwind utilities;
+
+@responsive {
+  .w-auto {
+    width: auto;
+  }
+}

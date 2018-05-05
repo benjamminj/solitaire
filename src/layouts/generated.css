@@ -4565,6 +4565,10 @@ button,
   z-index: auto;
 }
 
+.w-auto {
+  width: auto;
+}
+
 @media (min-width: 576px) {
   .sm\:list-reset {
     list-style: none;
@@ -8464,6 +8468,10 @@ button,
 
   .sm\:z-auto {
     z-index: auto;
+  }
+
+  .sm\:w-auto {
+    width: auto;
   }
 }
 
@@ -12367,6 +12375,10 @@ button,
   .md\:z-auto {
     z-index: auto;
   }
+
+  .md\:w-auto {
+    width: auto;
+  }
 }
 
 @media (min-width: 992px) {
@@ -16269,6 +16281,10 @@ button,
   .lg\:z-auto {
     z-index: auto;
   }
+
+  .lg\:w-auto {
+    width: auto;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -20170,5 +20186,9 @@ button,
 
   .xl\:z-auto {
     z-index: auto;
+  }
+
+  .xl\:w-auto {
+    width: auto;
   }
 }

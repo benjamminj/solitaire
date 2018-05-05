@@ -1,0 +1,144 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dealTableauCards should disperse the cards to the tableau rows 1`] = `
+Object {
+  "1": Array [
+    "0",
+  ],
+  "2": Array [
+    "1",
+    "7",
+  ],
+  "3": Array [
+    "2",
+    "8",
+    "13",
+  ],
+  "4": Array [
+    "3",
+    "9",
+    "14",
+    "18",
+  ],
+  "5": Array [
+    "4",
+    "10",
+    "15",
+    "19",
+    "22",
+  ],
+  "6": Array [
+    "5",
+    "11",
+    "16",
+    "20",
+    "23",
+  ],
+  "7": Array [
+    "6",
+    "12",
+    "17",
+    "21",
+    "24",
+  ],
+}
+`;
+
+exports[`turnCards should allow turning cards to non-visible 1`] = `
+Object {
+  "diamonds-10": Object {
+    "id": "diamonds-10",
+    "rank": "10",
+    "suit": "diamonds",
+    "value": 10,
+    "visible": true,
+  },
+  "hearts-3": Object {
+    "id": "hearts-3",
+    "rank": "3",
+    "suit": "hearts",
+    "value": 3,
+    "visible": false,
+  },
+  "hearts-A": Object {
+    "id": "hearts-A",
+    "rank": "A",
+    "suit": "hearts",
+    "value": 1,
+    "visible": true,
+  },
+  "spades-5": Object {
+    "id": "spades-5",
+    "rank": "5",
+    "suit": "spades",
+    "value": 5,
+    "visible": false,
+  },
+}
+`;
+
+exports[`turnCards should make the cards with the matching IDs visible in the deck 1`] = `
+Object {
+  "diamonds-10": Object {
+    "id": "diamonds-10",
+    "rank": "10",
+    "suit": "diamonds",
+    "value": 10,
+    "visible": true,
+  },
+  "hearts-3": Object {
+    "id": "hearts-3",
+    "rank": "3",
+    "suit": "hearts",
+    "value": 3,
+    "visible": false,
+  },
+  "hearts-A": Object {
+    "id": "hearts-A",
+    "rank": "A",
+    "suit": "hearts",
+    "value": 1,
+    "visible": true,
+  },
+  "spades-5": Object {
+    "id": "spades-5",
+    "rank": "5",
+    "suit": "spades",
+    "value": 5,
+    "visible": false,
+  },
+}
+`;
+
+exports[`turnCards should not modify the deck passed in as an argument 1`] = `
+Object {
+  "diamonds-10": Object {
+    "id": "diamonds-10",
+    "rank": "10",
+    "suit": "diamonds",
+    "value": 10,
+    "visible": false,
+  },
+  "hearts-3": Object {
+    "id": "hearts-3",
+    "rank": "3",
+    "suit": "hearts",
+    "value": 3,
+    "visible": false,
+  },
+  "hearts-A": Object {
+    "id": "hearts-A",
+    "rank": "A",
+    "suit": "hearts",
+    "value": 1,
+    "visible": true,
+  },
+  "spades-5": Object {
+    "id": "spades-5",
+    "rank": "5",
+    "suit": "spades",
+    "value": 5,
+    "visible": false,
+  },
+}
+`;

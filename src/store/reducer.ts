@@ -1,5 +1,8 @@
 import { combineReducers } from 'redux';
 
-import cards from './modules/cards';
+import cards, { State as CardState } from './modules/cards';
 
+export type State = {
+  cards: CardState;
+};
 export default combineReducers({ cards });
