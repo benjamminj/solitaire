@@ -53,14 +53,14 @@ export const dealTableauCards: DealTableauCards = (cards, originalTableau) => {
 };
 
 // Given a number of card IDs, and the deck, toggle the cards to be visible
-type TurnCards = (ids: CardId[], deck: Deck) => Deck;
-export const turnCards: TurnCards = (cardIds, originalDeck) => {
+type TurnCards = (ids: CardId[], deck: Deck, visible?: boolean) => Deck;
+export const turnCards: TurnCards = (cardIds, originalDeck, visible = true) => {
   // Avoid mutating the nested object references inside of the decl
   const deck = cloneDeep(originalDeck);
 
   cardIds.forEach((id) => {
     // NOTE -- see if there's a better way to do this that is a little less side-effect heavy
-    deck[id].visible = true;
+    deck[id].visible = visible;
   });
 
   return deck;

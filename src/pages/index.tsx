@@ -6,7 +6,7 @@ import { dealCards, dealHand } from '../store/modules/cards';
 import { ActionThunkCreator, ActionCreator } from '../store/types';
 
 const buttonClasses = ({ text = 'white', bg = 'blue' } = {}) =>
-  `bg-${bg} text-${text} p-2 mr-2`;
+  `bg-${bg} text-${text} p-2 m-0 sm:mr-2 w-full sm:w-auto`;
 
 type Props = {
   cards: State['cards'];

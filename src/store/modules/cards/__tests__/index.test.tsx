@@ -1,7 +1,12 @@
 import { pick, cloneDeep } from 'lodash';
 import initialState from '../initialState';
 import { State } from '../types';
-import reducer, { DEALCARDS, DEALCARDS_INVALID, DEAL_HAND } from '../index';
+import reducer, {
+  DEALCARDS,
+  DEALCARDS_INVALID,
+  DEAL_HAND,
+  RECYCLE_HAND,
+} from '../index';
 
 describe('reducer', () => {
   // The DEALCARDS relies on randomness to shuffle the deck
@@ -56,22 +61,56 @@ describe('reducer', () => {
       const { stock } = reducer(state, action);
       expect(stock).toMatchSnapshot();
     });
-    
+
     test('should add 3 cards to the beginning of the hand array', () => {
       const { hand } = reducer(state, action);
       expect(hand).toMatchSnapshot();
-    })
+    });
 
     test('should not do anything if stock is empty', () => {
       const mockState: State = {
         ...cloneDeep(initialState),
         stock: [],
-        hand: ['hearts-A']
+        hand: ['hearts-A'],
       };
 
-      const { hand, stock } = reducer(mockState, action)
-      expect(stock).toEqual([])
-      expect(hand).toEqual(['hearts-A'])
-    }) 
+      const { hand, stock } = reducer(mockState, action);
+      expect(stock).toEqual([]);
+      expect(hand).toEqual(['hearts-A']);
+    });
+
+    test('should make cards in the hand visible', () => {
+      const { deck, hand } = reducer(state, action);
+
+      hand.forEach((cardId) => {
+        expect(deck[cardId].visible).toEqual(true);
+      });
+    });
+  });
+
+  describe('RECYCLE_HAND', () => {
+    const state = {
+      ...cloneDeep(initialState),
+      hand: ['diamonds-10', 'spades-2', 'clubs-K'],
+    };
+
+    const action = { type: RECYCLE_HAND };
+
+    test('should empty the hand', () => {
+      const { hand } = reducer(state, action);
+      expect(hand).toEqual([]);
+    });
+    
+    test('should move all cards in the hand to the stock', () => {
+      const { stock } = reducer(state, action);
+      expect(stock).toEqual(['diamonds-10', 'spades-2', 'clubs-K']);
+    });
+
+    test('should make all cards in the stock not visible', () => {
+      const { deck, stock } = reducer(state, action);
+      stock.forEach((cardId) => {
+        expect(deck[cardId].visible).toEqual(false);
+      });
+    });
   });
 });

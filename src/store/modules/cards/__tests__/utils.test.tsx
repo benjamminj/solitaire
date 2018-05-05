@@ -1,6 +1,6 @@
 import initialState from '../initialState';
 import { dealTableauCards, shuffleArray, turnCards } from '../utils';
-import { range } from 'lodash';
+import { set, cloneDeep, range } from 'lodash';
 import { Deck, Tableau } from '../types';
 
 describe('shuffleArray', () => {
@@ -32,7 +32,7 @@ describe('dealTableauCards', () => {
 });
 
 describe('turnCards', () => {
-  const deck = {
+  const deck: Deck = {
     'hearts-A': {
       id: 'hearts-A',
       suit: 'hearts',
@@ -64,12 +64,21 @@ describe('turnCards', () => {
   };
 
   test('should make the cards with the matching IDs visible in the deck', () => {
-    const result = turnCards(['hearts-A', 'diamonds-10'], deck as Deck);
+    const result = turnCards(['hearts-A', 'diamonds-10'], deck);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should allow turning cards to non-visible', () => {
+    const mockDeck = cloneDeep(deck);
+    set(mockDeck, 'hearts-A.visible', true);
+    set(mockDeck, 'diamonds-10.visible', true);
+
+    const result = turnCards(['hearts-A', 'diamonds-10'], deck);
     expect(result).toMatchSnapshot();
   });
 
   test('should not modify the deck passed in as an argument', () => {
-    const result = turnCards(['hearts-A'], deck as Deck);
-    expect(deck).toEqual(deck);
+    const result = turnCards(['hearts-A'], deck);
+    expect(result).toMatchSnapshot();
   });
 });

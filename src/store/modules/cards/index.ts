@@ -17,6 +17,7 @@ import { dealTableauCards, turnCards } from './utils';
 export const DEALCARDS = 'DEALCARDS';
 export const DEALCARDS_INVALID = 'DEALCARDS_INVALID';
 export const DEAL_HAND = 'DEAL_HAND';
+export const RECYCLE_HAND = 'RECYCLE_HAND';
 
 const reducer: Reducer<State> = (state = initialState, action) => {
   switch (action.type) {
@@ -43,15 +44,26 @@ const reducer: Reducer<State> = (state = initialState, action) => {
       };
     }
     case DEAL_HAND: {
-      const { hand, stock } = state;
+      const { deck, hand, stock } = state;
       const HAND_SIZE = 3;
-      
+
+      const newHandCards = stock.slice(0, HAND_SIZE);
       return {
         ...state,
-        hand: hand.concat(stock.slice(0, HAND_SIZE)),
-        stock: stock.slice(HAND_SIZE)
-      }
+        deck: turnCards(newHandCards, deck),
+        hand: hand.concat(newHandCards),
+        stock: stock.slice(HAND_SIZE),
+      };
     }
+    case RECYCLE_HAND:
+      const { deck, hand, stock } = state;
+
+      return {
+        ...state,
+        deck: turnCards(hand, deck, false),
+        stock: stock.concat(hand),
+        hand: [],
+      }
     case DEALCARDS_INVALID:
     default:
       return state;
@@ -70,7 +82,10 @@ export const dealCards: ActionThunkCreator = () => (dispatch, getState) => {
 export const dealHand: ActionCreator = () => ({
   type: DEAL_HAND,
 });
+
 // recycle the hand back into the deck
+export const recycleHand: ActionCreator = () => ({ type: RECYCLE_HAND });
+
 // move a single card / group of cards to a tableau row
 // --> will need to include both the location the card is currently in & the tableau row it is going to
 // move a single card to the foundation
