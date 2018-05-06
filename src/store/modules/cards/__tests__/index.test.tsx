@@ -8,6 +8,7 @@ import reducer, {
   DEAL_HAND,
   RECYCLE_HAND,
   moveCardsToTableau,
+  MOVE_CARDS_TO_TABLEAU,
 } from '../index';
 
 describe('reducer', () => {
@@ -116,74 +117,178 @@ describe('reducer', () => {
     });
   });
 
-  describe('moveCardsToTableau', () => {
-    test('should return thunk that returns valid action if cards are validated', () => {
-      // clone state
+  describe('MOVE_CARDS_TO_TABLEAU', () => {
+    test('should move the cards to the end of the designated tableau row', () => {
       const state = cloneDeep(initialState);
-      set(state, 'tableau.1', ['spades-7', 'hearts-3']);
-      set(state, 'tableau.2', ['diamonds-5', 'spades-4']);
-      // set tableau row 1
-      // set tableau row 2
+      set(state, 'tableau.1', ['spades-4']);
+      set(state, 'tableau.3', ['hearts-3']);
 
-      const thunk = moveCardsToTableau(['hearts-3'], 'tableau.1', 'tableau.2');
+      const action = {
+        type: MOVE_CARDS_TO_TABLEAU,
+        result: {
+          cards: ['hearts-3'],
+          currentLocation: 'tableau.3',
+          destination: 'tableau.1',
+        },
+      };
 
-      const getState = () => state;
-      const dispatch = () => {};
-
-      const result = thunk(dispatch as Dispatch<State>, getState);
-      expect(result).toMatchSnapshot();
+      const { tableau } = reducer(state, action);
+      expect(tableau['1']).toMatchSnapshot()
     });
 
-    test('should return thunk that allows for moving multiple cards to a tableau row', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'tableau.3', ['hearts-4', 'diamonds-3', 'spades-2'])
-      set(state, 'tableau.6', ['clubs-5'])
+    test('should remove the cards from the current row if they are on the tableau', () => {
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.1', ['spades-4']);
+      set(state, 'tableau.3', ['hearts-3']);
 
-      const thunk = moveCardsToTableau(['hearts-4', 'diamonds-3', 'spades-2'], 'tableau.3', 'tableau.6')
-      const getState = () => state
-      const dispatch = () => {}
-      const result = thunk(dispatch as Dispatch<State>, getState)
+      const action = {
+        type: MOVE_CARDS_TO_TABLEAU,
+        result: {
+          cards: ['hearts-3'],
+          currentLocation: 'tableau.3',
+          destination: 'tableau.1',
+        },
+      };
 
-      expect(result).toMatchSnapshot();
+      const { tableau } = reducer(state, action);
+      expect(tableau['3']).toMatchSnapshot()
     });
 
-    test('should allow moving cards from foundation rows to the tableau', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'foundation.hearts', ['hearts-A', 'hearts-2', 'hearts-3', 'hearts-4'])
-      set(state, 'tableau.5', ['diamonds-6', 'clubs-5'])
+    test('should remove the cards from the current row if they are on the foundation', () => {
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.1', ['spades-4']);
+      set(state, 'foundation.hearts', ['hearts-3']);
 
-      const thunk = moveCardsToTableau(['hearts-4'], 'foundation.hearts', 'tableau.5')
-      const getState = () => state
-      const dispatch = () => {}
-      const result = thunk(dispatch as Dispatch<State>, getState)
+      const action = {
+        type: MOVE_CARDS_TO_TABLEAU,
+        result: {
+          cards: ['hearts-3'],
+          currentLocation: 'foundation.hearts',
+          destination: 'tableau.1',
+        },
+      };
 
-      expect(result).toMatchSnapshot();
-    })
-
-    test('should allow moving cards from hand to the tableau', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'tableau.5', ['spades-K', 'hearts-Q'])
-      set(state, 'hand', ['hearts-A', 'clubs-6', 'spades-J'])
-
-      const thunk = moveCardsToTableau(['spades-J'], 'hand', 'tableau.5')
-      const getState = () => state
-      const dispatch = () => {}
-      const result = thunk(dispatch as Dispatch<State>, getState)
-
-      expect(result).toMatchSnapshot();
-    })
-
-    test('should return thunk that returns invalid action if cards are invalid', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'tableau.5', ['spades-K', 'hearts-Q'])
-      set(state, 'tableau.3', ['hearts-A', 'clubs-6', 'spades-2'])
-
-      const thunk = moveCardsToTableau(['spades-2'], 'tableau.3', 'tableau.5')
-      const getState = () => state
-      const dispatch = () => {}
-      const result = thunk(dispatch as Dispatch<State>, getState)
-
-      expect(result).toMatchSnapshot();
+      const { foundation } = reducer(state, action);
+      expect(foundation.hearts).toMatchSnapshot()
     });
+
+    test('should remove the card from the hand if it is in the hand', () => {
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.1', ['spades-4']);
+      set(state, 'hand', ['hearts-3']);
+
+      const action = {
+        type: MOVE_CARDS_TO_TABLEAU,
+        result: {
+          cards: ['hearts-3'],
+          currentLocation: 'hand',
+          destination: 'tableau.1',
+        },
+      };
+
+      const { hand } = reducer(state, action);
+      expect(hand).toMatchSnapshot()
+    });
+    test('should make the new last card of the current row visible', () => {
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.1', ['spades-4']);
+      set(state, 'tableau.3', ['clubs-J', 'hearts-3']);
+
+      const action = {
+        type: MOVE_CARDS_TO_TABLEAU,
+        result: {
+          cards: ['hearts-3'],
+          currentLocation: 'tableau.3',
+          destination: 'tableau.1',
+        },
+      };
+
+      const { deck } = reducer(state, action);
+      expect(deck['clubs-J'].visible).toEqual(true)
+    });
+  });
+});
+
+describe('moveCardsToTableau', () => {
+  test('should return thunk that returns valid action if cards are validated', () => {
+    // clone state
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.1', ['spades-7', 'hearts-3']);
+    set(state, 'tableau.2', ['diamonds-5', 'spades-4']);
+    // set tableau row 1
+    // set tableau row 2
+
+    const thunk = moveCardsToTableau(['hearts-3'], 'tableau.1', 'tableau.2');
+
+    const getState = () => state;
+    const dispatch = () => {};
+
+    const result = thunk(dispatch as Dispatch<State>, getState);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should return thunk that allows for moving multiple cards to a tableau row', () => {
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.3', ['hearts-4', 'diamonds-3', 'spades-2']);
+    set(state, 'tableau.6', ['clubs-5']);
+
+    const thunk = moveCardsToTableau(
+      ['hearts-4', 'diamonds-3', 'spades-2'],
+      'tableau.3',
+      'tableau.6',
+    );
+    const getState = () => state;
+    const dispatch = () => {};
+    const result = thunk(dispatch as Dispatch<State>, getState);
+
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should allow moving cards from foundation rows to the tableau', () => {
+    const state = cloneDeep(initialState);
+    set(state, 'foundation.hearts', [
+      'hearts-A',
+      'hearts-2',
+      'hearts-3',
+      'hearts-4',
+    ]);
+    set(state, 'tableau.5', ['diamonds-6', 'clubs-5']);
+
+    const thunk = moveCardsToTableau(
+      ['hearts-4'],
+      'foundation.hearts',
+      'tableau.5',
+    );
+    const getState = () => state;
+    const dispatch = () => {};
+    const result = thunk(dispatch as Dispatch<State>, getState);
+
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should allow moving cards from hand to the tableau', () => {
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.5', ['spades-K', 'hearts-Q']);
+    set(state, 'hand', ['hearts-A', 'clubs-6', 'spades-J']);
+
+    const thunk = moveCardsToTableau(['spades-J'], 'hand', 'tableau.5');
+    const getState = () => state;
+    const dispatch = () => {};
+    const result = thunk(dispatch as Dispatch<State>, getState);
+
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should return thunk that returns invalid action if cards are invalid', () => {
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.5', ['spades-K', 'hearts-Q']);
+    set(state, 'tableau.3', ['hearts-A', 'clubs-6', 'spades-2']);
+
+    const thunk = moveCardsToTableau(['spades-2'], 'tableau.3', 'tableau.5');
+    const getState = () => state;
+    const dispatch = () => {};
+    const result = thunk(dispatch as Dispatch<State>, getState);
+
+    expect(result).toMatchSnapshot();
   });
 });
