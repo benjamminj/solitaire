@@ -1,15 +1,25 @@
 import * as range from 'lodash/fp/range';
-import { Reducer, ActionCreator, ActionThunkCreator } from '../../types';
+import {
+  Reducer,
+  Action,
+  ActionCreator,
+  ActionThunkCreator,
+  ActionThunk,
+} from '../../types';
 import {
   State,
+  Card,
   CardRefArray,
   Tableau,
   TableauRow,
   CardId,
   Deck,
+  CardLocation,
+  TableauRowLocation,
+  Suit,
 } from './types';
 import { get, cloneDeep } from 'lodash';
-import { shuffleArray } from './utils';
+import { shuffleArray, validateCardBase } from './utils';
 import initialState from './initialState';
 import { dealTableauCards, turnCards } from './utils';
 
@@ -18,6 +28,8 @@ export const DEALCARDS = 'DEALCARDS';
 export const DEALCARDS_INVALID = 'DEALCARDS_INVALID';
 export const DEAL_HAND = 'DEAL_HAND';
 export const RECYCLE_HAND = 'RECYCLE_HAND';
+export const MOVE_CARDS_TO_TABLEAU = 'MOVE_CARDS_TO_TABLEAU';
+export const MOVE_CARDS_TO_TABLEAU_INVALID = 'MOVE_CARDS_TO_TABLEAU_INVALID';
 
 const reducer: Reducer<State> = (state = initialState, action) => {
   switch (action.type) {
@@ -63,8 +75,18 @@ const reducer: Reducer<State> = (state = initialState, action) => {
         deck: turnCards(hand, deck, false),
         stock: stock.concat(hand),
         hand: [],
-      }
+      };
+    case MOVE_CARDS_TO_TABLEAU:
+      const { cards, currentLocation, destination } = action.result;
+
+      // take the cards out of their current location
+
+      // append them to their destination
+      return {
+        ...state,
+      };
     case DEALCARDS_INVALID:
+    case MOVE_CARDS_TO_TABLEAU_INVALID:
     default:
       return state;
   }
@@ -78,16 +100,41 @@ export const dealCards: ActionThunkCreator = () => (dispatch, getState) => {
   };
 };
 
-// deal from deck to hand
-export const dealHand: ActionCreator = () => ({
-  type: DEAL_HAND,
-});
-
-// recycle the hand back into the deck
+export const dealHand: ActionCreator = () => ({ type: DEAL_HAND });
 export const recycleHand: ActionCreator = () => ({ type: RECYCLE_HAND });
 
 // move a single card / group of cards to a tableau row
 // --> will need to include both the location the card is currently in & the tableau row it is going to
+type MoveCardsToTableau = (
+  cards: CardRefArray,
+  currentLocation: CardLocation,
+  destination: TableauRowLocation
+) => ActionThunk;
+export const moveCardsToTableau: MoveCardsToTableau = (
+  cards,
+  currentLocation,
+  destination,
+) => (dispatch, getState) => {
+  const successAction = {
+    type: MOVE_CARDS_TO_TABLEAU,
+    result: { cards, currentLocation, destination },
+  };
+  const failureAction = {
+    type: MOVE_CARDS_TO_TABLEAU_INVALID,
+  };
+
+  const state = getState();
+  const { deck } = state;
+
+  const currentCards = get(state, currentLocation);
+  const destinationCards = get(state, destination);
+  const firstCard = deck[cards[0]];
+  const baseCard = deck[destinationCards[destinationCards.length - 1]];
+
+  // TODO - need to turn ver cards
+  return validateCardBase(firstCard, baseCard) ? successAction : failureAction;
+};
+
 // move a single card to the foundation
 // --> will need to include the location the card is currently in as well as the card ID
 

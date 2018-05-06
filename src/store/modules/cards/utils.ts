@@ -1,23 +1,31 @@
-import { cloneDeep } from 'lodash/fp'
-import { Deck, Tableau, TableauRow, CardId, CardRefArray } from './types';
+import { cloneDeep } from 'lodash/fp';
+import {
+  Card,
+  Deck,
+  Tableau,
+  TableauRow,
+  CardId,
+  CardRefArray,
+  Suit,
+} from './types';
 
 export const shuffleArray = (originalArray: any[]) => {
   // a little higher on memory, but small cost to pay for guaranteed immutability
-  let arr = [...originalArray];
+  const arr = [...originalArray];
   let current = arr.length;
   let temp;
   let i;
 
   while (current) {
-    i = Math.floor(Math.random() * current--)
+    i = Math.floor(Math.random() * current--);
 
-    temp = arr[current]
-    arr[current] = arr[i]
-    arr[i] = temp
+    temp = arr[current];
+    arr[current] = arr[i];
+    arr[i] = temp;
   }
 
   return arr;
-}
+};
 
 const getNonFilledRow = (tableau: Tableau): string | null => {
   const keys = Object.keys(tableau).sort((a, b) => +a - +b);
@@ -64,4 +72,29 @@ export const turnCards: TurnCards = (cardIds, originalDeck, visible = true) => {
   });
 
   return deck;
+};
+
+export type validateCardBase = (card: Card, baseCard?: Card) => boolean;
+export const validateCardBase: validateCardBase = (card, baseCard) => {
+  if (baseCard) {
+    const isRankDirectlyBelow = card.value === baseCard.value - 1;
+
+    const suitIs = (str: Suit, suits: Suit[]): boolean =>
+      suits.some(suit => str === suit);
+
+    const isRedCard = (suit: Suit) => suitIs(suit, ['hearts', 'diamonds']);
+    const isBlackCard = (suit: Suit) => suitIs(suit, ['clubs', 'spades']);
+
+    const isOppositeSuit = isRedCard(card.suit)
+      ? isBlackCard(baseCard.suit)
+      : isRedCard(baseCard.suit);
+
+    return isRankDirectlyBelow && isOppositeSuit;
+  }
+
+  if (card.rank === 'K') {
+    return true;
+  }
+
+  return false;
 };
