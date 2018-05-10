@@ -1,5 +1,10 @@
 import initialState from '../initialState';
-import { dealTableauCards, shuffleArray, turnCards } from '../utils';
+import {
+  dealTableauCards,
+  shuffleArray,
+  turnCards,
+  validateCardBase,
+} from '../utils';
 import { set, cloneDeep, range } from 'lodash';
 import { Deck, Tableau } from '../types';
 
@@ -80,5 +85,52 @@ describe('turnCards', () => {
   test('should not modify the deck passed in as an argument', () => {
     const result = turnCards(['hearts-A'], deck);
     expect(result).toMatchSnapshot();
+  });
+});
+
+describe('validateCardBase', () => {
+  const { deck } = cloneDeep(initialState);
+
+  test('should pass validation with red card on a black card & a value directly below', () => {
+    const card = deck['hearts-3'];
+    const baseCard = deck['spades-4'];
+
+    const result = validateCardBase(card, baseCard);
+    expect(result).toEqual(true);
+  });
+
+  test('should pass validation with black card on a red card & a value directly below', () => {
+    const card = deck['clubs-10'];
+    const baseCard = deck['diamonds-J'];
+
+    const result = validateCardBase(card, baseCard);
+    expect(result).toEqual(true);
+  });
+
+  test('should pass validation if the card is a King & there is no base card', () => {
+    const card = deck['hearts-K'];
+    const result = validateCardBase(card);
+    expect(result).toEqual(true);
+  });
+
+  test('should fail validation if both cards are a red suit', () => {
+    const card = deck['diamonds-Q'];
+    const baseCard = deck['hearts-K'];
+    const result = validateCardBase(card, baseCard);
+    expect(result).toEqual(false);
+  });
+
+  test('should fail validation if both cards are a black suit', () => {
+    const card = deck['spades-5'];
+    const baseCard = deck['clubs-6'];
+    const result = validateCardBase(card, baseCard);
+    expect(result).toEqual(false);
+  });
+
+  test('should fail validation if the card is not direclty below the base in value', () => {
+    const card = deck['spades-2'];
+    const baseCard = deck['hearts-6'];
+    const result = validateCardBase(card, baseCard);
+    expect(result).toEqual(false);
   });
 });

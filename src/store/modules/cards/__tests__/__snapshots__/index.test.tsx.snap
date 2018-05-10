@@ -1,5 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`moveCardToFoundation should return a thunk which fails validation if the card is not a value directly above the last card in the foundation row 1`] = `
+Object {
+  "type": "MOVE_CARD_TO_FOUNDATION_INVALID",
+}
+`;
+
+exports[`moveCardToFoundation should return a thunk which fails validation is the card is not the same suit as the foundation row 1`] = `
+Object {
+  "type": "MOVE_CARD_TO_FOUNDATION_INVALID",
+}
+`;
+
+exports[`moveCardToFoundation should return a thunk which passes validation if the card is directly above the last card in the foundation 1`] = `
+Object {
+  "cardId": "hearts-3",
+  "currentLocation": "tableau.3",
+  "suit": "hearts",
+  "type": "MOVE_CARD_TO_FOUNDATION",
+}
+`;
+
+exports[`moveCardToFoundation should return a thunk which passes validation if the foundation row is empty and the card is an Ace 1`] = `
+Object {
+  "cardId": "hearts-A",
+  "currentLocation": "tableau.3",
+  "suit": "hearts",
+  "type": "MOVE_CARD_TO_FOUNDATION",
+}
+`;
+
+exports[`moveCardsToTableau should allow moving cards from foundation rows to the tableau 1`] = `
+Object {
+  "result": Object {
+    "cards": Array [
+      "hearts-4",
+    ],
+    "currentLocation": "foundation.hearts",
+    "destination": "tableau.5",
+  },
+  "type": "MOVE_CARDS_TO_TABLEAU",
+}
+`;
+
+exports[`moveCardsToTableau should allow moving cards from hand to the tableau 1`] = `
+Object {
+  "result": Object {
+    "cards": Array [
+      "spades-J",
+    ],
+    "currentLocation": "hand",
+    "destination": "tableau.5",
+  },
+  "type": "MOVE_CARDS_TO_TABLEAU",
+}
+`;
+
+exports[`moveCardsToTableau should return thunk that allows for moving multiple cards to a tableau row 1`] = `
+Object {
+  "result": Object {
+    "cards": Array [
+      "hearts-4",
+      "diamonds-3",
+      "spades-2",
+    ],
+    "currentLocation": "tableau.3",
+    "destination": "tableau.6",
+  },
+  "type": "MOVE_CARDS_TO_TABLEAU",
+}
+`;
+
+exports[`moveCardsToTableau should return thunk that returns invalid action if cards are invalid 1`] = `
+Object {
+  "type": "MOVE_CARDS_TO_TABLEAU_INVALID",
+}
+`;
+
+exports[`moveCardsToTableau should return thunk that returns valid action if cards are validated 1`] = `
+Object {
+  "result": Object {
+    "cards": Array [
+      "hearts-3",
+    ],
+    "currentLocation": "tableau.1",
+    "destination": "tableau.2",
+  },
+  "type": "MOVE_CARDS_TO_TABLEAU",
+}
+`;
+
 exports[`reducer DEAL_HAND should add 3 cards to the beginning of the hand array 1`] = `
 Array [
   "hearts-A",
@@ -406,3 +496,24 @@ Object {
   },
 }
 `;
+
+exports[`reducer MOVE_CARD_TO_FOUNDATION should add the card to its relevant foundation row 1`] = `
+Array [
+  "hearts-A",
+]
+`;
+
+exports[`reducer MOVE_CARD_TO_FOUNDATION should remove the card from its current location 1`] = `Array []`;
+
+exports[`reducer MOVE_CARDS_TO_TABLEAU should move the cards to the end of the designated tableau row 1`] = `
+Array [
+  "spades-4",
+  "hearts-3",
+]
+`;
+
+exports[`reducer MOVE_CARDS_TO_TABLEAU should remove the card from the hand if it is in the hand 1`] = `Array []`;
+
+exports[`reducer MOVE_CARDS_TO_TABLEAU should remove the cards from the current row if they are on the foundation 1`] = `Array []`;
+
+exports[`reducer MOVE_CARDS_TO_TABLEAU should remove the cards from the current row if they are on the tableau 1`] = `Array []`;
