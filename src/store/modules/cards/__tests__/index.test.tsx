@@ -135,7 +135,7 @@ describe('reducer', () => {
       };
 
       const { tableau } = reducer(state, action);
-      expect(tableau['1']).toMatchSnapshot()
+      expect(tableau['1']).toMatchSnapshot();
     });
 
     test('should remove the cards from the current row if they are on the tableau', () => {
@@ -153,7 +153,7 @@ describe('reducer', () => {
       };
 
       const { tableau } = reducer(state, action);
-      expect(tableau['3']).toMatchSnapshot()
+      expect(tableau['3']).toMatchSnapshot();
     });
 
     test('should remove the cards from the current row if they are on the foundation', () => {
@@ -171,7 +171,7 @@ describe('reducer', () => {
       };
 
       const { foundation } = reducer(state, action);
-      expect(foundation.hearts).toMatchSnapshot()
+      expect(foundation.hearts).toMatchSnapshot();
     });
 
     test('should remove the card from the hand if it is in the hand', () => {
@@ -189,7 +189,7 @@ describe('reducer', () => {
       };
 
       const { hand } = reducer(state, action);
-      expect(hand).toMatchSnapshot()
+      expect(hand).toMatchSnapshot();
     });
 
     test('should make the new last card of the current row visible', () => {
@@ -207,65 +207,65 @@ describe('reducer', () => {
       };
 
       const { deck } = reducer(state, action);
-      expect(deck['clubs-J'].visible).toEqual(true)
+      expect(deck['clubs-J'].visible).toEqual(true);
     });
   });
 
   describe('MOVE_CARD_TO_FOUNDATION', () => {
     test('should remove the card from its current location', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'tableau.2', ['hearts-2'])
-      set(state, 'foundation.hearts', ['hearts-A'])
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.2', ['hearts-2']);
+      set(state, 'foundation.hearts', ['hearts-A']);
 
       const action = {
         type: MOVE_CARD_TO_FOUNDATION,
         result: {
           cardId: 'hearts-2',
           currentLocation: 'tableau.2',
-          suit: 'hearts'
-        }
-      }
+          suit: 'hearts',
+        },
+      };
 
-      const {tableau} = reducer(state, action)
-      expect(tableau['2']).toMatchSnapshot()
-    })
+      const { tableau } = reducer(state, action);
+      expect(tableau['2']).toMatchSnapshot();
+    });
 
     test('should add the card to its relevant foundation row', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'tableau.2', ['hearts-2'])
-      set(state, 'foundation.hearts', ['hearts-A'])
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.2', ['hearts-2']);
+      set(state, 'foundation.hearts', ['hearts-A']);
 
       const action = {
         type: MOVE_CARD_TO_FOUNDATION,
         result: {
           cardId: 'hearts-2',
           currentLocation: 'tableau.2',
-          suit: 'hearts'
-        }
-      }
+          suit: 'hearts',
+        },
+      };
 
-      const {foundation} = reducer(state, action)
-      expect(foundation.hearts).toMatchSnapshot()
-    })
+      const { foundation } = reducer(state, action);
+      expect(foundation.hearts).toMatchSnapshot();
+    });
 
     test('should turn over new last card if the card was moved from a tableau row', () => {
-      const state = cloneDeep(initialState)
-      set(state, 'tableau.2', ['spades-9', 'hearts-2'])
-      set(state, 'foundation.hearts', ['hearts-A'])
+      const state = cloneDeep(initialState);
+      set(state, 'tableau.2', ['spades-9', 'hearts-2']);
+      set(state, 'foundation.hearts', ['hearts-A']);
 
       const action = {
         type: MOVE_CARD_TO_FOUNDATION,
         result: {
           cardId: 'hearts-2',
           currentLocation: 'tableau.2',
-          suit: 'hearts'
-        }
-      }
+          suit: 'hearts',
+        },
+      };
 
-      const {deck} = reducer(state, action)
-      expect(deck['spades-9'].visible).toEqual(true)
-    })
-  })
+      const { deck } = reducer(state, action);
+      expect(deck['spades-9'].visible).toEqual(true);
+    });
+  });
 });
 
 describe('moveCardsToTableau', () => {
@@ -354,58 +354,58 @@ describe('moveCardsToTableau', () => {
 
 describe('moveCardToFoundation', () => {
   test('should return a thunk which passes validation if the card is directly above the last card in the foundation', () => {
-    const state = cloneDeep(initialState)
-    set(state, 'tableau.3', ['hearts-3'])
-    set(state, 'foundation.hearts', ['hearts-A', 'hearts-2'])
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.3', ['hearts-3']);
+    set(state, 'foundation.hearts', ['hearts-A', 'hearts-2']);
 
-    const thunk = moveCardToFoundation('hearts-3', 'tableau.3', 'hearts')
+    const thunk = moveCardToFoundation('hearts-3', 'tableau.3', 'hearts');
 
     const getState = () => state;
-    const dispatch = () => {}
+    const dispatch = () => {};
 
-    const result = thunk(dispatch as Dispatch<State>, getState)
-    expect(result).toMatchSnapshot()
-  })
+    const result = thunk(dispatch as Dispatch<State>, getState);
+    expect(result).toMatchSnapshot();
+  });
 
   test('should return a thunk which passes validation if the foundation row is empty and the card is an Ace', () => {
-    const state = cloneDeep(initialState)
-    set(state, 'tableau.3', ['hearts-A'])
-    set(state, 'foundation.hearts', [])
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.3', ['hearts-A']);
+    set(state, 'foundation.hearts', []);
 
-    const thunk = moveCardToFoundation('hearts-A', 'tableau.3', 'hearts')
+    const thunk = moveCardToFoundation('hearts-A', 'tableau.3', 'hearts');
 
     const getState = () => state;
-    const dispatch = () => {}
+    const dispatch = () => {};
 
-    const result = thunk(dispatch as Dispatch<State>, getState)
-    expect(result).toMatchSnapshot()
-  })
+    const result = thunk(dispatch as Dispatch<State>, getState);
+    expect(result).toMatchSnapshot();
+  });
 
   test('should return a thunk which fails validation is the card is not the same suit as the foundation row', () => {
-    const state = cloneDeep(initialState)
-    set(state, 'tableau.3', ['spades-2'])
-    set(state, 'foundation.hearts', ['hearts-A'])
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.3', ['spades-2']);
+    set(state, 'foundation.hearts', ['hearts-A']);
 
-    const thunk = moveCardToFoundation('spades-2', 'tableau.3', 'hearts')
+    const thunk = moveCardToFoundation('spades-2', 'tableau.3', 'hearts');
 
     const getState = () => state;
-    const dispatch = () => {}
+    const dispatch = () => {};
 
-    const result = thunk(dispatch as Dispatch<State>, getState)
-    expect(result).toMatchSnapshot()
-  })
+    const result = thunk(dispatch as Dispatch<State>, getState);
+    expect(result).toMatchSnapshot();
+  });
 
   test('should return a thunk which fails validation if the card is not a value directly above the last card in the foundation row', () => {
-    const state = cloneDeep(initialState)
-    set(state, 'tableau.3', ['hearts-4'])
-    set(state, 'foundation.hearts', ['hearts-A'])
+    const state = cloneDeep(initialState);
+    set(state, 'tableau.3', ['hearts-4']);
+    set(state, 'foundation.hearts', ['hearts-A']);
 
-    const thunk = moveCardToFoundation('hearts-4', 'tableau.3', 'hearts')
+    const thunk = moveCardToFoundation('hearts-4', 'tableau.3', 'hearts');
 
     const getState = () => state;
-    const dispatch = () => {}
+    const dispatch = () => {};
 
-    const result = thunk(dispatch as Dispatch<State>, getState)
-    expect(result).toMatchSnapshot()
-  })
-})
+    const result = thunk(dispatch as Dispatch<State>, getState);
+    expect(result).toMatchSnapshot();
+  });
+});

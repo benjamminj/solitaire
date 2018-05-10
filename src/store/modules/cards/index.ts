@@ -210,8 +210,6 @@ export const moveCardToFoundation: MoveCardToFoundation = (
     type: MOVE_CARD_TO_FOUNDATION_INVALID
   }
 };
-// move a single card to the foundation
-// --> will need to include the location the card is currently in as well as the card ID
 
 // Selectors
 export const getDealt = (state: State) => get(state, 'cards.dealt');
