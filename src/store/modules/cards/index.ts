@@ -166,20 +166,23 @@ export const moveCardToFoundation: MoveCardToFoundation = (
   suit,
 ) => (dispatch, getState) => {
   const { deck, foundation } = getState();
-  const card = deck[cardId]
+  const card = deck[cardId];
 
   const isSameSuit = card.suit === suit;
 
-  const foundationRow = foundation[suit]
-  const lastCardInFoundationRow = get(deck, last(foundationRow), { value: 0 })
-  const isNextRank = card.value - 1 === lastCardInFoundationRow.value
-  
-  // check the suit is the same
-  // check the order of the cards
-  return {
-    type: 'test',
+  const foundationRow = foundation[suit];
+  const lastCardInFoundationRow = get(deck, last(foundationRow), { value: 0 });
+  const isNextRank = card.value - 1 === lastCardInFoundationRow.value;
+
+  return isNextRank && isSameSuit ? {
+    type: MOVE_CARD_TO_FOUNDATION,
+    cardId,
+    currentLocation,
+    suit,
+  } : {
+    type: MOVE_CARD_TO_FOUNDATION_INVALID
   }
-  };
+};
 // move a single card to the foundation
 // --> will need to include the location the card is currently in as well as the card ID
 

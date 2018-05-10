@@ -1,8 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`moveCardToFoundation should return a thunk which fails validation if the card is not a value directly above the last card in the foundation row 1`] = `
+Object {
+  "type": "MOVE_CARD_TO_FOUNDATION_INVALID",
+}
+`;
+
+exports[`moveCardToFoundation should return a thunk which fails validation is the card is not the same suit as the foundation row 1`] = `
+Object {
+  "type": "MOVE_CARD_TO_FOUNDATION_INVALID",
+}
+`;
+
+exports[`moveCardToFoundation should return a thunk which passes validation if the card is directly above the last card in the foundation 1`] = `
+Object {
+  "cardId": "hearts-3",
+  "currentLocation": "tableau.3",
+  "suit": "hearts",
+  "type": "MOVE_CARD_TO_FOUNDATION",
+}
+`;
+
 exports[`moveCardToFoundation should return a thunk which passes validation if the foundation row is empty and the card is an Ace 1`] = `
 Object {
-  "type": "test",
+  "cardId": "hearts-A",
+  "currentLocation": "tableau.3",
+  "suit": "hearts",
+  "type": "MOVE_CARD_TO_FOUNDATION",
 }
 `;
 
