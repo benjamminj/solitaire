@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`moveCardToFoundation should return a thunk which passes validation if the foundation row is empty and the card is an Ace 1`] = `
+Object {
+  "type": "test",
+}
+`;
+
 exports[`moveCardsToTableau should allow moving cards from foundation rows to the tableau 1`] = `
 Object {
   "result": Object {

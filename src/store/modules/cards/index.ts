@@ -17,8 +17,9 @@ import {
   CardLocation,
   TableauRowLocation,
   Suit,
+  FoundationRowLocation,
 } from './types';
-import { get, set, cloneDeep } from 'lodash';
+import { get, set, last, cloneDeep } from 'lodash';
 import { shuffleArray, validateCardBase } from './utils';
 import initialState from './initialState';
 import { dealTableauCards, turnCards } from './utils';
@@ -30,6 +31,9 @@ export const DEAL_HAND = 'DEAL_HAND';
 export const RECYCLE_HAND = 'RECYCLE_HAND';
 export const MOVE_CARDS_TO_TABLEAU = 'MOVE_CARDS_TO_TABLEAU';
 export const MOVE_CARDS_TO_TABLEAU_INVALID = 'MOVE_CARDS_TO_TABLEAU_INVALID';
+export const MOVE_CARD_TO_FOUNDATION = 'MOVE_CARD_TO_FOUNDATION';
+// prettier-ignore
+export const MOVE_CARD_TO_FOUNDATION_INVALID = 'MOVE_CARD_TO_FOUNDATION_INVALID';
 
 const reducer: Reducer<State> = (state = initialState, action) => {
   switch (action.type) {
@@ -151,6 +155,31 @@ export const moveCardsToTableau: MoveCardsToTableau = (
   return validateCardBase(firstCard, baseCard) ? successAction : failureAction;
 };
 
+type MoveCardToFoundation = (
+  cardId: CardId,
+  currentLocation: CardLocation,
+  suit: Suit
+) => ActionThunk<State>;
+export const moveCardToFoundation: MoveCardToFoundation = (
+  cardId,
+  currentLocation,
+  suit,
+) => (dispatch, getState) => {
+  const { deck, foundation } = getState();
+  const card = deck[cardId]
+
+  const isSameSuit = card.suit === suit;
+
+  const foundationRow = foundation[suit]
+  const lastCardInFoundationRow = get(deck, last(foundationRow), { value: 0 })
+  const isNextRank = card.value - 1 === lastCardInFoundationRow.value
+  
+  // check the suit is the same
+  // check the order of the cards
+  return {
+    type: 'test',
+  }
+  };
 // move a single card to the foundation
 // --> will need to include the location the card is currently in as well as the card ID
 

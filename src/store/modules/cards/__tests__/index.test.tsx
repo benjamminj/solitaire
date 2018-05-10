@@ -8,6 +8,7 @@ import reducer, {
   DEAL_HAND,
   RECYCLE_HAND,
   moveCardsToTableau,
+  moveCardToFoundation,
   MOVE_CARDS_TO_TABLEAU,
 } from '../index';
 
@@ -189,6 +190,7 @@ describe('reducer', () => {
       const { hand } = reducer(state, action);
       expect(hand).toMatchSnapshot()
     });
+
     test('should make the new last card of the current row visible', () => {
       const state = cloneDeep(initialState);
       set(state, 'tableau.1', ['spades-4']);
@@ -292,3 +294,22 @@ describe('moveCardsToTableau', () => {
     expect(result).toMatchSnapshot();
   });
 });
+
+describe('moveCardToFoundation', () => {
+  test('should return a thunk which passes validation if the foundation row is empty and the card is an Ace', () => {
+    const state = cloneDeep(initialState)
+    set(state, 'tableau.3', ['hearts-3'])
+    set(state, 'foundation.hearts', ['hearts-A', 'hearts-2'])
+
+    const thunk = moveCardToFoundation('hearts-3', 'tableau.3', 'foundation.hearts')
+
+    const getState = () => state;
+    const dispatch = () => {}
+
+    const result = thunk(dispatch as Dispatch<State>, getState)
+    expect(result).toMatchSnapshot()
+  })
+  test('should return a thunk which passes validation if the foundation row is empty and the card is directly above the last card')
+  test('should return a thunk which fails validation is the card is not the same suit as the foundation row')
+  test('should return a thunk which fails validation if the card is not a value directly above the last card in the foundation row')
+})
