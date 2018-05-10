@@ -10,6 +10,7 @@ import reducer, {
   moveCardsToTableau,
   moveCardToFoundation,
   MOVE_CARDS_TO_TABLEAU,
+  MOVE_CARD_TO_FOUNDATION,
 } from '../index';
 
 describe('reducer', () => {
@@ -209,6 +210,62 @@ describe('reducer', () => {
       expect(deck['clubs-J'].visible).toEqual(true)
     });
   });
+
+  describe('MOVE_CARD_TO_FOUNDATION', () => {
+    test('should remove the card from its current location', () => {
+      const state = cloneDeep(initialState)
+      set(state, 'tableau.2', ['hearts-2'])
+      set(state, 'foundation.hearts', ['hearts-A'])
+
+      const action = {
+        type: MOVE_CARD_TO_FOUNDATION,
+        result: {
+          cardId: 'hearts-2',
+          currentLocation: 'tableau.2',
+          suit: 'hearts'
+        }
+      }
+
+      const {tableau} = reducer(state, action)
+      expect(tableau['2']).toMatchSnapshot()
+    })
+
+    test('should add the card to its relevant foundation row', () => {
+      const state = cloneDeep(initialState)
+      set(state, 'tableau.2', ['hearts-2'])
+      set(state, 'foundation.hearts', ['hearts-A'])
+
+      const action = {
+        type: MOVE_CARD_TO_FOUNDATION,
+        result: {
+          cardId: 'hearts-2',
+          currentLocation: 'tableau.2',
+          suit: 'hearts'
+        }
+      }
+
+      const {foundation} = reducer(state, action)
+      expect(foundation.hearts).toMatchSnapshot()
+    })
+
+    test('should turn over new last card if the card was moved from a tableau row', () => {
+      const state = cloneDeep(initialState)
+      set(state, 'tableau.2', ['spades-9', 'hearts-2'])
+      set(state, 'foundation.hearts', ['hearts-A'])
+
+      const action = {
+        type: MOVE_CARD_TO_FOUNDATION,
+        result: {
+          cardId: 'hearts-2',
+          currentLocation: 'tableau.2',
+          suit: 'hearts'
+        }
+      }
+
+      const {deck} = reducer(state, action)
+      expect(deck['spades-9'].visible).toEqual(true)
+    })
+  })
 });
 
 describe('moveCardsToTableau', () => {

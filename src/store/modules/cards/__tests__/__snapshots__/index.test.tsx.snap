@@ -497,6 +497,14 @@ Object {
 }
 `;
 
+exports[`reducer MOVE_CARD_TO_FOUNDATION should add the card to its relevant foundation row 1`] = `
+Array [
+  "hearts-A",
+]
+`;
+
+exports[`reducer MOVE_CARD_TO_FOUNDATION should remove the card from its current location 1`] = `Array []`;
+
 exports[`reducer MOVE_CARDS_TO_TABLEAU should move the cards to the end of the designated tableau row 1`] = `
 Array [
   "spades-4",
