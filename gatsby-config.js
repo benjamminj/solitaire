@@ -4,17 +4,17 @@ module.exports = {
   },
   plugins: [
     'gatsby-plugin-react-helmet',
-    `gatsby-plugin-react-next`,
+    'gatsby-plugin-react-next',
     {
       resolve: 'gatsby-plugin-typescript',
       options: {
         transpileOnly: true, // default
         compilerOptions: {
-          target: `esnext`,
+          target: 'esnext',
           experimentalDecorators: true,
-          jsx: `react`
-        } // default
-      }
-    }
+          jsx: 'react',
+        }, // default
+      },
+    },
   ],
 };
