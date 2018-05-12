@@ -7,3 +7,13 @@
     width: auto;
   }
 }
+
+/* CSS Grid Utilities */
+.grid {
+  display: grid;
+}
+
+.gt-columns {
+  --gt-columns: 1fr 1fr 1fr;
+  grid-template-columns: var(--gt-columns, auto);
+}

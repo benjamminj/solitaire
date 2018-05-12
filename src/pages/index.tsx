@@ -4,6 +4,7 @@ import { connect, DispatchProp } from 'react-redux';
 import { State } from '../store/reducer';
 import { dealCards, dealHand } from '../store/modules/cards';
 import { ActionThunkCreator, ActionCreator } from '../store/types';
+import Card from '../components/Card';
 
 const buttonClasses = ({ text = 'white', bg = 'blue' } = {}) =>
   `bg-${bg} text-${text} p-2 m-0 sm:mr-2 w-full sm:w-auto`;
@@ -31,7 +32,11 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
         log state.cards
       </button>
     </div>
-    <div />
+    <div style={{ '--gt-columns': '1fr 1fr 1fr' }} className="grid gt-columns">
+      {Object.entries(props.cards.deck).map(([key, card]) => (
+        <Card key={key} {...card} />
+      ))}
+    </div>
   </div>
 );
 
