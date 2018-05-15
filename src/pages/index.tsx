@@ -5,6 +5,7 @@ import { State } from '../store/reducer';
 import { dealCards, dealHand } from '../store/modules/cards';
 import { ActionThunkCreator, ActionCreator } from '../store/types';
 import Card from '../components/Card';
+import { CardId, Deck } from '../store/modules/cards/types';
 
 const buttonClasses = ({ text = 'white', bg = 'blue' } = {}) =>
   `bg-${bg} text-${text} p-2 m-0 sm:mr-2 w-full sm:w-auto`;
@@ -14,6 +15,12 @@ type Props = {
   dealCards: ActionThunkCreator;
   dealHand: ActionCreator;
 };
+
+// TODO -- make a new component to handle the mapping and keep this clean (:
+const CardGroup: React.SFC<{ cardIds: CardId[]; deck: Deck }> = ({
+  cardIds,
+  deck,
+}) => cardIds.map(id => <Card key={id} {...deck[id]} />);
 
 const IndexPage: React.SFC<Props> = (props: Props) => (
   <div className="p-4">
@@ -32,10 +39,28 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
         log state.cards
       </button>
     </div>
-    <div style={{ '--gt-columns': '1fr 1fr 1fr' }} className="grid gt-columns">
-      {Object.entries(props.cards.deck).map(([key, card]) => (
-        <Card key={key} {...card} />
+
+    <h2>tableau</h2>
+    <div
+      style={{
+        '--grid-template-columns': 'repeat(7, 1fr)',
+      }}
+      className="grid grid-template-columns grid-gap-1"
+    >
+      {Object.entries(props.cards.tableau).map(([row, cards]) => (
+        <div
+          style={{
+            '--grid-template-columns': '1fr',
+            gridAutoRows: '75px',
+          }}
+          className="grid grid-template-columns grid-gap-1"
+        >
+          <CardGroup key={row} cardIds={cards} deck={props.cards.deck} />
+        </div>
       ))}
+      {/* {Object.entries(props.cards.deck).map(([key, card]) => (
+        <Card key={key} {...card} />
+      ))} */}
     </div>
   </div>
 );

@@ -10,14 +10,13 @@ const getCardStyles: GetCardStyles = props =>
   (props.visible ? 'bg-white border-blue' : 'bg-blue border-transparent');
 
 const Card: React.SFC<Props> = props => (
-  <button className={cx(getCardStyles(props), 'border-solid', 'border', 'h-24')}>
+  <button className={cx(getCardStyles(props), 'border-solid', 'border')}>
     {props.visible ? (
       <span>
-        <span>{props.suit}</span>
-        <span>{props.rank}</span>
+        <span>{props.suit[0]}&ndash;{props.rank}</span>
       </span>
     ) : (
-      <span>hidden</span>
+      <span />
     )}
   </button>
 );
