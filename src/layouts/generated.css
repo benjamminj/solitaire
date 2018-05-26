@@ -4561,6 +4561,10 @@ button,
   grid-column: var(--grid-column, auto);
 }
 
+.grid-row {
+  grid-row: var(--grid-row, auto);
+}
+
 .grid-gap-1 {
   grid-gap: .25rem;
 }
@@ -4575,6 +4579,12 @@ button,
 
 .grid-gap-4 {
   grid-gap: 1rem;
+}
+
+/* Positioning */
+
+.right-neg-1\/4 {
+  right: -25%;
 }
 
 @media (min-width: 576px) {
@@ -8489,6 +8499,10 @@ button,
     grid-column: var(--grid-column, auto);
   }
 
+  .sm\:grid-row {
+    grid-row: var(--grid-row, auto);
+  }
+
   .sm\:grid-gap-1 {
     grid-gap: .25rem;
   }
@@ -8503,6 +8517,10 @@ button,
 
   .sm\:grid-gap-4 {
     grid-gap: 1rem;
+  }/* Positioning */
+
+  .sm\:right-neg-1\/4 {
+    right: -25%;
   }
 }
 
@@ -12418,6 +12436,10 @@ button,
     grid-column: var(--grid-column, auto);
   }
 
+  .md\:grid-row {
+    grid-row: var(--grid-row, auto);
+  }
+
   .md\:grid-gap-1 {
     grid-gap: .25rem;
   }
@@ -12432,6 +12454,10 @@ button,
 
   .md\:grid-gap-4 {
     grid-gap: 1rem;
+  }/* Positioning */
+
+  .md\:right-neg-1\/4 {
+    right: -25%;
   }
 }
 
@@ -16347,6 +16373,10 @@ button,
     grid-column: var(--grid-column, auto);
   }
 
+  .lg\:grid-row {
+    grid-row: var(--grid-row, auto);
+  }
+
   .lg\:grid-gap-1 {
     grid-gap: .25rem;
   }
@@ -16361,6 +16391,10 @@ button,
 
   .lg\:grid-gap-4 {
     grid-gap: 1rem;
+  }/* Positioning */
+
+  .lg\:right-neg-1\/4 {
+    right: -25%;
   }
 }
 
@@ -20276,6 +20310,10 @@ button,
     grid-column: var(--grid-column, auto);
   }
 
+  .xl\:grid-row {
+    grid-row: var(--grid-row, auto);
+  }
+
   .xl\:grid-gap-1 {
     grid-gap: .25rem;
   }
@@ -20290,5 +20328,9 @@ button,
 
   .xl\:grid-gap-4 {
     grid-gap: 1rem;
+  }/* Positioning */
+
+  .xl\:right-neg-1\/4 {
+    right: -25%;
   }
 }

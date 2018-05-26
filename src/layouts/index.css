@@ -25,6 +25,10 @@
     grid-column: var(--grid-column, auto);
   }
 
+  .grid-row {
+    grid-row: var(--grid-row, auto);
+  }
+
   .grid-gap-1 {
     grid-gap: 0.25rem;
   }
@@ -39,6 +43,11 @@
 
   .grid-gap-4 {
     grid-gap: 1rem;
+  }
+
+  /* Positioning */
+  .right-neg-1\/4 {
+    right: -25%;
   }
 }
 

@@ -3,6 +3,7 @@ import { Suit, CardRank } from '../store/modules/cards/types';
 import * as cx from 'classnames';
 
 type Props = {
+  disabled?: boolean,
   className?: string;
   style?: { [key: string]: string };
   visible: boolean;
@@ -17,6 +18,7 @@ const getCardStyles: GetCardStyles = props =>
 
 const Card: React.SFC<Props> = props => (
   <button
+    disabled={props.disabled}
     style={props.style}
     className={cx(
       getCardStyles(props),
