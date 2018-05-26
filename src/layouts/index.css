@@ -12,8 +12,21 @@
     display: grid;
   }
 
+  /* grid-auto-rows */
+  .grid-auto-rows-24 {
+    grid-auto-rows: 6rem;
+  }
+
   .grid-template-columns {
     grid-template-columns: var(--grid-template-columns, auto);
+  }
+
+  .grid-column {
+    grid-column: var(--grid-column, auto);
+  }
+
+  .grid-row {
+    grid-row: var(--grid-row, auto);
   }
 
   .grid-gap-1 {
@@ -30,6 +43,11 @@
 
   .grid-gap-4 {
     grid-gap: 1rem;
+  }
+
+  /* Positioning */
+  .right-neg-1\/4 {
+    right: -25%;
   }
 }
 
