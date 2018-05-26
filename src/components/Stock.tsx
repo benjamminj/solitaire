@@ -5,21 +5,20 @@ import EmptyCard from './EmptyCard';
 import { last } from 'lodash';
 
 type Props = {
+  className?: string;
+  style?: { [key: string]: string };
   deck: Deck;
   stock: Stock;
 };
 
 const StockComponent = (props: Props) => (
-  <React.Fragment>
-    <h2>stock</h2>
-    <div>
-      {props.stock.length ? (
-        <Card {...props.deck[last(props.stock)]} className="h-12 w-12" />
-      ) : (
-        <EmptyCard />
-      )}
-    </div>
-  </React.Fragment>
+  <div className={props.className} style={props.style}>
+    {props.stock.length ? (
+      <Card {...props.deck[last(props.stock)]} className="h-full w-full" />
+    ) : (
+      <EmptyCard />
+    )}
+  </div>
 );
 
 export default StockComponent;

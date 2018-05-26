@@ -4547,8 +4547,18 @@ button,
   display: grid;
 }
 
+/* grid-auto-rows */
+
+.grid-auto-rows-24 {
+  grid-auto-rows: 6rem;
+}
+
 .grid-template-columns {
   grid-template-columns: var(--grid-template-columns, auto);
+}
+
+.grid-column {
+  grid-column: var(--grid-column, auto);
 }
 
 .grid-gap-1 {
@@ -8465,10 +8475,18 @@ button,
 
   .sm\:grid {
     display: grid;
+  }/* grid-auto-rows */
+
+  .sm\:grid-auto-rows-24 {
+    grid-auto-rows: 6rem;
   }
 
   .sm\:grid-template-columns {
     grid-template-columns: var(--grid-template-columns, auto);
+  }
+
+  .sm\:grid-column {
+    grid-column: var(--grid-column, auto);
   }
 
   .sm\:grid-gap-1 {
@@ -12386,10 +12404,18 @@ button,
 
   .md\:grid {
     display: grid;
+  }/* grid-auto-rows */
+
+  .md\:grid-auto-rows-24 {
+    grid-auto-rows: 6rem;
   }
 
   .md\:grid-template-columns {
     grid-template-columns: var(--grid-template-columns, auto);
+  }
+
+  .md\:grid-column {
+    grid-column: var(--grid-column, auto);
   }
 
   .md\:grid-gap-1 {
@@ -16307,10 +16333,18 @@ button,
 
   .lg\:grid {
     display: grid;
+  }/* grid-auto-rows */
+
+  .lg\:grid-auto-rows-24 {
+    grid-auto-rows: 6rem;
   }
 
   .lg\:grid-template-columns {
     grid-template-columns: var(--grid-template-columns, auto);
+  }
+
+  .lg\:grid-column {
+    grid-column: var(--grid-column, auto);
   }
 
   .lg\:grid-gap-1 {
@@ -20228,10 +20262,18 @@ button,
 
   .xl\:grid {
     display: grid;
+  }/* grid-auto-rows */
+
+  .xl\:grid-auto-rows-24 {
+    grid-auto-rows: 6rem;
   }
 
   .xl\:grid-template-columns {
     grid-template-columns: var(--grid-template-columns, auto);
+  }
+
+  .xl\:grid-column {
+    grid-column: var(--grid-column, auto);
   }
 
   .xl\:grid-gap-1 {

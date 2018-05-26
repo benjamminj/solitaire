@@ -4,6 +4,7 @@ import * as cx from 'classnames';
 
 type Props = {
   className?: string;
+  style?: { [key: string]: string };
   visible: boolean;
   suit: Suit;
   rank: CardRank;
@@ -16,6 +17,7 @@ const getCardStyles: GetCardStyles = props =>
 
 const Card: React.SFC<Props> = props => (
   <button
+    style={props.style}
     className={cx(
       getCardStyles(props),
       'border-solid',

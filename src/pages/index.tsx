@@ -11,6 +11,7 @@ import Foundation from '../components/Foundation';
 import Stock from '../components/Stock';
 import CardGroup from '../components/CardGroup';
 import Hand from '../components/Hand';
+import TableauComponent from '../components/Tableau';
 
 const buttonClasses = ({ text = 'white', bg = 'blue' } = {}) =>
   `bg-${bg} text-${text} p-2 m-0 sm:mr-2 w-full sm:w-auto`;
@@ -35,7 +36,7 @@ const EmptyCard: React.SFC<{}> = () => (
 );
 
 const IndexPage: React.SFC<Props> = (props: Props) => (
-  <div className="p-4">
+  <div className="p-4 max-w-lg mx-auto">
     now for solitaire!
     <div className="my-2 flex">
       <button className={buttonClasses()} onClick={props.dealCards}>
@@ -57,42 +58,20 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
         log cards
       </button>
     </div>
-    <div>
-      <Foundation foundation={props.cards.foundation} deck={props.cards.deck} />
-    </div>
     <div
-      className="grid grid-template-columns"
-      style={{ '--grid-template-columns': '1fr 1fr' }}
+      className="grid grid-template-columns grid-gap-1"
+      style={{ '--grid-template-columns': 'repeat(7, 1fr)' }}
     >
-      <div>
-        <Stock deck={props.cards.deck} stock={props.cards.stock} />
-      </div>
-      <div>
-        <Hand hand={props.cards.hand} deck={props.cards.deck}/>
-      </div>
+      <Foundation
+        className="grid-column"
+        style={{ '--grid-column': '1 / 5' }}
+        foundation={props.cards.foundation}
+        deck={props.cards.deck}
+      />
+      <Hand hand={props.cards.hand} deck={props.cards.deck} className="grid-column" style={{ '--grid-column': '5 / 7'}} />
+      <Stock deck={props.cards.deck} stock={props.cards.stock} />
     </div>
-    <div>
-      <h2>tableau</h2>
-      <div
-        style={{
-          '--grid-template-columns': 'repeat(7, 1fr)',
-        }}
-        className="grid grid-template-columns grid-gap-1"
-      >
-        {Object.entries(props.cards.tableau).map(([row, cards]) => (
-          <div
-            key={row}
-            style={{
-              '--grid-template-columns': '1fr',
-              gridAutoRows: '75px',
-            }}
-            className="grid grid-template-columns grid-gap-1"
-          >
-            <CardGroup key={row} cardIds={cards} deck={props.cards.deck} />
-          </div>
-        ))}
-      </div>
-    </div>
+      <TableauComponent className="mt-6" deck={props.cards.deck} tableau={props.cards.tableau} />
   </div>
 );
 
