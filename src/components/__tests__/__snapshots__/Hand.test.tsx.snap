@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hand should render 1`] = `
+<div
+  className="grid grid-template-columns h-24"
+  style={
+    Object {
+      "--grid-template-columns": "1fr 1fr",
+    }
+  }
+>
+  <Card
+    className="grid-column grid-row relative z-10"
+    disabled={true}
+    id="diamonds-4"
+    rank="4"
+    style={
+      Object {
+        "--grid-column": "1",
+        "--grid-row": "1",
+      }
+    }
+    suit="diamonds"
+    value={4}
+    visible={false}
+  />
+  <Card
+    className="grid-column grid-row relative right-neg-1/4 z-20"
+    disabled={true}
+    id="hearts-9"
+    rank="9"
+    style={
+      Object {
+        "--grid-column": "1",
+        "--grid-row": "1",
+      }
+    }
+    suit="hearts"
+    value={9}
+    visible={false}
+  />
+  <Card
+    className="grid-column grid-row relative z-30"
+    disabled={false}
+    id="clubs-K"
+    rank="K"
+    style={
+      Object {
+        "--grid-column": "2",
+        "--grid-row": "1",
+      }
+    }
+    suit="clubs"
+    value={13}
+    visible={false}
+  />
+</div>
+`;
+
+exports[`Hand should render nothing if there is no length to the hand 1`] = `
+<div
+  className="grid grid-template-columns h-24"
+  style={
+    Object {
+      "--grid-template-columns": "1fr 1fr",
+    }
+  }
+/>
+`;

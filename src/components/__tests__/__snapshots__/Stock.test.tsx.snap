@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Stock should render 1`] = `
+<UNDEFINED>
+  <Card
+    className="h-full w-full"
+    id="hearts-A"
+    rank="A"
+    suit="hearts"
+    value={1}
+    visible={false}
+  />
+</UNDEFINED>
+`;
