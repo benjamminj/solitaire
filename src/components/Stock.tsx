@@ -12,13 +12,13 @@ type Props = {
 };
 
 const StockComponent = (props: Props) => (
-  <div className={props.className} style={props.style}>
+  <React.Fragment>
     {props.stock.length ? (
       <Card {...props.deck[last(props.stock)]} className="h-full w-full" />
     ) : (
       <EmptyCard />
     )}
-  </div>
+  </React.Fragment>
 );
 
 export default StockComponent;
