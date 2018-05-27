@@ -42,7 +42,7 @@ describe('Stock', () => {
 
   test('should trigger onClickEmpty if empty card is clicked', () => {
     const onClickEmpty = jest.fn();
-    
+
     const { getByTestId } = renderIntoDocument(
       <Stock deck={initialState.deck} stock={[]} onClickEmpty={onClickEmpty} />
     );

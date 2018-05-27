@@ -21,7 +21,12 @@ const Foundation = (props: Props) => (
       'grid-gap-1',
       'grid-auto-rows-24'
     )}
-    style={{ ...props.style, '--grid-template-columns': 'repeat(4, 1fr)' }}
+    style={
+      {
+        ...props.style,
+        '--grid-template-columns': 'repeat(4, 1fr)',
+      } as React.CSSProperties
+    }
   >
     {Object.entries(props.foundation).map(
       ([name, row], i) =>

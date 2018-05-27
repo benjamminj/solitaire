@@ -30,15 +30,6 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
       <button className={buttonClasses()} onClick={props.dealCards}>
         deal cards
       </button>
-      <button className={buttonClasses({ bg: 'red' })} onClick={props.dealHand}>
-        deal hand
-      </button>
-      <button
-        className={buttonClasses({ bg: 'purple' })}
-        onClick={props.recycleHand}
-      >
-        recycle hand
-      </button>
       <button
         className={buttonClasses({ bg: 'green' })}
         onClick={() => console.log(props.cards)}
@@ -67,8 +58,8 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
       <Stock
         deck={props.cards.deck}
         stock={props.cards.stock}
-        onClickCard={() => console.log('card')}
-        onClickEmpty={() => console.log('empty')}
+        onClickCard={props.dealHand}
+        onClickEmpty={props.recycleHand}
       />
     </div>
     <TableauComponent
