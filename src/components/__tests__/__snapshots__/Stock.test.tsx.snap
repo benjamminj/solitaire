@@ -5,6 +5,7 @@ exports[`Stock should render 1`] = `
   <Card
     className="h-full w-full"
     id="hearts-A"
+    onClick={undefined}
     rank="A"
     suit="hearts"
     value={1}

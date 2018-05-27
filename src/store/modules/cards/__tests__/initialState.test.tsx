@@ -70,16 +70,18 @@ describe('getInitialDeck', () => {
   test('should contain all 4 suits', () => {
     const result = getInitialDeck();
     const keys = Object.keys(result);
-    expect(keys.every(key => /^(hearts-|clubs-|diamonds-|spades-)/.test(key))).toEqual(true);
+    expect(
+      keys.every(key => /^(hearts-|clubs-|diamonds-|spades-)/.test(key))
+    ).toEqual(true);
   });
 
   test('should have key values that are type of Card', () => {
     const result = getInitialDeck();
-    const values = Object.values(result)
+    const values = Object.values(result);
 
     values.forEach(val => {
       const keys = Object.keys(val);
-      expect(keys.sort()).toEqual(['id', 'rank', 'suit', 'value', 'visible'])
-    })
+      expect(keys.sort()).toEqual(['id', 'rank', 'suit', 'value', 'visible']);
+    });
   });
 });

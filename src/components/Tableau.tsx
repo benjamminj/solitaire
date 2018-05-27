@@ -4,16 +4,18 @@ import CardGroup from './CardGroup';
 import { Deck, Tableau } from '../store/modules/cards/types';
 
 type Props = {
-  className?: string,
-  tableau: Tableau,
-  deck: Deck,
-}
+  className?: string;
+  tableau: Tableau;
+  deck: Deck;
+};
 
 const TableauComponent: React.SFC<Props> = ({ className, deck, tableau }) => (
   <div
-    style={{
-      '--grid-template-columns': 'repeat(7, 1fr)',
-    }}
+    style={
+      {
+        '--grid-template-columns': 'repeat(7, 1fr)',
+      } as React.CSSProperties
+    }
     className={cx(className, 'grid', 'grid-template-columns', 'grid-gap-1')}
   >
     {Object.entries(tableau).map(([row, cards]) => (
@@ -29,4 +31,4 @@ const TableauComponent: React.SFC<Props> = ({ className, deck, tableau }) => (
   </div>
 );
 
-export default TableauComponent
+export default TableauComponent;

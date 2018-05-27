@@ -19,16 +19,18 @@ const Foundation = (props: Props) => (
       'grid',
       'grid-template-columns',
       'grid-gap-1',
-      'grid-auto-rows-24',
+      'grid-auto-rows-24'
     )}
     style={{ ...props.style, '--grid-template-columns': 'repeat(4, 1fr)' }}
   >
-    {Object.entries(props.foundation).map(([name, row], i) =>
-        (row.length ? (
+    {Object.entries(props.foundation).map(
+      ([name, row], i) =>
+        row.length ? (
           <Card key={i} {...props.deck[last(row)]} />
         ) : (
           <EmptyCard key={i} />
-        )))}
+        )
+    )}
   </div>
 );
 

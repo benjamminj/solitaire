@@ -9,9 +9,7 @@ type Props = {
   deck: Deck;
 };
 
-const CardGroup: React.SFC<Props> = ({
-  className, cardIds, deck, style,
-}) => (
+const CardGroup: React.SFC<Props> = ({ className, cardIds, deck, style }) => (
   <React.Fragment>
     {cardIds.map((id: CardId) => (
       <Card className={className} style={style} key={id} {...deck[id]} />

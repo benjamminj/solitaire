@@ -8,10 +8,12 @@ const renderer = createRenderer();
 
 describe('Hand', () => {
   test('should render', () => {
-    const tree = renderer.render(<Hand
-      hand={['spades-2', 'diamonds-4', 'hearts-9', 'clubs-K']}
-      deck={initialState.deck}
-    />);
+    const tree = renderer.render(
+      <Hand
+        hand={['spades-2', 'diamonds-4', 'hearts-9', 'clubs-K']}
+        deck={initialState.deck}
+      />
+    );
 
     expect(tree).toMatchSnapshot();
   });
