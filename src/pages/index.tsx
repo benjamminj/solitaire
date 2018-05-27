@@ -23,33 +23,12 @@ type Props = {
   recycleHand: ActionCreator;
 };
 
-// TODO -- make a new component to handle the mapping and keep this clean (:
-// const CardGroup: React.SFC<{
-// className?: string;
-// cardIds: CardId[];
-// deck: Deck;
-// }> = ({ className, cardIds, deck }) =>
-//   cardIds.map(id => <Card className={className} key={id} {...deck[id]} />);
-
-const EmptyCard: React.SFC<{}> = () => (
-  <div className="border border-blue h-10 w-10" />
-);
-
 const IndexPage: React.SFC<Props> = (props: Props) => (
   <div className="p-4 max-w-lg mx-auto">
     now for solitaire!
     <div className="my-2 flex">
       <button className={buttonClasses()} onClick={props.dealCards}>
         deal cards
-      </button>
-      <button className={buttonClasses({ bg: 'red' })} onClick={props.dealHand}>
-        deal hand
-      </button>
-      <button
-        className={buttonClasses({ bg: 'purple' })}
-        onClick={props.recycleHand}
-      >
-        recycle hand
       </button>
       <button
         className={buttonClasses({ bg: 'green' })}
@@ -60,7 +39,9 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
     </div>
     <div
       className="grid grid-template-columns grid-gap-1"
-      style={{ '--grid-template-columns': 'repeat(7, 1fr)' }}
+      style={
+        { '--grid-template-columns': 'repeat(7, 1fr)' } as React.CSSProperties
+      }
     >
       <Foundation
         className="grid-column"
@@ -68,10 +49,24 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
         foundation={props.cards.foundation}
         deck={props.cards.deck}
       />
-      <Hand hand={props.cards.hand} deck={props.cards.deck} className="grid-column" style={{ '--grid-column': '5 / 7'}} />
-      <Stock deck={props.cards.deck} stock={props.cards.stock} />
+      <Hand
+        hand={props.cards.hand}
+        deck={props.cards.deck}
+        className="grid-column"
+        style={{ '--grid-column': '5 / 7' }}
+      />
+      <Stock
+        deck={props.cards.deck}
+        stock={props.cards.stock}
+        onClickCard={props.dealHand}
+        onClickEmpty={props.recycleHand}
+      />
     </div>
-      <TableauComponent className="mt-6" deck={props.cards.deck} tableau={props.cards.tableau} />
+    <TableauComponent
+      className="mt-6"
+      deck={props.cards.deck}
+      tableau={props.cards.tableau}
+    />
   </div>
 );
 

@@ -9,14 +9,20 @@ type Props = {
   style?: { [key: string]: string };
   deck: Deck;
   stock: Stock;
+  onClickCard?: React.EventHandler<React.MouseEvent<any>>;
+  onClickEmpty?: React.EventHandler<React.MouseEvent<any>>;
 };
 
 const StockComponent = (props: Props) => (
   <React.Fragment>
     {props.stock.length ? (
-      <Card {...props.deck[last(props.stock)]} className="h-full w-full" />
+      <Card
+        {...props.deck[last(props.stock)]}
+        className="h-full w-full"
+        onClick={props.onClickCard}
+      />
     ) : (
-      <EmptyCard />
+      <EmptyCard onClick={props.onClickEmpty} />
     )}
   </React.Fragment>
 );

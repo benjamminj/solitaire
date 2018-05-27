@@ -87,7 +87,7 @@ describe('reducer', () => {
     test('should make cards in the hand visible', () => {
       const { deck, hand } = reducer(state, action);
 
-      hand.forEach((cardId) => {
+      hand.forEach(cardId => {
         expect(deck[cardId].visible).toEqual(true);
       });
     });
@@ -113,7 +113,7 @@ describe('reducer', () => {
 
     test('should make all cards in the stock not visible', () => {
       const { deck, stock } = reducer(state, action);
-      stock.forEach((cardId) => {
+      stock.forEach(cardId => {
         expect(deck[cardId].visible).toEqual(false);
       });
     });
@@ -294,7 +294,7 @@ describe('moveCardsToTableau', () => {
     const thunk = moveCardsToTableau(
       ['hearts-4', 'diamonds-3', 'spades-2'],
       'tableau.3',
-      'tableau.6',
+      'tableau.6'
     );
     const getState = () => state;
     const dispatch = () => {};
@@ -316,7 +316,7 @@ describe('moveCardsToTableau', () => {
     const thunk = moveCardsToTableau(
       ['hearts-4'],
       'foundation.hearts',
-      'tableau.5',
+      'tableau.5'
     );
     const getState = () => state;
     const dispatch = () => {};
