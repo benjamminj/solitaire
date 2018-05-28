@@ -3,6 +3,7 @@ import Link from 'gatsby-link';
 import { connect, DispatchProp } from 'react-redux';
 import { State } from '../store/reducer';
 import { dealCards, dealHand, recycleHand } from '../store/modules/cards';
+import { saveCurrentLocation } from '../store/modules/moves';
 import { ActionThunkCreator, ActionCreator } from '../store/types';
 import Card from '../components/Card';
 import { CardId, Deck } from '../store/modules/cards/types';
@@ -71,6 +72,11 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
 );
 
 const mapStateToProps = (state: State) => ({ cards: state.cards });
-const mapDispatchToProps = { dealCards, dealHand, recycleHand };
+const mapDispatchToProps = {
+  dealCards,
+  dealHand,
+  recycleHand,
+  saveCurrentLocation,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);

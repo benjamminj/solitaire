@@ -1,4 +1,4 @@
-import * as range from 'lodash/fp/range';
+import { range } from 'lodash/fp';
 import {
   Reducer,
   Action,
@@ -111,17 +111,17 @@ const reducer: Reducer<State> = (state = initialState, action) => {
     case MOVE_CARD_TO_FOUNDATION: {
       const { deck } = state;
       const { cardId, currentLocation, suit } = action.result;
-      
+
       // remove the card from its current location
-      const currentLocationCards = get(state, currentLocation, [])
-      const suitCards = get(state.foundation, suit, [])
+      const currentLocationCards = get(state, currentLocation, []);
+      const suitCards = get(state.foundation, suit, []);
 
       const nextState = cloneDeep(state);
-      set(nextState, `foundation[suit]`, suitCards.concat(cardId))
-      set(nextState, currentLocation, currentLocationCards.slice(0, -1))
+      set(nextState, 'foundation[suit]', suitCards.concat(cardId));
+      set(nextState, currentLocation, currentLocationCards.slice(0, -1));
 
-      const currentRowWithoutCards = get(nextState, currentLocation)
-      
+      const currentRowWithoutCards = get(nextState, currentLocation);
+
       return {
         ...nextState,
         deck: currentRowWithoutCards.length
@@ -130,7 +130,7 @@ const reducer: Reducer<State> = (state = initialState, action) => {
             deck,
           )
           : deck,
-      }
+      };
       // add the card to the suit
       // turn over the last card in the new current location
     }
@@ -201,14 +201,16 @@ export const moveCardToFoundation: MoveCardToFoundation = (
   const lastCardInFoundationRow = get(deck, last(foundationRow), { value: 0 });
   const isNextRank = card.value - 1 === lastCardInFoundationRow.value;
 
-  return isNextRank && isSameSuit ? {
-    type: MOVE_CARD_TO_FOUNDATION,
-    cardId,
-    currentLocation,
-    suit,
-  } : {
-    type: MOVE_CARD_TO_FOUNDATION_INVALID
-  }
+  return isNextRank && isSameSuit
+    ? {
+      type: MOVE_CARD_TO_FOUNDATION,
+      cardId,
+      currentLocation,
+      suit,
+    }
+    : {
+      type: MOVE_CARD_TO_FOUNDATION_INVALID,
+    };
 };
 
 // Selectors
