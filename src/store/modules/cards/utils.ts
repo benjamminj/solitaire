@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash/fp';
+import { last } from 'lodash';
 import {
   Card,
   Deck,
@@ -7,6 +8,8 @@ import {
   CardId,
   CardRefArray,
   Suit,
+  Foundation,
+  FoundationRowLocation,
 } from './types';
 
 export const shuffleArray = (originalArray: any[]) => {
@@ -74,6 +77,7 @@ export const turnCards: TurnCards = (cardIds, originalDeck, visible = true) => {
   return deck;
 };
 
+// TODO - rename to validateTableauMove?
 export type validateCardBase = (card: Card, baseCard?: Card) => boolean;
 export const validateCardBase: validateCardBase = (card, baseCard) => {
   if (baseCard) {
@@ -98,3 +102,21 @@ export const validateCardBase: validateCardBase = (card, baseCard) => {
 
   return false;
 };
+
+type ValidateFoundationMove = (
+  args: {
+  destination: FoundationRowLocation;
+  foundationCards: CardId[];
+  card: Card;
+  deck: Deck;
+  }
+) => boolean;
+export const validateFoundationMove: ValidateFoundationMove = ({
+  destination,
+  card,
+  deck,
+  foundationCards,
+}) =>
+  (destination.includes(card.suit) && foundationCards.length
+    ? deck[last(foundationCards)].value === card.value - 1
+    : card.rank === 'A');

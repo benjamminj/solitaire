@@ -218,6 +218,7 @@ export const getDealt = (state: State) => get(state, 'cards.dealt');
 export const getDeck = (state: State) => get(state, 'cards.deck');
 export const getTableau = (state: State) => get(state, 'cards.tableau');
 export const getStock = (state: State) => get(state, 'cards.stock');
+export const getFoundation = (state: State) => get(state, 'cards.foundation');
 
 export type State = State;
 export default reducer;

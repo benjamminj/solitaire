@@ -7,12 +7,25 @@ type Props = {
   style?: { [key: string]: string };
   cardIds: CardId[];
   deck: Deck;
+  onClickCard?: (id: CardId) => void;
 };
 
-const CardGroup: React.SFC<Props> = ({ className, cardIds, deck, style }) => (
+const CardGroup: React.SFC<Props> = ({
+  className,
+  cardIds,
+  deck,
+  style,
+  onClickCard,
+}) => (
   <React.Fragment>
     {cardIds.map((id: CardId) => (
-      <Card className={className} style={style} key={id} {...deck[id]} />
+      <Card
+        onClick={() => (deck[id].visible ? onClickCard(id) : null)}
+        className={className}
+        style={style}
+        key={id}
+        {...deck[id]}
+      />
     ))}
   </React.Fragment>
 );

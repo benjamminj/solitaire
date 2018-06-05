@@ -3,7 +3,7 @@ import Link from 'gatsby-link';
 import { connect, DispatchProp } from 'react-redux';
 import { State } from '../store/reducer';
 import { dealCards, dealHand, recycleHand } from '../store/modules/cards';
-import { saveCurrentLocation } from '../store/modules/moves';
+import { saveCurrentLocation, applyNextLocation } from '../store/modules/moves';
 import { ActionThunkCreator, ActionCreator } from '../store/types';
 import Card from '../components/Card';
 import { CardId, Deck } from '../store/modules/cards/types';
@@ -19,9 +19,12 @@ const buttonClasses = ({ text = 'white', bg = 'blue' } = {}) =>
 
 type Props = {
   cards: State['cards'];
+  moves: State['moves'];
   dealCards: ActionThunkCreator;
   dealHand: ActionCreator;
   recycleHand: ActionCreator;
+  saveCurrentLocation: ActionCreator;
+  applyNextLocation: ActionCreator;
 };
 
 const IndexPage: React.SFC<Props> = (props: Props) => (
@@ -67,16 +70,29 @@ const IndexPage: React.SFC<Props> = (props: Props) => (
       className="mt-6"
       deck={props.cards.deck}
       tableau={props.cards.tableau}
+      onClickCard={(card, location) => {
+        // TODO -- figure out typing
+        if (props.moves.nextMove.currentLocation) {
+          props.applyNextLocation(locationw);
+        } else {
+          props.saveCurrentLocation([card], location);
+        }
+      }}
     />
   </div>
 );
 
-const mapStateToProps = (state: State) => ({ cards: state.cards });
+const mapStateToProps = (state: State) => ({
+  cards: state.cards,
+  moves: state.moves,
+});
+
 const mapDispatchToProps = {
   dealCards,
   dealHand,
   recycleHand,
   saveCurrentLocation,
+  applyNextLocation,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(IndexPage);
