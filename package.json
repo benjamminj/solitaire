@@ -1,60 +1,18 @@
 {
-  "name": "gatsby-starter-default",
-  "description": "Gatsby default starter",
-  "version": "1.0.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
-  "dependencies": {
-    "@types/lodash": "^4.14.106",
-    "@types/react-redux": "^5.0.16",
-    "autoprefixer": "^8.1.0",
-    "babel-jest": "^22.4.3",
-    "classnames": "^2.2.5",
-    "gatsby": "^1.9.236",
-    "gatsby-link": "^1.6.39",
-    "gatsby-plugin-react-helmet": "^2.0.8",
-    "gatsby-plugin-react-next": "^1.0.11",
-    "lodash": "^4.17.5",
-    "postcss-cli": "^5.0.0",
-    "postcss-cssnext": "^3.1.0",
-    "postcss-custom-properties": "^7.0.0",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "react-helmet": "^5.2.0",
-    "react-redux": "^5.0.7",
-    "redux": "^3.7.2",
-    "tailwindcss": "^0.5.1",
-    "typescript-eslint-parser": "^14.0.0"
-  },
-  "keywords": [
-    "gatsby"
-  ],
+  "name": "solitaire",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github-PERSONAL:benjaminj6/solitaire.git",
+  "author": "Benjamin Johnson <benjamin.d.johnson@icloud.com>",
   "license": "MIT",
-  "scripts": {
-    "build:css": "postcss src/layouts/index.css -o src/layouts/generated.css",
-    "watch:css": "postcss src/layouts/index.css -o src/layouts/generated.css -w",
-    "build": "npm run build:css && gatsby build",
-    "dev": "npm run watch:css & gatsby develop",
-    "format": "prettier --write 'src/**/*.js' 'src/**/*.tsx' 'src/**/*/ts'",
-    "test": "jest"
+  "dependencies": {
+    "parcel-bundler": "^1.9.7",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "reason-react": "^0.5.3"
   },
   "devDependencies": {
-    "@types/classnames": "^2.2.3",
-    "@types/jest": "^22.2.3",
-    "@types/react": "^16.0.40",
-    "@types/react-test-renderer": "^16.0.1",
-    "dom-testing-library": "^2.3.2",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
-    "gatsby-plugin-typescript": "^1.4.18",
-    "jest": "^22.4.3",
-    "prettier": "^1.11.1",
-    "react-test-renderer": "^16.4.0",
-    "react-test-utils": "0.0.1",
-    "react-testing-library": "^3.1.3",
-    "ts-jest": "^22.4.2",
-    "typescript": "^2.7.2"
+    "bs-platform": "^4.0.5",
+    "bsb-js": "^1.1.7"
   }
 }
