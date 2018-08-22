@@ -1,3 +1,6 @@
+# IDE
+.vscode/
+
 # dependencies
 node_modules/
 
@@ -6,3 +9,4 @@ lib/
 **/*.bs.js
 dist/
 .cache/
+.bsb.lock
