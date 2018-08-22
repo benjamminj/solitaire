@@ -5,6 +5,11 @@
   "repository": "git@github-PERSONAL:benjaminj6/solitaire.git",
   "author": "Benjamin Johnson <benjamin.d.johnson@icloud.com>",
   "license": "MIT",
+  "scripts": {
+    "dev:bs": "bsb -make-world -w",
+    "dev:app": "parcel index.html",
+    "dev": "concurrently --kill-others \"npm:dev:bs\" \"npm:dev:app\""
+  },
   "dependencies": {
     "parcel-bundler": "^1.9.7",
     "react": "^16.4.2",
@@ -13,6 +18,7 @@
   },
   "devDependencies": {
     "bs-platform": "^4.0.5",
-    "bsb-js": "^1.1.7"
+    "bsb-js": "^1.1.7",
+    "concurrently": "^3.6.1"
   }
 }
