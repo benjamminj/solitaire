@@ -6,3 +6,11 @@ type suit =
   | Diamonds
   | Clubs
   | Spades;
+
+type card = {
+  id: int,
+  suit: suit,
+  rank: int,
+};
+
+type cardList = list(card);

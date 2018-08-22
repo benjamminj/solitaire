@@ -1,10 +1,6 @@
-type card = {
-  id: int,
-  suit: Types.suit,
-  rank: int,
-};
+/* type cardList = list(card); */
+open Types;
 
-type cardList = list(card);
 type location = {
   foundation: array(cardList),
   tableau: array(cardList),
@@ -27,12 +23,12 @@ let component = ReasonReact.reducerComponent("Game");
 
 /* Utilities */
 let generateDeck = (): list(card) => {
-  let generateSuit = (idPrefix, suit: Types.suit): list(card) => {
+  let generateSuit = (idPrefix, suit: suit): list(card) => {
     let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     List.map(rank => {id: idPrefix * 100 + rank, suit, rank}, ranks);
   };
 
-  let suits = Types.[Hearts, Diamonds, Clubs, Spades];
+  let suits = [Hearts, Diamonds, Clubs, Spades];
   /* let suitCards = list_of_array(Array.mapi(generateSuit, suits)); */
   suits |> List.mapi(generateSuit) |> List.flatten;
 };
@@ -122,37 +118,31 @@ let make = _children => {
           {ReasonReact.string("deal")}
         </button>
       </div>
+      /* Foundation placeholder */
+      <div style={ReactDOMRe.Style.make(~display="flex", ())}>
+        {
+          let rowStyle = ReactDOMRe.Style.make(~padding="0 0.25rem", ());
+
+          <>
+            <pre style=rowStyle> {ReasonReact.string("foundation")} </pre>
+            <pre style=rowStyle> {ReasonReact.string("hand")} </pre>
+            <pre style=rowStyle>
+              {
+                let {stock} = self.state.location;
+
+                switch (List.hd(stock)) {
+                | card =>
+                  <Card id={card.id} rank={card.rank} suit={card.suit} />
+                | exception _err => ReasonReact.null
+                };
+              }
+            </pre>
+          </>;
+        }
+      </div>
       /* Tableau component */
       <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
-        ...{
-             self.state.location.tableau
-             |> Array.mapi((i, cardList) =>
-                  <div
-                    key={"row" ++ string_of_int(i)}
-                    style={
-                      ReactDOMRe.Style.make(
-                        ~display="flex",
-                        ~flexDirection="column",
-                        ~padding="0.25rem",
-                        (),
-                      )
-                    }>
-                    {
-                      cardList
-                      |> List.map(card =>
-                           <Card
-                             key={card.id |> string_of_int}
-                             id={card.id}
-                             rank={card.rank}
-                             suit={card.suit}
-                           />
-                         )
-                      |> Array.of_list
-                      |> ReasonReact.array
-                    }
-                  </div>
-                )
-           }
+        <CardStack cards={self.state.location.tableau} />
       </pre>
     </>,
 };

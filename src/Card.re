@@ -5,7 +5,7 @@ let make = (~id: int, ~rank: int, ~suit: Types.suit, _children) => {
   render: _self =>
     <div key={string_of_int(id)}>
       <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
-        {ReasonReact.string(string_of_int(rank))}
+        {rank |> string_of_int |> ReasonReact.string}
       </span>
       <span>
         {
