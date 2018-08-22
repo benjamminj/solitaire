@@ -1,12 +1,6 @@
-type suit =
-  | Hearts
-  | Diamonds
-  | Clubs
-  | Spades;
-
 type card = {
   id: int,
-  suit,
+  suit: Types.suit,
   rank: int,
 };
 
@@ -33,12 +27,12 @@ let component = ReasonReact.reducerComponent("Game");
 
 /* Utilities */
 let generateDeck = (): list(card) => {
-  let generateSuit = (idPrefix, suit: suit): list(card) => {
+  let generateSuit = (idPrefix, suit: Types.suit): list(card) => {
     let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-    List.map(rank => {id: idPrefix + rank, suit, rank}, ranks);
+    List.map(rank => {id: idPrefix * 100 + rank, suit, rank}, ranks);
   };
 
-  let suits = [Hearts, Diamonds, Clubs, Spades];
+  let suits = Types.[Hearts, Diamonds, Clubs, Spades];
   /* let suitCards = list_of_array(Array.mapi(generateSuit, suits)); */
   suits |> List.mapi(generateSuit) |> List.flatten;
 };
@@ -132,8 +126,9 @@ let make = _children => {
       <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
         ...{
              self.state.location.tableau
-             |> Array.map(cardList =>
+             |> Array.mapi((i, cardList) =>
                   <div
+                    key={"row" ++ string_of_int(i)}
                     style={
                       ReactDOMRe.Style.make(
                         ~display="flex",
@@ -142,40 +137,19 @@ let make = _children => {
                         (),
                       )
                     }>
-                    ...{
-                         cardList
-                         |> List.map(card =>
-                              <div>
-                                <span
-                                  style={
-                                    ReactDOMRe.Style.make(
-                                      ~marginRight="0.25rem",
-                                      (),
-                                    )
-                                  }>
-                                  {
-                                    ReasonReact.string(
-                                      string_of_int(card.rank),
-                                    )
-                                  }
-                                </span>
-                                <span>
-                                  {
-                                    (
-                                      switch (card.suit) {
-                                      | Hearts => "hearts"
-                                      | Diamonds => "diamonds"
-                                      | Clubs => "clubs"
-                                      | Spades => "spades"
-                                      }
-                                    )
-                                    |> ReasonReact.string
-                                  }
-                                </span>
-                              </div>
-                            )
-                         |> Array.of_list
-                       }
+                    {
+                      cardList
+                      |> List.map(card =>
+                           <Card
+                             key={card.id |> string_of_int}
+                             id={card.id}
+                             rank={card.rank}
+                             suit={card.suit}
+                           />
+                         )
+                      |> Array.of_list
+                      |> ReasonReact.array
+                    }
                   </div>
                 )
            }
