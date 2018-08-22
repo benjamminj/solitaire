@@ -8,16 +8,12 @@ type location = {
   hand: cardList,
 };
 
-type state = {
-  cards: cardList,
-  location,
-};
+type state = {location};
 
 type action =
   | MoveCard
-  | Shuffle
-  | DealCards
-  | GenerateList;
+  | DealHand
+  | Init;
 
 let component = ReasonReact.reducerComponent("Game");
 
@@ -50,10 +46,45 @@ let shuffleDeck = (deck: list(card)): list(card) => {
   Array.to_list(arr);
 };
 
+let dealCards = cards => {
+  let (cardsToDeal, stock) =
+    Array.(
+      cards
+      |> of_list
+      |> (arr => (sub(arr, 0, 28), sub(arr, 28, length(arr) - 28)))
+    );
+
+  /**
+       * Go thru the array of cards to deal & assign the number of cards per row equal to the row number
+       * Perhaps for now don't do a "true" deal, where each row recieves 1 card at a time until the 7th is filled.
+       */
+  let tableau: array(cardList) =
+    cardsToDeal
+    /* |> Array.to_list */
+    |> (
+      arr => {
+        let start = ref(0);
+
+        Array.init(
+          7,
+          i => {
+            let amt = i + 1;
+            let nextStart = start^ + amt;
+            let items = Array.sub(arr, start^, amt);
+
+            start := nextStart;
+            items |> Array.to_list;
+          },
+        );
+      }
+    );
+
+  (tableau, Array.to_list(stock));
+};
+
 let make = _children => {
   ...component,
   initialState: () => {
-    cards: generateDeck(),
     location: {
       foundation: [||],
       tableau: [||],
@@ -63,59 +94,43 @@ let make = _children => {
   },
   reducer: (action, state) =>
     switch (action) {
-    | MoveCard => ReasonReact.Update({...state, cards: []})
-    | GenerateList => ReasonReact.Update({...state, cards: generateDeck()})
-    | Shuffle =>
-      ReasonReact.Update({...state, cards: shuffleDeck(state.cards)})
-    | DealCards =>
-      let {cards} = state;
-      let (cardsToDeal, stock) =
-        Array.(
-          cards
-          |> of_list
-          |> (arr => (sub(arr, 0, 28), sub(arr, 28, length(arr) - 28)))
-        );
+    | Init =>
+      let (tableau, stock) = generateDeck() |> shuffleDeck |> dealCards;
 
-      /**
-       * Go thru the array of cards to deal & assign the number of cards per row equal to the row number
-       * Perhaps for now don't do a "true" deal, where each row recieves 1 card at a time until the 7th is filled.
-       */
-      let tableau: array(cardList) =
-        cardsToDeal
-        /* |> Array.to_list */
-        |> (
-          arr => {
-            let start = ref(0);
+      ReasonReact.Update({
+        location: {
+          ...state.location,
+          tableau,
+          stock,
+        },
+      });
+    | DealHand =>
+      /* Go grab the first 3 from the list */
+      let {stock, hand} = state.location;
+      let (cardsToDeal, rest) =
+        switch (stock) {
+        | [] => ([], [])
+        | [a] => ([a], [])
+        | [a, b] => ([a, b], [])
+        | [a, b, c, ...rest] => ([a, b, c], rest)
+        };
 
-            Array.init(
-              7,
-              i => {
-                let amt = i + 1;
-                let nextStart = start^ + amt;
-                let items = Array.sub(arr, start^, amt);
-
-                start := nextStart;
-                items |> Array.to_list;
-              },
-            );
-          }
-        );
-      let location = {
-        ...state.location,
-        tableau,
-        stock: stock |> Array.to_list,
-      };
-
-      ReasonReact.Update({...state, location});
+      let nextHand = List.append(hand, cardsToDeal);
+      
+      ReasonReact.Update({
+        location: {
+          ...state.location,
+          hand: nextHand,
+          stock: rest,
+        },
+      });
+    | MoveCard => ReasonReact.Update(state)
     },
   render: self =>
     <>
       <div>
-        <button onClick={_ev => self.send(Shuffle)}>
-          {ReasonReact.string("shuffle")}
-        </button>
-        <button onClick={_ev => self.send(DealCards)}>
-          {ReasonReact.string("deal")}
+        <button onClick={_ev => self.send(Init)}>
+          {ReasonReact.string("init")}
         </button>
       </div>
       /* Foundation placeholder */
