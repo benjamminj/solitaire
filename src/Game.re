@@ -25,7 +25,7 @@ let generateDeck = (): list(card) => {
   };
 
   let suits = [Hearts, Diamonds, Clubs, Spades];
-  /* let suitCards = list_of_array(Array.mapi(generateSuit, suits)); */
+
   suits |> List.mapi(generateSuit) |> List.flatten;
 };
 
@@ -54,10 +54,10 @@ let dealCards = cards => {
       |> (arr => (sub(arr, 0, 28), sub(arr, 28, length(arr) - 28)))
     );
 
-  /**
-       * Go thru the array of cards to deal & assign the number of cards per row equal to the row number
-       * Perhaps for now don't do a "true" deal, where each row recieves 1 card at a time until the 7th is filled.
-       */
+  /*
+   * Go thru the array of cards to deal & assign the number of cards per row equal to the row number
+   * Perhaps for now don't do a "true" deal, where each row recieves 1 card at a time until the 7th is filled.
+   */
   let tableau: array(cardList) =
     cardsToDeal
     /* |> Array.to_list */
@@ -107,16 +107,15 @@ let make = _children => {
     | DealHand =>
       /* Go grab the first 3 from the list */
       let {stock, hand} = state.location;
-      let (cardsToDeal, rest) =
+      let (nextHand, rest) =
         switch (stock) {
-        | [] => ([], [])
-        | [a] => ([a], [])
-        | [a, b] => ([a, b], [])
-        | [a, b, c, ...rest] => ([a, b, c], rest)
+        /* NOTE -- move all of hand back into stock. Will need to add logic when limiting the number of deals */
+        | [] => ([], hand)
+        | [a] => ([a, ...hand], [])
+        | [a, b] => ([a, b, ...hand], [])
+        | [a, b, c, ...rest] => ([a, b, c, ...hand], rest)
         };
 
-      let nextHand = List.append(hand, cardsToDeal);
-      
       ReasonReact.Update({
         location: {
           ...state.location,
@@ -132,6 +131,9 @@ let make = _children => {
         <button onClick={_ev => self.send(Init)}>
           {ReasonReact.string("init")}
         </button>
+        <button onClick={_ev => self.send(DealHand)}>
+          {ReasonReact.string("deal hand")}
+        </button>
       </div>
       /* Foundation placeholder */
       <div style={ReactDOMRe.Style.make(~display="flex", ())}>
@@ -140,18 +142,24 @@ let make = _children => {
 
           <>
             <pre style=rowStyle> {ReasonReact.string("foundation")} </pre>
-            <pre style=rowStyle> {ReasonReact.string("hand")} </pre>
             <pre style=rowStyle>
-              {
-                let {stock} = self.state.location;
-
-                switch (List.hd(stock)) {
-                | card =>
-                  <Card id={card.id} rank={card.rank} suit={card.suit} />
-                | exception _err => ReasonReact.null
-                };
-              }
+              <div> {ReasonReact.string("hand")} </div>
+              <CardStack cards=[|self.state.location.hand|] />
             </pre>
+            <pre style=rowStyle>
+              /* { TODO -- uncomment when ready to only show the top item & we know that all the actions are working
+                   let {stock} = self.state.location;
+
+                   switch (List.hd(stock)) {
+                   | card =>
+                     <Card id={card.id} rank={card.rank} suit={card.suit} />
+                   | exception _err => ReasonReact.null
+                   };
+                 } */
+
+                <div> {ReasonReact.string("stock")} </div>
+                <CardStack cards=[|self.state.location.stock|] />
+              </pre>
           </>;
         }
       </div>
