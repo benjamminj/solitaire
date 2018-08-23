@@ -110,10 +110,10 @@ let make = _children => {
       let (nextHand, rest) =
         switch (stock) {
         /* NOTE -- move all of hand back into stock. Will need to add logic when limiting the number of deals */
-        | [] => ([], hand)
+        | [] => ([], List.rev(hand))
         | [a] => ([a, ...hand], [])
-        | [a, b] => ([a, b, ...hand], [])
-        | [a, b, c, ...rest] => ([a, b, c, ...hand], rest)
+        | [a, b] => ([b, a, ...hand], [])
+        | [a, b, c, ...rest] => ([c, b, a, ...hand], rest)
         };
 
       ReasonReact.Update({
@@ -144,10 +144,25 @@ let make = _children => {
             <pre style=rowStyle> {ReasonReact.string("foundation")} </pre>
             <pre style=rowStyle>
               <div> {ReasonReact.string("hand")} </div>
+              /* {
+                   let {hand} = self.state.location;
+
+                   let displayedCards =
+                     /* TODO -- see if there's a better way to elegantly supply this logic */
+                     switch (hand) {
+                     | [] => []
+                     | [a] => [a]
+                     | [a, b] => [a, b]
+                     | [a, b, c, ..._rest] => [a, b, c]
+                     };
+
+                   <CardStack cards=[|displayedCards|] />;
+                 } */
               <CardStack cards=[|self.state.location.hand|] />
             </pre>
             <pre style=rowStyle>
-              /* { TODO -- uncomment when ready to only show the top item & we know that all the actions are working
+              <div> {ReasonReact.string("stock")} </div>
+              /* {
                    let {stock} = self.state.location;
 
                    switch (List.hd(stock)) {
@@ -156,10 +171,8 @@ let make = _children => {
                    | exception _err => ReasonReact.null
                    };
                  } */
-
-                <div> {ReasonReact.string("stock")} </div>
-                <CardStack cards=[|self.state.location.stock|] />
-              </pre>
+              <CardStack cards=[|self.state.location.stock|] />
+            </pre>
           </>;
         }
       </div>
