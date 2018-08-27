@@ -104,14 +104,14 @@ let dealCards = cards => {
   (tableau, Array.to_list(stock));
 };
 
-let getNextMove = (self, ~location, ~card) => {
+let getNextMove = (self, ~location, ~card: option(card)) => {
   let {moveKey, move} = self.ReasonReact.state;
 
   switch (moveKey) {
   | Prev =>
     Js.log("set previous");
     self.ReasonReact.send(
-      UpdateMove({prev: Some(location), next: None, card: Some(card)}),
+      UpdateMove({prev: Some(location), next: None, card}),
     );
   | Next =>
     Js.log("set next");
@@ -172,47 +172,40 @@ let make = _children => {
       });
     | UpdateMove(move) => ReasonReact.Update({...state, move, moveKey: Next})
     | MoveCard({prev, next, card}) =>
-      let _test = "test";
-
       let getUpdatedLocationFromMoves = (prevLocation, nextLocation, card) =>
         switch (prevLocation, nextLocation) {
         | (_, Foundation(row)) =>
-        /* TODO -- 
-         * add logic & validation for adding an item to a foundation row 
-         * in addition, will need to add some click areas inside foundation to allow it to actually be clicked
-         */
+          /* TODO --
+           * add logic & validation for adding an item to a foundation row
+           * in addition, will need to add some click areas inside foundation to allow it to actually be clicked
+           */
           let {foundation} = state.location;
-          
-          let updateSelection = (i, list) => i == row ? List.append(list, [card]) : list;
+
+          let updateSelection = (i, list) =>
+            i == row ? List.append(list, [card]) : list;
           let next = Array.mapi(updateSelection, foundation);
-          
-          {
-            ...state.location,
-            foundation: next,
-          };
+
+          {...state.location, foundation: next};
         /* TODO -- add logic & validation for moving card from foundation to tableau */
         | (Foundation(rowF), Tableau(rowT)) => state.location
-        /* TODO -- add logic & validation for moving a card from tableau to ttableau row */
-        | (Tableau(rowPrev), Tableau(rowNext)) => {
+        | (Tableau(rowPrev), Tableau(rowNext)) =>
+          /* NOTE -- add logic & validation for moving a card from tableau to ttableau row */
           let {tableau} = state.location;
-          
+
           /* TODO -- see if there's a cleaner or simpler way to do this...might be imperative? */
-          let updateSelection = (i, list) => {
-            switch(i) {
-              | i when i == rowPrev => List.filter(item => item.id != card.id, list)
-              | i when i == rowNext => List.append([card], list)
-              | _ => list
-            }
-          };
+          let updateSelection = (i, list) =>
+            switch (i) {
+            | i when i == rowPrev && i == rowNext => list
+            | i when i == rowPrev =>
+              List.filter(item => item.id != card.id, list)
+            | i when i == rowNext => List.append([card], list)
+            | _ => list
+            };
 
           let next = Array.mapi(updateSelection, tableau);
           Js.log("here");
-          
-          {
-            ...state.location,
-            tableau: next,
-          };
-        }
+
+          {...state.location, tableau: next};
         /* TODO -- move the card from the hand to the tableau */
         | (Hand, Tableau(row)) => state.location
         | _ => state.location

@@ -10,7 +10,7 @@ let make = (~id: int, ~rank: int, ~suit: Types.suit, ~onClick, _children) => {
       key=idStr
       id=idStr
       style={ReactDOMRe.Style.make(~background="none", ~border="none", ())}
-      onClick={_ev => onClick(~card={id, rank, suit})}>
+      onClick={_ev => onClick(~card=Some({id, rank, suit}))}>
       <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
         {rank |> string_of_int |> ReasonReact.string}
       </span>

@@ -17,18 +17,30 @@ let make = (~cards, ~onClickCard, _children) => {
              )
            }>
            {
-             cardList
-             |> List.rev_map(card =>
-                  <Card
-                    key={card.id |> string_of_int}
-                    id={card.id}
-                    rank={card.rank}
-                    suit={card.suit}
-                    onClick={i |> onClickCard}
-                  />
-                )
-             |> Array.of_list
-             |> ReasonReact.array
+             List.length(cardList) == 0 ?
+               <button
+                 onClick={_ev => onClickCard(i, ~card=None)}
+                 style={
+                   ReactDOMRe.Style.make(
+                     ~background="none",
+                     ~border="none",
+                     (),
+                   )
+                 }>
+                 {ReasonReact.string("EMPTY")}
+               </button> :
+               cardList
+               |> List.rev_map(card =>
+                    <Card
+                      key={card.id |> string_of_int}
+                      id={card.id}
+                      rank={card.rank}
+                      suit={card.suit}
+                      onClick={i |> onClickCard}
+                    />
+                  )
+               |> Array.of_list
+               |> ReasonReact.array
            }
          </div>
        )
