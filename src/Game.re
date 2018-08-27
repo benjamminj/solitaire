@@ -119,9 +119,78 @@ let getNextMove = (self, ~location, ~card: option(card)) => {
   };
 };
 
+let getUpdatedLocationFromMoves =
+    (~prevLocation, ~nextLocation, ~card, ~state) => {
+  let _placeholder = "test";
+
+  /* 
+   * Adds the card to a designated row in the foundation 
+   * NOTE -- this can likely be refactored & made more generic to add a card to any array with rows
+   * Later, when we add validation, can likely simply take validation as a parameterized fn.
+   */
+  let appendToFoundation = row => {
+    let {foundation} = state.location;
+    Array.mapi(
+      (i, list) => i == row ? List.append([card], list) : list,
+      foundation,
+    );
+  };
+
+  /* Remove a card from a list */
+  let getListWithoutCard = (arr, row) => {
+    let copy = Array.copy(arr);
+    let filterOutCard = List.filter(item => item.id != card.id);
+    
+    /* Only remove the card from the row that was designated. */
+    copy[row] = filterOutCard(copy[row]);
+
+    copy;
+  };
+
+  switch (prevLocation, nextLocation) {
+  | (Tableau(rowT), Foundation(rowF)) =>
+    /* TODO --
+     * add logic & validation for adding an item to a foundation row
+     * in addition, will need to add some click areas inside foundation to allow it to actually be clicked
+     */
+    let {tableau} = state.location;
+
+    /* Add the card to the foundation row that was selected */
+    let nextFoundation = appendToFoundation(rowF);
+
+    /* Remove the card from the tableau row */
+    let nextTableau = getListWithoutCard(tableau, rowT);
+
+    {...state.location, foundation: nextFoundation, tableau: nextTableau};
+  /* TODO -- add logic & validation for moving card from foundation to tableau */
+  | (Hand, Foundation(rowF)) => state.location
+  | (Foundation(rowF), Tableau(rowT)) => state.location
+  | (Tableau(rowPrev), Tableau(rowNext)) =>
+    /* NOTE -- add logic & validation for moving a card from tableau to ttableau row */
+    let {tableau} = state.location;
+
+    let updateSelection = (i, list) =>
+      switch (i) {
+      | i when i == rowPrev && i == rowNext => list
+      | i when i == rowPrev => List.filter(item => item.id != card.id, list)
+      | i when i == rowNext => List.append([card], list)
+      | _ => list
+      };
+
+    let next = Array.mapi(updateSelection, tableau);
+    Js.log("here");
+
+    {...state.location, tableau: next};
+  /* TODO -- move the card from the hand to the tableau */
+  | (Hand, Tableau(row)) => state.location
+  | _ => state.location
+  };
+};
+
+/* STATE */
 let initialState = {
   location: {
-    foundation: [|[],[],[],[]|],
+    foundation: [|[], [], [], []|],
     tableau: [||],
     stock: [],
     hand: [],
@@ -134,6 +203,7 @@ let initialState = {
   moveKey: Prev,
 };
 
+/* COMPONENT */
 let make = _children => {
   ...component,
   initialState: () => initialState,
@@ -172,49 +242,15 @@ let make = _children => {
       });
     | UpdateMove(move) => ReasonReact.Update({...state, move, moveKey: Next})
     | MoveCard({prev, next, card}) =>
-      let getUpdatedLocationFromMoves = (prevLocation, nextLocation, card) =>
-        switch (prevLocation, nextLocation) {
-        | (_, Foundation(row)) =>
-          /* TODO --
-           * add logic & validation for adding an item to a foundation row
-           * in addition, will need to add some click areas inside foundation to allow it to actually be clicked
-           */
-          let {foundation} = state.location;
-
-          let updateSelection = (i, list) =>
-            i == row ? List.append([card], list) : list;
-          let next = Array.mapi(updateSelection, foundation);
-
-          {...state.location, foundation: next};
-        /* TODO -- add logic & validation for moving card from foundation to tableau */
-        | (Foundation(rowF), Tableau(rowT)) => state.location
-        | (Tableau(rowPrev), Tableau(rowNext)) =>
-          /* NOTE -- add logic & validation for moving a card from tableau to ttableau row */
-          let {tableau} = state.location;
-
-          /* TODO -- see if there's a cleaner or simpler way to do this...might be imperative? */
-          let updateSelection = (i, list) =>
-            switch (i) {
-            | i when i == rowPrev && i == rowNext => list
-            | i when i == rowPrev =>
-              List.filter(item => item.id != card.id, list)
-            | i when i == rowNext => List.append([card], list)
-            | _ => list
-            };
-
-          let next = Array.mapi(updateSelection, tableau);
-          Js.log("here");
-
-          {...state.location, tableau: next};
-        /* TODO -- move the card from the hand to the tableau */
-        | (Hand, Tableau(row)) => state.location
-        | _ => state.location
-        };
-
       let location =
         switch (prev, next, card) {
         | (Some(prevLocation), Some(nextLocation), Some(card)) =>
-          getUpdatedLocationFromMoves(prevLocation, nextLocation, card)
+          getUpdatedLocationFromMoves(
+            ~prevLocation,
+            ~nextLocation,
+            ~card,
+            ~state,
+          )
         | _ => state.location
         };
       /**
@@ -248,7 +284,6 @@ let make = _children => {
           {ReasonReact.string("deal hand")}
         </button>
       </div>
-      /* Foundation placeholder */
       <div style={ReactDOMRe.Style.make(~display="flex", ())}>
         {
           let rowStyle = ReactDOMRe.Style.make(~padding="0 0.25rem", ());
@@ -257,13 +292,11 @@ let make = _children => {
             <pre style=rowStyle>
               <div>
                 {ReasonReact.string("foundation")}
-
-                <div style={flex}>
-                <CardStack
-                  cards={self.state.location.foundation}
-                  onClickCard={i => onClickCard(~location=Foundation(i))}
-                />  
-                
+                <div style=flex>
+                  <CardStack
+                    cards={self.state.location.foundation}
+                    onClickCard={i => onClickCard(~location=Foundation(i))}
+                  />
                 </div>
               </div>
             </pre>
