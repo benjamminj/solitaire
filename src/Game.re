@@ -8,10 +8,32 @@ type location = {
   hand: cardList,
 };
 
-type state = {location};
+/* TODO -- add args to the ones that require a row */
+type locationKey =
+  | Foundation(int)
+  | Tableau(int)
+  | Stock
+  | Hand;
+
+type move = {
+  prev: option(locationKey),
+  next: option(locationKey),
+  card: option(card),
+};
+
+type moveKey =
+  | Prev
+  | Next;
+
+type state = {
+  location,
+  move,
+  moveKey,
+};
 
 type action =
-  | MoveCard
+  | UpdateMove(move)
+  | MoveCard(move)
   | DealHand
   | Init;
 
@@ -82,22 +104,46 @@ let dealCards = cards => {
   (tableau, Array.to_list(stock));
 };
 
+let getNextMove = (self, ~location, ~card) => {
+  let {moveKey, move} = self.ReasonReact.state;
+
+  switch (moveKey) {
+  | Prev =>
+    Js.log("set previous");
+    self.ReasonReact.send(
+      UpdateMove({prev: Some(location), next: None, card: Some(card)}),
+    );
+  | Next =>
+    Js.log("set next");
+    self.ReasonReact.send(MoveCard({...move, next: Some(location)}));
+  };
+};
+
+let initialState = {
+  location: {
+    foundation: [||],
+    tableau: [||],
+    stock: [],
+    hand: [],
+  },
+  move: {
+    prev: None,
+    next: None,
+    card: None,
+  },
+  moveKey: Prev,
+};
+
 let make = _children => {
   ...component,
-  initialState: () => {
-    location: {
-      foundation: [||],
-      tableau: [||],
-      stock: [],
-      hand: [],
-    },
-  },
+  initialState: () => initialState,
   reducer: (action, state) =>
     switch (action) {
     | Init =>
       let (tableau, stock) = generateDeck() |> shuffleDeck |> dealCards;
 
       ReasonReact.Update({
+        ...state,
         location: {
           ...state.location,
           tableau,
@@ -117,15 +163,89 @@ let make = _children => {
         };
 
       ReasonReact.Update({
+        ...state,
         location: {
           ...state.location,
           hand: nextHand,
           stock: rest,
         },
       });
-    | MoveCard => ReasonReact.Update(state)
+    | UpdateMove(move) => ReasonReact.Update({...state, move, moveKey: Next})
+    | MoveCard({prev, next, card}) =>
+      let _test = "test";
+
+      let getUpdatedLocationFromMoves = (prevLocation, nextLocation, card) =>
+        switch (prevLocation, nextLocation) {
+        | (_, Foundation(row)) =>
+        /* TODO -- 
+         * add logic & validation for adding an item to a foundation row 
+         * in addition, will need to add some click areas inside foundation to allow it to actually be clicked
+         */
+          let {foundation} = state.location;
+          
+          let updateSelection = (i, list) => i == row ? List.append(list, [card]) : list;
+          let next = Array.mapi(updateSelection, foundation);
+          
+          {
+            ...state.location,
+            foundation: next,
+          };
+        /* TODO -- add logic & validation for moving card from foundation to tableau */
+        | (Foundation(rowF), Tableau(rowT)) => state.location
+        /* TODO -- add logic & validation for moving a card from tableau to ttableau row */
+        | (Tableau(rowPrev), Tableau(rowNext)) => {
+          let {tableau} = state.location;
+          
+          /* TODO -- see if there's a cleaner or simpler way to do this...might be imperative? */
+          let updateSelection = (i, list) => {
+            switch(i) {
+              | i when i == rowPrev => List.filter(item => item.id != card.id, list)
+              | i when i == rowNext => List.append([card], list)
+              | _ => list
+            }
+          };
+
+          let next = Array.mapi(updateSelection, tableau);
+          Js.log("here");
+          
+          {
+            ...state.location,
+            tableau: next,
+          };
+        }
+        /* TODO -- move the card from the hand to the tableau */
+        | (Hand, Tableau(row)) => state.location
+        | _ => state.location
+        };
+
+      let location =
+        switch (prev, next, card) {
+        | (Some(prevLocation), Some(nextLocation), Some(card)) =>
+          getUpdatedLocationFromMoves(prevLocation, nextLocation, card)
+        | _ => state.location
+        };
+      /**
+       * TODO -- add all the validation logic to move a card from its previous
+       * location to its next location, or cancel if invalid
+       */
+      /**
+       * expose a callback that configures with an arg as to _what_ key in the next move it updates
+       * store that key in state...when adding the "prev" key (i.e.) clicking on a card,
+       * it will add the "prev" & the "card" to the next move. This also makes it easier to
+       * highlight the card in an active state
+       *
+       * _THEN_ the next click will take the same callback and trigger an action to modify the "next" location
+       * Then it will apply this action to actually move the card with the current action.
+       * In addition, it will clear out the move. Later on, it could also pop an empty move onto the stack of moves.
+       */
+      ReasonReact.Update({
+        location,
+        move: initialState.move,
+        moveKey: initialState.moveKey,
+      });
     },
-  render: self =>
+  render: self => {
+    let onClickCard = getNextMove(self);
     <>
       <div>
         <button onClick={_ev => self.send(Init)}>
@@ -158,7 +278,10 @@ let make = _children => {
 
                    <CardStack cards=[|displayedCards|] />;
                  } */
-              <CardStack cards=[|self.state.location.hand|] />
+              <CardStack
+                cards=[|self.state.location.hand|]
+                onClickCard={_i => onClickCard(~location=Hand)}
+              />
             </pre>
             <pre style=rowStyle>
               <div> {ReasonReact.string("stock")} </div>
@@ -171,14 +294,23 @@ let make = _children => {
                    | exception _err => ReasonReact.null
                    };
                  } */
-              <CardStack cards=[|self.state.location.stock|] />
+              <CardStack
+                cards=[|self.state.location.stock|]
+                onClickCard={_i => onClickCard(~location=Stock)}
+              />
             </pre>
           </>;
         }
       </div>
       /* Tableau component */
       <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
-        <CardStack cards={self.state.location.tableau} />
-      </pre>
-    </>,
+        /* TODO -- make sure that the arguments get assigned to the correct row? */
+
+          <CardStack
+            cards={self.state.location.tableau}
+            onClickCard={i => onClickCard(~location=Tableau(i))}
+          />
+        </pre>
+    </>;
+  },
 };

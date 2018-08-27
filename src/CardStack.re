@@ -1,7 +1,7 @@
 open Types;
 let component = ReasonReact.statelessComponent("CardStack");
 
-let make = (~cards, _children) => {
+let make = (~cards, ~onClickCard, _children) => {
   ...component,
   render: _self =>
     cards
@@ -18,12 +18,13 @@ let make = (~cards, _children) => {
            }>
            {
              cardList
-             |> List.map(card =>
+             |> List.rev_map(card =>
                   <Card
                     key={card.id |> string_of_int}
                     id={card.id}
                     rank={card.rank}
                     suit={card.suit}
+                    onClick={i |> onClickCard}
                   />
                 )
              |> Array.of_list
