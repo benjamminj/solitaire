@@ -121,7 +121,7 @@ let getNextMove = (self, ~location, ~card: option(card)) => {
 
 let initialState = {
   location: {
-    foundation: [||],
+    foundation: [|[],[],[],[]|],
     tableau: [||],
     stock: [],
     hand: [],
@@ -182,7 +182,7 @@ let make = _children => {
           let {foundation} = state.location;
 
           let updateSelection = (i, list) =>
-            i == row ? List.append(list, [card]) : list;
+            i == row ? List.append([card], list) : list;
           let next = Array.mapi(updateSelection, foundation);
 
           {...state.location, foundation: next};
@@ -252,16 +252,28 @@ let make = _children => {
       <div style={ReactDOMRe.Style.make(~display="flex", ())}>
         {
           let rowStyle = ReactDOMRe.Style.make(~padding="0 0.25rem", ());
-
+          let flex = ReactDOMRe.Style.make(~display="flex", ());
           <>
-            <pre style=rowStyle> {ReasonReact.string("foundation")} </pre>
+            <pre style=rowStyle>
+              <div>
+                {ReasonReact.string("foundation")}
+
+                <div style={flex}>
+                <CardStack
+                  cards={self.state.location.foundation}
+                  onClickCard={i => onClickCard(~location=Foundation(i))}
+                />  
+                
+                </div>
+              </div>
+            </pre>
             <pre style=rowStyle>
               <div> {ReasonReact.string("hand")} </div>
               /* {
+                     /* For now, leave this here. We can uncomment once game mechanics are working */
                    let {hand} = self.state.location;
 
                    let displayedCards =
-                     /* TODO -- see if there's a better way to elegantly supply this logic */
                      switch (hand) {
                      | [] => []
                      | [a] => [a]
