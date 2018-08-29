@@ -1,9 +1,11 @@
 {
   "name": "solitaire",
-  "sources": {
-    "dir": "src",
-    "subdirs": true
-  },
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
   "reason": {
     "react-jsx": 2
   },
@@ -12,7 +14,8 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": ["reason-react"],
+  "bs-dependencies": ["reason-react", "@glennsl/bs-jest"],
+  "bs-dev-dependencies": [],
   "warnings": {
     "error": "+101"
   },

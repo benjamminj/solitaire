@@ -273,16 +273,8 @@ let make = _children => {
       /**
        * TODO -- add all the validation logic to move a card from its previous
        * location to its next location, or cancel if invalid
-       */
-      /**
-       * expose a callback that configures with an arg as to _what_ key in the next move it updates
-       * store that key in state...when adding the "prev" key (i.e.) clicking on a card,
-       * it will add the "prev" & the "card" to the next move. This also makes it easier to
-       * highlight the card in an active state
-       *
-       * _THEN_ the next click will take the same callback and trigger an action to modify the "next" location
-       * Then it will apply this action to actually move the card with the current action.
-       * In addition, it will clear out the move. Later on, it could also pop an empty move onto the stack of moves.
+       * In the future, to introduce the ability to undo a move, will need to add
+       * a new move to an array of moves rather than just clearing it out.
        */
       ReasonReact.Update({
         location,
