@@ -8,7 +8,6 @@ type location = {
   hand: cardList,
 };
 
-/* TODO -- add args to the ones that require a row */
 type locationKey =
   | Foundation(int)
   | Tableau(int)
@@ -123,50 +122,65 @@ let getUpdatedLocationFromMoves =
     (~prevLocation, ~nextLocation, ~card, ~state) => {
   let _placeholder = "test";
 
-  /* 
-   * Adds the card to a designated row in the foundation 
-   * NOTE -- this can likely be refactored & made more generic to add a card to any array with rows
+  /*
+   * Adds the card to a designated row in the foundation
    * Later, when we add validation, can likely simply take validation as a parameterized fn.
    */
-  let appendToFoundation = row => {
-    let {foundation} = state.location;
-    Array.mapi(
-      (i, list) => i == row ? List.append([card], list) : list,
-      foundation,
-    );
+  let getListPlusCard = (arr, row) => {
+    let copy = Array.copy(arr);
+    let addCard = List.append([card]);
+
+    copy[row] = addCard(copy[row]);
+
+    copy;
   };
 
+  let filterOutCard = List.filter(item => item.id != card.id);
   /* Remove a card from a list */
   let getListWithoutCard = (arr, row) => {
     let copy = Array.copy(arr);
-    let filterOutCard = List.filter(item => item.id != card.id);
-    
+
     /* Only remove the card from the row that was designated. */
     copy[row] = filterOutCard(copy[row]);
 
     copy;
   };
 
+  /** 
+   * NOTE -- still need to add validation, however, this logic is starting to get a bit verbose.
+   * It might be best to break this out into a separate module to keep this part of the app more lean
+   */
   switch (prevLocation, nextLocation) {
   | (Tableau(rowT), Foundation(rowF)) =>
-    /* TODO --
-     * add logic & validation for adding an item to a foundation row
-     * in addition, will need to add some click areas inside foundation to allow it to actually be clicked
+    let {foundation, tableau} = state.location;
+
+    let tableauMinusCard = getListWithoutCard(tableau, rowT);
+    let foundationPlusCard = getListPlusCard(foundation, rowF);
+
+    {...state.location, foundation: foundationPlusCard, tableau: tableauMinusCard};
+  | (Hand, Foundation(rowF)) =>
+    let {hand, foundation} = state.location;
+    /**
+     * Remove the card from the hand & add to tableau.
+     * Once there is validation set up around _which_ cards in the hand can be selected we
+     * can get rid of the `filterOutCard` function and just grab from the head of the list
      */
-    let {tableau} = state.location;
+    let handMinusCard = filterOutCard(hand);
+    let foundationPlusCard = getListPlusCard(foundation, rowF);
 
-    /* Add the card to the foundation row that was selected */
-    let nextFoundation = appendToFoundation(rowF);
+    {...state.location, hand: handMinusCard, foundation: foundationPlusCard};
+  | (Foundation(rowF), Tableau(rowT)) =>
+    let {foundation, tableau} = state.location;
 
-    /* Remove the card from the tableau row */
-    let nextTableau = getListWithoutCard(tableau, rowT);
+    let foundationMinusCard = getListWithoutCard(foundation, rowF);
+    let tableauPlusCard = getListPlusCard(tableau, rowT);
 
-    {...state.location, foundation: nextFoundation, tableau: nextTableau};
-  /* TODO -- add logic & validation for moving card from foundation to tableau */
-  | (Hand, Foundation(rowF)) => state.location
-  | (Foundation(rowF), Tableau(rowT)) => state.location
+    {
+      ...state.location,
+      tableau: tableauPlusCard,
+      foundation: foundationMinusCard,
+    };
   | (Tableau(rowPrev), Tableau(rowNext)) =>
-    /* NOTE -- add logic & validation for moving a card from tableau to ttableau row */
     let {tableau} = state.location;
 
     let updateSelection = (i, list) =>
@@ -181,8 +195,11 @@ let getUpdatedLocationFromMoves =
     Js.log("here");
 
     {...state.location, tableau: next};
-  /* TODO -- move the card from the hand to the tableau */
-  | (Hand, Tableau(row)) => state.location
+  | (Hand, Tableau(row)) =>
+    let {hand, tableau} = state.location;
+    let handMinusCard = filterOutCard(hand);
+    let tableauPlusCard = getListPlusCard(tableau, row);
+    {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
   | _ => state.location
   };
 };
