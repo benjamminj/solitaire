@@ -157,11 +157,14 @@ let getUpdatedLocationFromMoves =
   let validateMoveToTableau = (~card, ~destination): bool => 
     switch(destination) {
       | [targetCard, ..._rest] => isOppositeSuit(card, targetCard)
-      /* Kings only on empty tableau rows */
-      | [] => card.rank == 12
+      | [] => card.rank == 12 /* Kings only on empty tableau rows */
     };
     
-  let validateMoveToFoundation = (~card, ~destination): bool => false;
+  let validateMoveToFoundation = (~card, ~destination): bool => 
+    switch(destination) {
+      | [topCard, ..._rest] => card.suit == topCard.suit && card.rank == (topCard.rank + 1)
+      | [] => card.rank == 1 /* Aces only on empty foundation rows  */
+    };
   /** 
    * NOTE -- still need to add validation, however, this logic is starting to get a bit verbose.
    * It might be best to break this out into a separate module to keep this part of the app more lean
@@ -169,20 +172,22 @@ let getUpdatedLocationFromMoves =
   switch (prevLocation, nextLocation) {
   | (Tableau(rowT), Foundation(rowF)) =>
     let {foundation, tableau} = state.location;
+    let isValid = validateMoveToFoundation(~card, ~destination=foundation[rowF]);
 
-    let tableauMinusCard = getListWithoutCard(tableau, rowT);
-    let foundationPlusCard = getListPlusCard(foundation, rowF);
+    let tableauMinusCard = isValid ? getListWithoutCard(tableau, rowT) : tableau;
+    let foundationPlusCard = isValid ? getListPlusCard(foundation, rowF) : foundation;
 
     {...state.location, foundation: foundationPlusCard, tableau: tableauMinusCard};
   | (Hand, Foundation(rowF)) =>
     let {hand, foundation} = state.location;
+    let isValid = validateMoveToFoundation(~card, ~destination=foundation[rowF]);
     /**
      * Remove the card from the hand & add to tableau.
      * Once there is validation set up around _which_ cards in the hand can be selected we
      * can get rid of the `filterOutCard` function and just grab from the head of the list
      */
-    let handMinusCard = filterOutCard(hand);
-    let foundationPlusCard = getListPlusCard(foundation, rowF);
+    let handMinusCard = isValid ? filterOutCard(hand) : hand;
+    let foundationPlusCard = isValid ? getListPlusCard(foundation, rowF) : foundation;
 
     {...state.location, hand: handMinusCard, foundation: foundationPlusCard};
   | (Foundation(rowF), Tableau(rowT)) =>

@@ -14,8 +14,8 @@ let make = (~id: int, ~rank: int, ~suit: Types.suit, ~onClick, _children) => {
       };
 
     let rankText = 
-      switch(rank + 1) {
-        | 14 => "A"
+      switch(rank) {
+        | 1 => "A"
         | 13 => "K"
         | 12 => "Q"
         | 11 => "J"
