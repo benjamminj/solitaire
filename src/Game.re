@@ -81,7 +81,6 @@ let dealCards = cards => {
    */
   let tableau: array(cardList) =
     cardsToDeal
-    /* |> Array.to_list */
     |> (
       arr => {
         let start = ref(0);
@@ -103,24 +102,28 @@ let dealCards = cards => {
   (tableau, Array.to_list(stock));
 };
 
+/* NOTE -- can likely be made more testable, will need to remove the reliance on "self" */
 let getNextMove = (self, ~location, ~card: option(card)) => {
-  let {moveKey, move} = self.ReasonReact.state;
+  open ReasonReact;
+  let {moveKey, move} = self.state;
 
   switch (moveKey) {
   | Prev =>
     Js.log("set previous");
-    self.ReasonReact.send(
+    self.send(
       UpdateMove({prev: Some(location), next: None, card}),
     );
   | Next =>
     Js.log("set next");
-    self.ReasonReact.send(MoveCard({...move, next: Some(location)}));
+    self.send(MoveCard({...move, next: Some(location)}));
   };
 };
 
 let getUpdatedLocationFromMoves =
     (~prevLocation, ~nextLocation, ~card, ~state) => {
-  let _placeholder = "test";
+  let addCard = List.append([card])
+
+  let filterOutCard = List.filter(item => item.id != card.id);
 
   /*
    * Adds the card to a designated row in the foundation
@@ -128,14 +131,12 @@ let getUpdatedLocationFromMoves =
    */
   let getListPlusCard = (arr, row) => {
     let copy = Array.copy(arr);
-    let addCard = List.append([card]);
 
     copy[row] = addCard(copy[row]);
 
     copy;
   };
 
-  let filterOutCard = List.filter(item => item.id != card.id);
   /* Remove a card from a list */
   let getListWithoutCard = (arr, row) => {
     let copy = Array.copy(arr);
@@ -146,6 +147,21 @@ let getUpdatedLocationFromMoves =
     copy;
   };
 
+  let isOppositeSuit = (card, destinationCard) => 
+    /* NOTE -- will need to add validation for rank as well */
+    switch(card.suit) {
+      | Hearts | Diamonds => destinationCard.suit == Clubs || destinationCard.suit == Spades
+      | Clubs | Spades => destinationCard.suit == Hearts || destinationCard.suit == Diamonds
+    };
+
+  let validateMoveToTableau = (~card, ~destination): bool => 
+    switch(destination) {
+      | [targetCard, ..._rest] => isOppositeSuit(card, targetCard)
+      /* Kings only on empty tableau rows */
+      | [] => card.rank == 12
+    };
+    
+  let validateMoveToFoundation = (~card, ~destination): bool => false;
   /** 
    * NOTE -- still need to add validation, however, this logic is starting to get a bit verbose.
    * It might be best to break this out into a separate module to keep this part of the app more lean
@@ -171,9 +187,10 @@ let getUpdatedLocationFromMoves =
     {...state.location, hand: handMinusCard, foundation: foundationPlusCard};
   | (Foundation(rowF), Tableau(rowT)) =>
     let {foundation, tableau} = state.location;
+    let isValid = validateMoveToTableau(~card, ~destination=tableau[rowT]);
 
-    let foundationMinusCard = getListWithoutCard(foundation, rowF);
-    let tableauPlusCard = getListPlusCard(tableau, rowT);
+    let foundationMinusCard = isValid ? getListWithoutCard(foundation, rowF) : foundation;
+    let tableauPlusCard = isValid ? getListPlusCard(tableau, rowT) : tableau;
 
     {
       ...state.location,
@@ -182,23 +199,25 @@ let getUpdatedLocationFromMoves =
     };
   | (Tableau(rowPrev), Tableau(rowNext)) =>
     let {tableau} = state.location;
+    let isValid = validateMoveToTableau(~card, ~destination=tableau[rowNext]);
 
     let updateSelection = (i, list) =>
       switch (i) {
       | i when i == rowPrev && i == rowNext => list
-      | i when i == rowPrev => List.filter(item => item.id != card.id, list)
-      | i when i == rowNext => List.append([card], list)
+      | i when i == rowPrev => filterOutCard(list)
+      | i when i == rowNext => addCard(list)
       | _ => list
       };
 
-    let next = Array.mapi(updateSelection, tableau);
-    Js.log("here");
+    let next = isValid ? Array.mapi(updateSelection, tableau) : tableau;
 
     {...state.location, tableau: next};
   | (Hand, Tableau(row)) =>
     let {hand, tableau} = state.location;
-    let handMinusCard = filterOutCard(hand);
-    let tableauPlusCard = getListPlusCard(tableau, row);
+    let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
+
+    let handMinusCard = isValid ? filterOutCard(hand) : hand;
+    let tableauPlusCard = isValid ? getListPlusCard(tableau, row) : tableau;
     {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
   | _ => state.location
   };
@@ -270,12 +289,6 @@ let make = _children => {
           )
         | _ => state.location
         };
-      /**
-       * TODO -- add all the validation logic to move a card from its previous
-       * location to its next location, or cancel if invalid
-       * In the future, to introduce the ability to undo a move, will need to add
-       * a new move to an array of moves rather than just clearing it out.
-       */
       ReasonReact.Update({
         location,
         move: initialState.move,
