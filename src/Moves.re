@@ -44,10 +44,9 @@ let getListWithoutCard = (card, row, arr) => {
   copy[row] = filterOutCard(card, copy[row]);
 
   copy;
-};  
+};
 
-let getUpdatedLocation =
-    (~prevLocation, ~nextLocation, ~card, ~state) => {
+let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
   let addCard = addCard(card);
   let filterOutCard = filterOutCard(card);
 
@@ -109,10 +108,16 @@ let getUpdatedLocation =
       let isValid =
         validateMoveToTableau(~card, ~destination=tableau[rowNext]);
 
+      let flipLastCard = list => 
+        switch(list) {
+          | [bottomCard, ...rest] => [{ ...bottomCard, selectable: true, faceUp: true }, ...rest]
+          | [] => list
+        }
+
       let updateSelection = (i, list) =>
         switch (i) {
         | i when i == rowPrev && i == rowNext => list
-        | i when i == rowPrev => filterOutCard(list)
+        | i when i == rowPrev => filterOutCard(list) |> flipLastCard
         | i when i == rowNext => addCard(list)
         | _ => list
         };
@@ -125,7 +130,8 @@ let getUpdatedLocation =
       let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
 
       let handMinusCard = isValid ? filterOutCard(hand) : hand;
-      let tableauPlusCard = isValid ? getListPlusCard(card, row, tableau) : tableau;
+      let tableauPlusCard =
+        isValid ? getListPlusCard(card, row, tableau) : tableau;
       {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
     | _ => state.location
     }
