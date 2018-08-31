@@ -14,26 +14,33 @@ let make = (~card, ~onClick, _children) => {
       | Spades => ("spades", "black")
       };
 
-    let rankText = 
-      switch(rank) {
-        | 1 => "A"
-        | 13 => "K"
-        | 12 => "Q"
-        | 11 => "J"
-        | num => num |> string_of_int
+    let rankText =
+      switch (rank) {
+      | 1 => "A"
+      | 13 => "K"
+      | 12 => "Q"
+      | 11 => "J"
+      | num => num |> string_of_int
       };
+
+    let onClick =
+      card.selectable ? _ev => onClick(~card=Some(card)) : (_ev => ());
 
     <button
       key=idStr
       id=idStr
-      style={
-        ReactDOMRe.Style.make(~background="none", ~border="none", ~color, ())
+      style={ReactDOMRe.Style.make(~background="none", ~border="none", ())}
+      onClick>
+      {
+        card.faceUp ?
+          <span style={ReactDOMRe.Style.make(~color, ())}>
+            <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
+              {ReasonReact.string(rankText)}
+            </span>
+            <span> {ReasonReact.string(text)} </span>
+          </span> :
+          <span> {ReasonReact.string("HIDDEN")} </span>
       }
-      onClick={_ev => onClick(~card=Some(card))}>
-      <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
-        {ReasonReact.string(rankText)}
-      </span>
-      <span> {ReasonReact.string(text)} </span>
     </button>;
   },
 };
