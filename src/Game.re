@@ -62,6 +62,7 @@ let dealCards = cards => {
             let amt = i + 1;
             let nextStart = start^ + amt;
             let items = Array.sub(arr, start^, amt);
+            items[0] = { ...items[0], faceUp: true, selectable: true };
 
             start := nextStart;
             items |> Array.to_list;
