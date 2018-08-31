@@ -1,35 +1,6 @@
 /* type cardList = list(card); */
 open Types;
 
-type location = {
-  foundation: array(cardList),
-  tableau: array(cardList),
-  stock: cardList,
-  hand: cardList,
-};
-
-type locationKey =
-  | Foundation(int)
-  | Tableau(int)
-  | Stock
-  | Hand;
-
-type move = {
-  prev: option(locationKey),
-  next: option(locationKey),
-  card: option(card),
-};
-
-type moveKey =
-  | Prev
-  | Next;
-
-type state = {
-  location,
-  move,
-  moveKey,
-};
-
 type action =
   | UpdateMove(move)
   | MoveCard(move)
@@ -110,121 +81,10 @@ let getNextMove = (self, ~location, ~card: option(card)) => {
   switch (moveKey) {
   | Prev =>
     Js.log("set previous");
-    self.send(
-      UpdateMove({prev: Some(location), next: None, card}),
-    );
+    self.send(UpdateMove({prev: Some(location), next: None, card}));
   | Next =>
     Js.log("set next");
     self.send(MoveCard({...move, next: Some(location)}));
-  };
-};
-
-let getUpdatedLocationFromMoves =
-    (~prevLocation, ~nextLocation, ~card, ~state) => {
-  let addCard = List.append([card])
-
-  let filterOutCard = List.filter(item => item.id != card.id);
-
-  /*
-   * Adds the card to a designated row in the foundation
-   * Later, when we add validation, can likely simply take validation as a parameterized fn.
-   */
-  let getListPlusCard = (arr, row) => {
-    let copy = Array.copy(arr);
-
-    copy[row] = addCard(copy[row]);
-
-    copy;
-  };
-
-  /* Remove a card from a list */
-  let getListWithoutCard = (arr, row) => {
-    let copy = Array.copy(arr);
-
-    /* Only remove the card from the row that was designated. */
-    copy[row] = filterOutCard(copy[row]);
-
-    copy;
-  };
-
-  let isOppositeSuit = (card, destinationCard) => 
-    /* NOTE -- will need to add validation for rank as well */
-    switch(card.suit) {
-      | Hearts | Diamonds => destinationCard.suit == Clubs || destinationCard.suit == Spades
-      | Clubs | Spades => destinationCard.suit == Hearts || destinationCard.suit == Diamonds
-    };
-
-  let validateMoveToTableau = (~card, ~destination): bool => 
-    switch(destination) {
-      | [targetCard, ..._rest] => isOppositeSuit(card, targetCard)
-      | [] => card.rank == 12 /* Kings only on empty tableau rows */
-    };
-    
-  let validateMoveToFoundation = (~card, ~destination): bool => 
-    switch(destination) {
-      | [topCard, ..._rest] => card.suit == topCard.suit && card.rank == (topCard.rank + 1)
-      | [] => card.rank == 1 /* Aces only on empty foundation rows  */
-    };
-  /** 
-   * NOTE -- still need to add validation, however, this logic is starting to get a bit verbose.
-   * It might be best to break this out into a separate module to keep this part of the app more lean
-   */
-  switch (prevLocation, nextLocation) {
-  | (Tableau(rowT), Foundation(rowF)) =>
-    let {foundation, tableau} = state.location;
-    let isValid = validateMoveToFoundation(~card, ~destination=foundation[rowF]);
-
-    let tableauMinusCard = isValid ? getListWithoutCard(tableau, rowT) : tableau;
-    let foundationPlusCard = isValid ? getListPlusCard(foundation, rowF) : foundation;
-
-    {...state.location, foundation: foundationPlusCard, tableau: tableauMinusCard};
-  | (Hand, Foundation(rowF)) =>
-    let {hand, foundation} = state.location;
-    let isValid = validateMoveToFoundation(~card, ~destination=foundation[rowF]);
-    /**
-     * Remove the card from the hand & add to tableau.
-     * Once there is validation set up around _which_ cards in the hand can be selected we
-     * can get rid of the `filterOutCard` function and just grab from the head of the list
-     */
-    let handMinusCard = isValid ? filterOutCard(hand) : hand;
-    let foundationPlusCard = isValid ? getListPlusCard(foundation, rowF) : foundation;
-
-    {...state.location, hand: handMinusCard, foundation: foundationPlusCard};
-  | (Foundation(rowF), Tableau(rowT)) =>
-    let {foundation, tableau} = state.location;
-    let isValid = validateMoveToTableau(~card, ~destination=tableau[rowT]);
-
-    let foundationMinusCard = isValid ? getListWithoutCard(foundation, rowF) : foundation;
-    let tableauPlusCard = isValid ? getListPlusCard(tableau, rowT) : tableau;
-
-    {
-      ...state.location,
-      tableau: tableauPlusCard,
-      foundation: foundationMinusCard,
-    };
-  | (Tableau(rowPrev), Tableau(rowNext)) =>
-    let {tableau} = state.location;
-    let isValid = validateMoveToTableau(~card, ~destination=tableau[rowNext]);
-
-    let updateSelection = (i, list) =>
-      switch (i) {
-      | i when i == rowPrev && i == rowNext => list
-      | i when i == rowPrev => filterOutCard(list)
-      | i when i == rowNext => addCard(list)
-      | _ => list
-      };
-
-    let next = isValid ? Array.mapi(updateSelection, tableau) : tableau;
-
-    {...state.location, tableau: next};
-  | (Hand, Tableau(row)) =>
-    let {hand, tableau} = state.location;
-    let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
-
-    let handMinusCard = isValid ? filterOutCard(hand) : hand;
-    let tableauPlusCard = isValid ? getListPlusCard(tableau, row) : tableau;
-    {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
-  | _ => state.location
   };
 };
 
@@ -286,7 +146,7 @@ let make = _children => {
       let location =
         switch (prev, next, card) {
         | (Some(prevLocation), Some(nextLocation), Some(card)) =>
-          getUpdatedLocationFromMoves(
+          Moves.getUpdatedLocation(
             ~prevLocation,
             ~nextLocation,
             ~card,

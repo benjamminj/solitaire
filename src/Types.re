@@ -9,8 +9,37 @@ type suit =
 
 type card = {
   id: int,
-  suit: suit,
+  suit,
   rank: int,
 };
 
 type cardList = list(card);
+
+type location = {
+  foundation: array(cardList),
+  tableau: array(cardList),
+  stock: cardList,
+  hand: cardList,
+};
+
+type locationKey =
+  | Foundation(int)
+  | Tableau(int)
+  | Stock
+  | Hand;
+
+type move = {
+  prev: option(locationKey),
+  next: option(locationKey),
+  card: option(card),
+};
+
+type moveKey =
+  | Prev
+  | Next;
+
+type state = {
+  location,
+  move,
+  moveKey,
+};
