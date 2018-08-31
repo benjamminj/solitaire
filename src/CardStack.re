@@ -33,9 +33,7 @@ let make = (~cards, ~onClickCard, _children) => {
                |> List.rev_map(card =>
                     <Card
                       key={card.id |> string_of_int}
-                      id={card.id}
-                      rank={card.rank}
-                      suit={card.suit}
+                      card
                       onClick={i |> onClickCard}
                     />
                   )

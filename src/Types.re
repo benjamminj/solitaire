@@ -11,6 +11,8 @@ type card = {
   id: int,
   suit,
   rank: int,
+  selectable: bool,
+  faceUp: bool,
 };
 
 type cardList = list(card);

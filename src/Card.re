@@ -1,9 +1,10 @@
 open Types;
 let component = ReasonReact.statelessComponent("Card");
 
-let make = (~id: int, ~rank: int, ~suit: Types.suit, ~onClick, _children) => {
+let make = (~card, ~onClick, _children) => {
   ...component,
   render: _self => {
+    let {id, rank, suit} = card;
     let idStr = string_of_int(id);
     let (text, color) =
       switch (suit) {
@@ -28,7 +29,7 @@ let make = (~id: int, ~rank: int, ~suit: Types.suit, ~onClick, _children) => {
       style={
         ReactDOMRe.Style.make(~background="none", ~border="none", ~color, ())
       }
-      onClick={_ev => onClick(~card=Some({id, rank, suit}))}>
+      onClick={_ev => onClick(~card=Some(card))}>
       <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
         {ReasonReact.string(rankText)}
       </span>

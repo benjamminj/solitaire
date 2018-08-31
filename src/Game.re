@@ -13,7 +13,7 @@ let component = ReasonReact.reducerComponent("Game");
 let generateDeck = (): list(card) => {
   let generateSuit = (idPrefix, suit: suit): list(card) => {
     let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-    List.map(rank => {id: idPrefix * 100 + rank, suit, rank}, ranks);
+    List.map(rank => { id: idPrefix * 100 + rank, suit, rank, selectable: false, faceUp: false}, ranks);
   };
 
   let suits = [Hearts, Diamonds, Clubs, Spades];
