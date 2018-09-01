@@ -28,6 +28,15 @@ let shuffleDeck = (deck: list(card)): list(card) => {
 
   for (i in start downto 1) {
     let temp = arr[i];
+
+    /* 
+     * In order to get actual random data, we need to seed Random with something that isn't 
+     * deterministic.
+     * NOTE -- likely can move this further up in the call tree & inject
+     */
+    let seed = Js.Date.now();
+    Random.init(int_of_float(seed));
+
     let random =
       Random.float(1.0) *. float_of_int(i - 1) |> floor |> int_of_float;
 
