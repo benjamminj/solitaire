@@ -55,6 +55,12 @@ let flipLastCard = list =>
   | [] => list
   };
 
+let makeFirstCardSelectable = list =>
+  switch (list) {
+  | [first, ...rest] => [{...first, selectable: true}, ...rest]
+  | [] => []
+  };
+
 let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
   let addCard = addCard(card);
   let filterOutCard = filterOutCard(card);
@@ -100,7 +106,8 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
      * Once there is validation set up around _which_ cards in the hand can be selected we
      * can get rid of the `filterOutCard` function and just grab from the head of the list
      */
-      let handMinusCard = isValid ? filterOutCard(hand) : hand;
+      let handMinusCard =
+        isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
       let foundationPlusCard =
         isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
@@ -143,7 +150,8 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
       let {hand, tableau} = state.location;
       let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
 
-      let handMinusCard = isValid ? filterOutCard(hand) : hand;
+      let handMinusCard =
+        isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
       let tableauPlusCard =
         isValid ? getListPlusCard(card, row, tableau) : tableau;
       {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
