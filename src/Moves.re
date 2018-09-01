@@ -44,10 +44,24 @@ let getListWithoutCard = (card, row, arr) => {
   copy[row] = filterOutCard(card, copy[row]);
 
   copy;
-};  
+};
 
-let getUpdatedLocation =
-    (~prevLocation, ~nextLocation, ~card, ~state) => {
+let flipLastCard = list =>
+  switch (list) {
+  | [bottomCard, ...rest] => [
+      {...bottomCard, selectable: true, faceUp: true},
+      ...rest,
+    ]
+  | [] => list
+  };
+
+let makeFirstCardSelectable = list =>
+  switch (list) {
+  | [first, ...rest] => [{...first, selectable: true}, ...rest]
+  | [] => []
+  };
+
+let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
   let addCard = addCard(card);
   let filterOutCard = filterOutCard(card);
 
@@ -62,8 +76,19 @@ let getUpdatedLocation =
       let isValid =
         validateMoveToFoundation(~card, ~destination=foundation[rowF]);
 
+      let flipLastCardInPrevRow = arr => {
+        let copy = Array.copy(arr);
+
+        let list = copy[rowT];
+        copy[rowT] = flipLastCard(list);
+
+        copy;
+      };
+
       let tableauMinusCard =
-        isValid ? getListWithoutCard(card, rowT, tableau) : tableau;
+        isValid ?
+          getListWithoutCard(card, rowT, tableau) |> flipLastCardInPrevRow :
+          tableau;
       let foundationPlusCard =
         isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
@@ -81,7 +106,8 @@ let getUpdatedLocation =
      * Once there is validation set up around _which_ cards in the hand can be selected we
      * can get rid of the `filterOutCard` function and just grab from the head of the list
      */
-      let handMinusCard = isValid ? filterOutCard(hand) : hand;
+      let handMinusCard =
+        isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
       let foundationPlusCard =
         isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
@@ -112,7 +138,7 @@ let getUpdatedLocation =
       let updateSelection = (i, list) =>
         switch (i) {
         | i when i == rowPrev && i == rowNext => list
-        | i when i == rowPrev => filterOutCard(list)
+        | i when i == rowPrev => filterOutCard(list) |> flipLastCard
         | i when i == rowNext => addCard(list)
         | _ => list
         };
@@ -124,8 +150,10 @@ let getUpdatedLocation =
       let {hand, tableau} = state.location;
       let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
 
-      let handMinusCard = isValid ? filterOutCard(hand) : hand;
-      let tableauPlusCard = isValid ? getListPlusCard(card, row, tableau) : tableau;
+      let handMinusCard =
+        isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
+      let tableauPlusCard =
+        isValid ? getListPlusCard(card, row, tableau) : tableau;
       {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
     | _ => state.location
     }
