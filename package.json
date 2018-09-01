@@ -9,6 +9,7 @@
     "dev:bs": "bsb -make-world -w",
     "dev:app": "parcel index.html",
     "dev": "concurrently --kill-others \"npm:dev:bs\" \"npm:dev:app\"",
+    "build": "bsb -make-world",
     "test": "jest",
     "test:watch": "jest --watch"
   },
