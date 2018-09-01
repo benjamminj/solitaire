@@ -26,7 +26,7 @@ let validateMoveToFoundation = (~card, ~destination): bool =>
   | [] => card.rank == 1 /* Aces only on empty foundation rows  */
   };
 
-let addCard = (card, list) => List.append([card], list);
+let addCard = (card, list) => [card, ...list];
 let filterOutCard = card => List.filter(item => item.id != card.id);
 
 let getListPlusCard = (card, row, arr) => {

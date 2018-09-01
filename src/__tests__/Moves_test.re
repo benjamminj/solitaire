@@ -212,6 +212,17 @@ describe("Moves", () => {
     });
   });
 
+  describe("filterOutCard", () => {
+    let filterOutCard = Moves.filterOutCard;
+    test("should remove the matching card from the list", () => {
+      let card = genCard(1, Hearts);
+      let list = [card, genCard(4, Spades), genCard(13, Diamonds)];
+      let result = filterOutCard(card, list);
+      let [first, ...expected] = list;
+      expect(result) |> toEqual(expected);
+    })
+  })
+
   describe("getListPlusCard", () => {
     let getListPlusCard = Moves.getListPlusCard;
     let list1 = [genCard(1, Spades)];
