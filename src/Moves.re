@@ -61,8 +61,18 @@ let makeFirstCardSelectable = list =>
   | [] => []
   };
 
+let splitAt = (item, list) => {
+  let rec search = (list, result) =>
+    switch (list) {
+    | [a, ...rest] when a == item => (List.append(result, [a]), rest)
+    | [a, ...rest] => search(rest, List.append(result, [a]))
+    | _ => (list, result)
+    };
+
+  search(list, []);
+};
+
 let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
-  let addCard = addCard(card);
   let filterOutCard = filterOutCard(card);
 
   /**
@@ -135,11 +145,13 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
       let isValid =
         validateMoveToTableau(~card, ~destination=tableau[rowNext]);
 
+      let (cardsToMove, rest) = splitAt(card, tableau[rowPrev]);
+
       let updateSelection = (i, list) =>
         switch (i) {
         | i when i == rowPrev && i == rowNext => list
-        | i when i == rowPrev => filterOutCard(list) |> flipLastCard
-        | i when i == rowNext => addCard(list)
+        | i when i == rowPrev => flipLastCard(rest)
+        | i when i == rowNext => List.append(cardsToMove, list)
         | _ => list
         };
 
