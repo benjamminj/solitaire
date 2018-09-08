@@ -16,6 +16,7 @@ type card = {
 };
 
 type cardList = list(card);
+type cardArr = array(card);
 
 type location = {
   foundation: array(cardList),
