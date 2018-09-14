@@ -218,7 +218,7 @@ describe("Moves", () => {
       let card = genCard(1, Hearts);
       let list = [card, genCard(4, Spades), genCard(13, Diamonds)];
       let result = filterOutCard(card, list);
-      let [first, ...expected] = list;
+      let expected = List.tl(list);
       expect(result) |> toEqual(expected);
     })
   })

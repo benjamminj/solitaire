@@ -1,6 +1,16 @@
 open Types;
 let component = ReasonReact.statelessComponent("Card");
 
+module Styles = {
+  open Css;
+  let gray = hex("a3a3a3");
+
+  let card = style([
+    border(px(1), `solid, gray),
+    padding(rem(0.5)),
+  ])
+}
+
 let make = (~card, ~onClick, _children) => {
   ...component,
   render: _self => {
@@ -29,7 +39,7 @@ let make = (~card, ~onClick, _children) => {
     <button
       key=idStr
       id=idStr
-      style={ReactDOMRe.Style.make(~background="none", ~border="none", ())}
+      className={Styles.card}
       onClick>
       {
         card.faceUp ?

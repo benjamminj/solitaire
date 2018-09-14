@@ -13,7 +13,16 @@ let component = ReasonReact.reducerComponent("Game");
 let generateDeck = (): list(card) => {
   let generateSuit = (idPrefix, suit: suit): list(card) => {
     let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-    List.map(rank => { id: idPrefix * 100 + rank, suit, rank, selectable: false, faceUp: false}, ranks);
+    List.map(
+      rank => {
+        id: idPrefix * 100 + rank,
+        suit,
+        rank,
+        selectable: false,
+        faceUp: false,
+      },
+      ranks,
+    );
   };
 
   let suits = [Hearts, Diamonds, Clubs, Spades];
@@ -29,8 +38,8 @@ let shuffleDeck = (deck: list(card)): list(card) => {
   for (i in start downto 1) {
     let temp = arr[i];
 
-    /* 
-     * In order to get actual random data, we need to seed Random with something that isn't 
+    /*
+     * In order to get actual random data, we need to seed Random with something that isn't
      * deterministic.
      * NOTE -- likely can move this further up in the call tree & inject
      */
@@ -71,7 +80,7 @@ let dealCards = cards => {
             let amt = i + 1;
             let nextStart = start^ + amt;
             let items = Array.sub(arr, start^, amt);
-            items[0] = { ...items[0], faceUp: true, selectable: true };
+            items[0] = {...items[0], faceUp: true, selectable: true};
 
             start := nextStart;
             items |> Array.to_list;
@@ -134,15 +143,22 @@ let make = _children => {
     | DealHand =>
       /* Go grab the first 3 from the list */
       let {stock, hand} = state.location;
+      Js.log("deal hand");
       let prepareHand = (listA, listB) => {
         /* Flip all the cards in listA */
-        let flippedListA = List.mapi((i, card) => {...card, faceUp: true, selectable: i == 0 }, listA);
+        let flippedListA =
+          List.mapi(
+            (i, card) => {...card, faceUp: true, selectable: i == 0},
+            listA,
+          );
         List.append(flippedListA, listB);
       };
 
-      let prepareStock = list => {
-        List.rev_map(card => {...card, faceUp: false, selectable: false}, list);
-      }
+      let prepareStock = list =>
+        List.rev_map(
+          card => {...card, faceUp: false, selectable: false},
+          list,
+        );
 
       let (nextHand, rest) =
         switch (stock) {
@@ -209,40 +225,37 @@ let make = _children => {
             </pre>
             <pre style=rowStyle>
               <div> {ReasonReact.string("hand")} </div>
-              /* {
-                     /* For now, leave this here. We can uncomment once game mechanics are working */
-                   let {hand} = self.state.location;
+              {
+                /* For now, leave this here. We can uncomment once game mechanics are working */
+                let {hand} = self.state.location;
 
-                   let displayedCards =
-                     switch (hand) {
-                     | [] => []
-                     | [a] => [a]
-                     | [a, b] => [a, b]
-                     | [a, b, c, ..._rest] => [a, b, c]
-                     };
-
-                   <CardStack cards=[|displayedCards|] />;
-                 } */
-              <CardStack
-                cards=[|self.state.location.hand|]
-                onClickCard={_i => onClickCard(~location=Hand)}
-              />
+                let displayedCards =
+                  switch (hand) {
+                  | [] => []
+                  | [a] => [a]
+                  | [a, b] => [a, b]
+                  | [a, b, c, ..._rest] => [a, b, c]
+                  };
+                <CardStack
+                  cards=[|displayedCards|]
+                  onClickCard={_i => onClickCard(~location=Hand)}
+                />;
+              }
             </pre>
             <pre style=rowStyle>
               <div> {ReasonReact.string("stock")} </div>
-              /* {
-                   let {stock} = self.state.location;
+              {
+                let {stock} = self.state.location;
 
-                   switch (List.hd(stock)) {
-                   | card =>
-                     <Card id={card.id} rank={card.rank} suit={card.suit} />
-                   | exception _err => ReasonReact.null
-                   };
-                 } */
-              <CardStack
-                cards=[|self.state.location.stock|]
-                onClickCard={_i => onClickCard(~location=Stock)}
-              />
+                switch (List.hd(stock)) {
+                | card =>
+                  <Card
+                    card={...card, selectable: true}
+                    onClick=((~card) => self.send(DealHand))
+                  />
+                | exception _err => ReasonReact.null
+                };
+              }
             </pre>
           </>;
         }
