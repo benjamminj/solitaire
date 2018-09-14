@@ -4,12 +4,24 @@ let component = ReasonReact.statelessComponent("Card");
 module Styles = {
   open Css;
   let gray = hex("a3a3a3");
+  
+  let wrapper = style([
+    display(`flex),
+    flexDirection(`column)
+  ]);
 
-  let card = style([
-    border(px(1), `solid, gray),
-    padding(rem(0.5)),
-  ])
-}
+  let card = (~faceUp=false, ~textColor) =>
+    style([
+      border(px(1), `solid, gray),
+      padding(rem(0.5)),
+      color(faceUp ? textColor : dodgerblue),
+    ]);
+
+  let icon = style([fontSize(rem(2.0))]);
+
+  let upperRank = style([textAlign(`left)]);
+  let lowerRank = style([textAlign(`right)]);
+};
 
 let make = (~card, ~onClick, _children) => {
   ...component,
@@ -17,12 +29,14 @@ let make = (~card, ~onClick, _children) => {
     let {id, rank, suit} = card;
     let idStr = string_of_int(id);
     let (text, color) =
-      switch (suit) {
-      | Hearts => ("hearts", "red")
-      | Diamonds => ("diamonds", "red")
-      | Clubs => ("clubs", "black")
-      | Spades => ("spades", "black")
-      };
+      Css.(
+        switch (suit) {
+        | Hearts => ({js|♥︎|js}, red)
+        | Diamonds => ({js|♦︎|js}, red)
+        | Clubs => ({js|♣︎|js}, black)
+        | Spades => ({js|♠︎|js}, black)
+        }
+      );
 
     let rankText =
       switch (rank) {
@@ -39,16 +53,17 @@ let make = (~card, ~onClick, _children) => {
     <button
       key=idStr
       id=idStr
-      className={Styles.card}
+      className={Styles.card(~textColor=color, ~faceUp=card.faceUp)}
       onClick>
       {
         card.faceUp ?
-          <span style={ReactDOMRe.Style.make(~color, ())}>
-            <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
+          <div className=Styles.wrapper>
+            <span className=Styles.upperRank> {ReasonReact.string(rankText)} </span>
+            <span className=Styles.icon> {ReasonReact.string(text)} </span>
+            <span className=Styles.lowerRank>
               {ReasonReact.string(rankText)}
             </span>
-            <span> {ReasonReact.string(text)} </span>
-          </span> :
+          </div> :
           <span> {ReasonReact.string("HIDDEN")} </span>
       }
     </button>;
