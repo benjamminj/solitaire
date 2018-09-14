@@ -216,10 +216,34 @@ let make = _children => {
               <div>
                 {ReasonReact.string("foundation")}
                 <div style=flex>
-                  <CardStack
-                    cards={self.state.location.foundation}
-                    onClickCard={i => onClickCard(~location=Foundation(i))}
-                  />
+                  {
+                    self.state.location.foundation
+                    |> Array.mapi((i, row) =>
+                         switch (row) {
+                         | [] =>
+                           <button
+                             className=Css.(style([borderWidth(px(0))]))
+                             onClick=(
+                               _ev =>
+                                 onClickCard(
+                                   ~location=Foundation(i),
+                                   ~card=None,
+                                 )
+                             )>
+                             {ReasonReact.string(" EMPTY ")}
+                           </button>
+                         | [card, ..._rest] =>
+                           <Card
+                             card
+                             onClick=(
+                               (~card) =>
+                                 onClickCard(~location=Foundation(i), ~card)
+                             )
+                           />
+                         }
+                       )
+                    |> ReasonReact.array
+                  }
                 </div>
               </div>
             </pre>
