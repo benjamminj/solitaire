@@ -5,6 +5,10 @@ module Styles = {
   open Css;
   let gray = hex("a3a3a3");
   
+  let height_ = height(rem(7.25));
+  let width_ = width(rem(4.0));
+  let border_ = border(px(1), `solid, gray);
+  
   let wrapper = style([
     display(`flex),
     flexDirection(`column)
@@ -12,9 +16,10 @@ module Styles = {
 
   let card = (~faceUp=false, ~textColor) =>
     style([
-      border(px(1), `solid, gray),
+      border_,
       padding(rem(0.5)),
-      width(rem(4.0)),
+      width_,
+      height_,
       color(faceUp ? textColor : dodgerblue),
     ]);
 
@@ -22,6 +27,12 @@ module Styles = {
 
   let upperRank = style([textAlign(`left)]);
   let lowerRank = style([textAlign(`right)]);
+
+  let hiddenCard = style([
+    border_,
+    width_,
+    height_,
+  ]);
 };
 
 let make = (~card, ~onClick, _children) => {
