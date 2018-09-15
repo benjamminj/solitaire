@@ -14,6 +14,7 @@ module Styles = {
     style([
       border(px(1), `solid, gray),
       padding(rem(0.5)),
+      width(rem(4.0)),
       color(faceUp ? textColor : dodgerblue),
     ]);
 
@@ -47,8 +48,7 @@ let make = (~card, ~onClick, _children) => {
       | num => num |> string_of_int
       };
 
-    let onClick =
-      card.selectable ? _ev => onClick(~card=Some(card)) : (_ev => ());
+    let onClick = _ev => onClick(~card);
 
     <button
       key=idStr

@@ -222,6 +222,7 @@ let make = _children => {
                          switch (row) {
                          | [] =>
                            <button
+                             key={"empty-" ++ string_of_int(i)}
                              className=Css.(style([borderWidth(px(0))]))
                              onClick=(
                                _ev =>
@@ -234,10 +235,14 @@ let make = _children => {
                            </button>
                          | [card, ..._rest] =>
                            <Card
+                             key={string_of_int(card.id)}
                              card
                              onClick=(
                                (~card) =>
-                                 onClickCard(~location=Foundation(i), ~card)
+                                 onClickCard(
+                                   ~location=Foundation(i),
+                                   ~card=Some(card),
+                                 )
                              )
                            />
                          }
@@ -261,6 +266,7 @@ let make = _children => {
                   | [a, b, c, ..._rest] => [a, b, c]
                   };
                 <CardStack
+                  styles=Css.[flexDirection(`row)]
                   cards=[|displayedCards|]
                   onClickCard={_i => onClickCard(~location=Hand)}
                 />;

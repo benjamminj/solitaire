@@ -1,21 +1,27 @@
 open Types;
 let component = ReasonReact.statelessComponent("CardStack");
 
-let make = (~cards, ~onClickCard, _children) => {
+module Styles = {
+  open Css;
+
+  let stack = overrides => {
+    let rules = List.append(overrides, [
+      display(`flex),
+      flexDirection(`column),
+      padding(rem(0.25)),
+    ]);
+
+    style(rules);
+  }
+};
+
+let make = (~cards, ~styles=[], ~onClickCard, _children) => {
   ...component,
   render: _self =>
     cards
     |> Array.mapi((i, cardList) =>
          <div
-           key={"row-" ++ string_of_int(i)}
-           style={
-             ReactDOMRe.Style.make(
-               ~display="flex",
-               ~flexDirection="column",
-               ~padding="0.25rem",
-               (),
-             )
-           }>
+           key={"row-" ++ string_of_int(i)} className={Styles.stack(styles)}>
            {
              List.length(cardList) == 0 ?
                <button
@@ -34,7 +40,11 @@ let make = (~cards, ~onClickCard, _children) => {
                     <Card
                       key={card.id |> string_of_int}
                       card
-                      onClick={i |> onClickCard}
+                      onClick={
+                        (~card) =>
+                          card.selectable ?
+                            onClickCard(i, ~card=Some(card)) : ()
+                      }
                     />
                   )
                |> Array.of_list
