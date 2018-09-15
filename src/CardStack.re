@@ -38,6 +38,7 @@ let make = (~cards, ~styles=[], ~onClickCard, _children) => {
                cardList
                |> List.rev_map(card =>
                     <Card
+                      styles={Css.([borderColor(hex("f00"))])}
                       key={card.id |> string_of_int}
                       card
                       onClick={

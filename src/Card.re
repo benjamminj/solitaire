@@ -14,14 +14,17 @@ module Styles = {
     flexDirection(`column)
   ]);
 
-  let card = (~faceUp=false, ~textColor) =>
-    style([
+  let card = (~faceUp=false, ~textColor, ~styles) => {
+    let rules = List.append(styles, [
       border_,
       padding(rem(0.5)),
       width_,
       height_,
       color(faceUp ? textColor : dodgerblue),
-    ]);
+    ])
+    
+    style(rules);
+  }
 
   let icon = style([fontSize(rem(2.0))]);
 
@@ -35,7 +38,7 @@ module Styles = {
   ]);
 };
 
-let make = (~card, ~onClick, _children) => {
+let make = (~card, ~onClick, ~styles=[], _children) => {
   ...component,
   render: _self => {
     let {id, rank, suit} = card;
@@ -64,7 +67,7 @@ let make = (~card, ~onClick, _children) => {
     <button
       key=idStr
       id=idStr
-      className={Styles.card(~textColor=color, ~faceUp=card.faceUp)}
+      className={Styles.card(~textColor=color, ~faceUp=card.faceUp, ~styles)}
       onClick>
       {
         card.faceUp ?
