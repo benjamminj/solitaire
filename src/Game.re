@@ -99,10 +99,10 @@ let getNextMove = (self, ~location, ~card: option(card)) => {
 
   switch (moveKey) {
   | Prev =>
-    Js.log("set previous");
+    Js.log2("set previous", location);
     self.send(UpdateMove({prev: Some(location), next: None, card}));
   | Next =>
-    Js.log("set next");
+    Js.log2("set next", location);
     self.send(MoveCard({...move, next: Some(location)}));
   };
 };
@@ -268,6 +268,7 @@ let make = _children => {
                 <CardStack
                   styles=Css.[flexDirection(`row)]
                   cards=[|displayedCards|]
+                  direction=Horizontal
                   onClickCard={_i => onClickCard(~location=Hand)}
                 />;
               }
@@ -280,8 +281,9 @@ let make = _children => {
                 switch (List.hd(stock)) {
                 | card =>
                   <Card
+                    styles=Css.[margin(rem(0.25))]
                     card={...card, selectable: true}
-                    onClick=((~card) => self.send(DealHand))
+                    onClick=((~card as _c) => self.send(DealHand))
                   />
                 | exception _err => ReasonReact.null
                 };
@@ -296,7 +298,9 @@ let make = _children => {
 
           <CardStack
             cards={self.state.location.tableau}
-            onClickCard={i => onClickCard(~location=Tableau(i))}
+            onClickCard={i => {
+              onClickCard(~location=Tableau(i));
+            }}
           />
         </pre>
     </>;

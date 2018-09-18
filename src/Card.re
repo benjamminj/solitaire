@@ -3,39 +3,43 @@ let component = ReasonReact.statelessComponent("Card");
 
 module Styles = {
   open Css;
-  let gray = hex("a3a3a3");
-  
-  let height_ = height(rem(7.25));
+  let gray = hex("333");
+
+  let height_ = height(rem(6.75));
   let width_ = width(rem(4.0));
   let border_ = border(px(1), `solid, gray);
-  
-  let wrapper = style([
-    display(`flex),
-    flexDirection(`column)
-  ]);
+
+  let wrapper =
+    style([display(`flex), flexDirection(`column), height(pct(100.0))]);
 
   let card = (~faceUp=false, ~textColor, ~styles) => {
-    let rules = List.append(styles, [
-      border_,
-      padding(rem(0.5)),
-      width_,
-      height_,
-      color(faceUp ? textColor : dodgerblue),
-    ])
-    
-    style(rules);
-  }
+    let rules =
+      List.append(
+        styles,
+        [
+          border_,
+          padding(rem(0.5)),
+          width_,
+          height_,
+          color(faceUp ? textColor : dodgerblue),
+          backgroundColor(faceUp ? white : dodgerblue),
+        ],
+      );
 
+    style(rules);
+  };
+
+  let iconWrapper =
+    style([
+      display(`flex),
+      alignItems(`center),
+      flexGrow(1),
+      justifyContent(`center),
+    ]);
   let icon = style([fontSize(rem(2.0))]);
 
   let upperRank = style([textAlign(`left)]);
   let lowerRank = style([textAlign(`right)]);
-
-  let hiddenCard = style([
-    border_,
-    width_,
-    height_,
-  ]);
 };
 
 let make = (~card, ~onClick, ~styles=[], _children) => {
@@ -72,13 +76,17 @@ let make = (~card, ~onClick, ~styles=[], _children) => {
       {
         card.faceUp ?
           <div className=Styles.wrapper>
-            <span className=Styles.upperRank> {ReasonReact.string(rankText)} </span>
-            <span className=Styles.icon> {ReasonReact.string(text)} </span>
+            <span className=Styles.upperRank>
+              {ReasonReact.string(rankText)}
+            </span>
+            <div className=Styles.iconWrapper>
+              <span className=Styles.icon> {ReasonReact.string(text)} </span>
+            </div>
             <span className=Styles.lowerRank>
               {ReasonReact.string(rankText)}
             </span>
           </div> :
-          <span> {ReasonReact.string("HIDDEN")} </span>
+          <div />
       }
     </button>;
   },
