@@ -1,18 +1,61 @@
 open Types;
 let component = ReasonReact.statelessComponent("Card");
 
-let make = (~card, ~onClick, _children) => {
+module Styles = {
+  open Css;
+  let gray = hex("333");
+
+  let height_ = height(rem(6.75));
+  let width_ = width(rem(4.0));
+  let border_ = border(px(1), `solid, gray);
+
+  let wrapper =
+    style([display(`flex), flexDirection(`column), height(pct(100.0))]);
+
+  let card = (~faceUp=false, ~textColor, ~styles) => {
+    let rules =
+      List.append(
+        styles,
+        [
+          border_,
+          padding(rem(0.5)),
+          width_,
+          height_,
+          color(faceUp ? textColor : dodgerblue),
+          backgroundColor(faceUp ? white : dodgerblue),
+        ],
+      );
+
+    style(rules);
+  };
+
+  let iconWrapper =
+    style([
+      display(`flex),
+      alignItems(`center),
+      flexGrow(1),
+      justifyContent(`center),
+    ]);
+  let icon = style([fontSize(rem(2.0))]);
+
+  let upperRank = style([textAlign(`left)]);
+  let lowerRank = style([textAlign(`right)]);
+};
+
+let make = (~card, ~onClick, ~styles=[], _children) => {
   ...component,
   render: _self => {
     let {id, rank, suit} = card;
     let idStr = string_of_int(id);
     let (text, color) =
-      switch (suit) {
-      | Hearts => ("hearts", "red")
-      | Diamonds => ("diamonds", "red")
-      | Clubs => ("clubs", "black")
-      | Spades => ("spades", "black")
-      };
+      Css.(
+        switch (suit) {
+        | Hearts => ({js|♥︎|js}, red)
+        | Diamonds => ({js|♦︎|js}, red)
+        | Clubs => ({js|♣︎|js}, black)
+        | Spades => ({js|♠︎|js}, black)
+        }
+      );
 
     let rankText =
       switch (rank) {
@@ -23,23 +66,27 @@ let make = (~card, ~onClick, _children) => {
       | num => num |> string_of_int
       };
 
-    let onClick =
-      card.selectable ? _ev => onClick(~card=Some(card)) : (_ev => ());
+    let onClick = _ev => onClick(~card);
 
     <button
       key=idStr
       id=idStr
-      style={ReactDOMRe.Style.make(~background="none", ~border="none", ())}
+      className={Styles.card(~textColor=color, ~faceUp=card.faceUp, ~styles)}
       onClick>
       {
         card.faceUp ?
-          <span style={ReactDOMRe.Style.make(~color, ())}>
-            <span style={ReactDOMRe.Style.make(~marginRight="0.25rem", ())}>
+          <div className=Styles.wrapper>
+            <span className=Styles.upperRank>
               {ReasonReact.string(rankText)}
             </span>
-            <span> {ReasonReact.string(text)} </span>
-          </span> :
-          <span> {ReasonReact.string("HIDDEN")} </span>
+            <div className=Styles.iconWrapper>
+              <span className=Styles.icon> {ReasonReact.string(text)} </span>
+            </div>
+            <span className=Styles.lowerRank>
+              {ReasonReact.string(rankText)}
+            </span>
+          </div> :
+          <div />
       }
     </button>;
   },
