@@ -1,35 +1,33 @@
 open Types;
 let component = ReasonReact.statelessComponent("CardStack");
 
-type direction = 
+type direction =
   | Horizontal
   | Vertical;
 
 module Styles = {
   open Css;
 
-  let stack = (overrides) => {
-    let rules = List.append(overrides, [
-      display(`flex),
-      flexDirection(`column),
-      padding(rem(0.25)),
-    ]);
+  let stack = overrides => {
+    let rules =
+      List.append(
+        overrides,
+        [display(`flex), flexDirection(`column), padding(rem(0.25))],
+      );
 
     style(rules);
-  }
+  };
 
   let card = (~i, ~direction) => {
     let getOverlap = (amt, i) => i == 0 ? px(0) : amt;
-    let overlap = switch(direction) {
-      | Horizontal => marginLeft(getOverlap(rem(-2.0), i)) 
+    let overlap =
+      switch (direction) {
+      | Horizontal => marginLeft(getOverlap(rem(-2.0), i))
       | Vertical => marginTop(getOverlap(rem(-5.0), i))
-    };
+      };
 
-    [
-    zIndex(i),
-    overlap,
-  ]
-  }
+    [zIndex(i), overlap];
+  };
 };
 
 let make = (~cards, ~styles=[], ~direction=Vertical, ~onClickCard, _children) => {
@@ -41,19 +39,9 @@ let make = (~cards, ~styles=[], ~direction=Vertical, ~onClickCard, _children) =>
            key={"row-" ++ string_of_int(i)} className={Styles.stack(styles)}>
            {
              List.length(cardList) == 0 ?
-               <button
-                 onClick={_ev => onClickCard(i, ~card=None)}
-                 style={
-                   ReactDOMRe.Style.make(
-                     ~background="none",
-                     ~border="none",
-                     (),
-                   )
-                 }>
-                 {ReasonReact.string("EMPTY")}
-               </button> :
+               <EmptyCard onClick={_ev => onClickCard(i, ~card=None)} /> :
                cardList
-               |> List.rev 
+               |> List.rev
                |> List.mapi((j, card) =>
                     <Card
                       styles={Styles.card(~direction, ~i=j)}

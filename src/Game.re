@@ -219,33 +219,44 @@ let make = _children => {
                   {
                     self.state.location.foundation
                     |> Array.mapi((i, row) =>
-                         switch (row) {
-                         | [] =>
-                           <button
-                             key={"empty-" ++ string_of_int(i)}
-                             className=Css.(style([borderWidth(px(0))]))
-                             onClick=(
-                               _ev =>
-                                 onClickCard(
-                                   ~location=Foundation(i),
-                                   ~card=None,
+                         <div
+                           className=Css.(
+                             style([
+                               margin3(
+                                 ~top=rem(0.25),
+                                 ~h=rem(0.25),
+                                 ~bottom=`zero,
+                               ),
+                             ])
+                           )>
+                           {
+                             switch (row) {
+                             | [] =>
+                               <EmptyCard
+                                 key={"empty-" ++ string_of_int(i)}
+                                 onClick=(
+                                   _ev =>
+                                     onClickCard(
+                                       ~location=Foundation(i),
+                                       ~card=None,
+                                     )
                                  )
-                             )>
-                             {ReasonReact.string(" EMPTY ")}
-                           </button>
-                         | [card, ..._rest] =>
-                           <Card
-                             key={string_of_int(card.id)}
-                             card
-                             onClick=(
-                               (~card) =>
-                                 onClickCard(
-                                   ~location=Foundation(i),
-                                   ~card=Some(card),
+                               />
+                             | [card, ..._rest] =>
+                               <Card
+                                 key={string_of_int(card.id)}
+                                 card
+                                 onClick=(
+                                   (~card) =>
+                                     onClickCard(
+                                       ~location=Foundation(i),
+                                       ~card=Some(card),
+                                     )
                                  )
-                             )
-                           />
-                         }
+                               />
+                             }
+                           }
+                         </div>
                        )
                     |> ReasonReact.array
                   }
@@ -255,7 +266,6 @@ let make = _children => {
             <pre style=rowStyle>
               <div> {ReasonReact.string("hand")} </div>
               {
-                /* For now, leave this here. We can uncomment once game mechanics are working */
                 let {hand} = self.state.location;
 
                 let displayedCards =
@@ -275,34 +285,31 @@ let make = _children => {
             </pre>
             <pre style=rowStyle>
               <div> {ReasonReact.string("stock")} </div>
+              <div className={Css.(style([marginTop(rem(0.25))]))}>
               {
                 let {stock} = self.state.location;
 
-                switch (List.hd(stock)) {
-                | card =>
+                switch (stock) {
+                | [] => <EmptyCard onClick=(_ev => self.send(DealHand)) />
+                | [card, ..._rest] =>
                   <Card
-                    styles=Css.[margin(rem(0.25))]
                     card={...card, selectable: true}
                     onClick=((~card as _c) => self.send(DealHand))
                   />
-                | exception _err => ReasonReact.null
                 };
               }
+              </div>
             </pre>
           </>;
         }
       </div>
       /* Tableau component */
       <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
-        /* TODO -- make sure that the arguments get assigned to the correct row? */
-
-          <CardStack
-            cards={self.state.location.tableau}
-            onClickCard={i => {
-              onClickCard(~location=Tableau(i));
-            }}
-          />
-        </pre>
+        <CardStack
+          cards={self.state.location.tableau}
+          onClickCard={i => onClickCard(~location=Tableau(i))}
+        />
+      </pre>
     </>;
   },
 };
