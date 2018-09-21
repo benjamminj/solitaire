@@ -277,9 +277,9 @@ let make = _children => {
                   };
                 <CardStack
                   styles=Css.[flexDirection(`row)]
-                  cards=[|displayedCards|]
+                  cards=displayedCards
                   direction=Horizontal
-                  onClickCard={_i => onClickCard(~location=Hand)}
+                  onClickCard={(~card) => onClickCard(~location=Hand, ~card)}
                 />;
               }
             </pre>
@@ -305,9 +305,9 @@ let make = _children => {
       </div>
       /* Tableau component */
       <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
-        <CardStack
-          cards={self.state.location.tableau}
-          onClickCard={i => onClickCard(~location=Tableau(i))}
+        <Tableau
+          rows={self.state.location.tableau}
+          onClickCard={(i) => onClickCard(~location=Tableau(i))}
         />
       </pre>
     </>;
