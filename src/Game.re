@@ -210,61 +210,11 @@ let make = _children => {
       <div style={ReactDOMRe.Style.make(~display="flex", ())}>
         {
           let rowStyle = ReactDOMRe.Style.make(~padding="0 0.25rem", ());
-          let flex = ReactDOMRe.Style.make(~display="flex", ());
           <>
             <pre style=rowStyle>
-              <div>
-                {ReasonReact.string("foundation")}
-                <div style=flex>
-                  {
-                    self.state.location.foundation
-                    |> Array.mapi((i, row) =>
-                         <div
-                           className=Css.(
-                             style([
-                               margin3(
-                                 ~top=rem(0.25),
-                                 ~h=rem(0.25),
-                                 ~bottom=`zero,
-                               ),
-                             ])
-                           )>
-                           {
-                             switch (row) {
-                             | [] =>
-                               <EmptyCard
-                                 key={"empty-" ++ string_of_int(i)}
-                                 onClick=(
-                                   _ev =>
-                                     onClickCard(
-                                       ~location=Foundation(i),
-                                       ~card=None,
-                                     )
-                                 )
-                               />
-                             | [card, ..._rest] =>
-                               <Card
-                                 key={string_of_int(card.id)}
-                                 card
-                                 onClick=(
-                                   (~card) =>
-                                     onClickCard(
-                                       ~location=Foundation(i),
-                                       ~card=Some(card),
-                                     )
-                                 )
-                               />
-                             }
-                           }
-                         </div>
-                       )
-                    |> ReasonReact.array
-                  }
-                </div>
-              </div>
+              <Foundation rows={self.state.location.foundation} onClickCard />
             </pre>
             <pre style=rowStyle>
-              <div> {ReasonReact.string("hand")} </div>
               {
                 let {hand} = self.state.location;
 
@@ -284,8 +234,7 @@ let make = _children => {
               }
             </pre>
             <pre style=rowStyle>
-              <div> {ReasonReact.string("stock")} </div>
-              <div className={Css.(style([marginTop(rem(0.25))]))}>
+              <div className=Css.(style([margin(rem(0.25))]))>
               {
                 let {stock} = self.state.location;
 
@@ -307,7 +256,7 @@ let make = _children => {
       <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
         <Tableau
           rows={self.state.location.tableau}
-          onClickCard={(i) => onClickCard(~location=Tableau(i))}
+          onClickCard={i => onClickCard(~location=Tableau(i))}
         />
       </pre>
     </>;

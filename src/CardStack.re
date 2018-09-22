@@ -37,9 +37,9 @@ let make = (~cards, ~styles=[], ~direction=Vertical, ~onClickCard, _children) =>
       {
         cards
         |> List.rev
-        |> List.mapi((j, card) =>
+        |> List.mapi((i, card) =>
              <Card
-               styles={Styles.card(~direction, ~i=j)}
+               styles={Styles.card(~direction, ~i)}
                key={card.id |> string_of_int}
                card
                onClick={

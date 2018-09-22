@@ -36,6 +36,7 @@ module Styles = {
       flexGrow(1),
       justifyContent(`center),
     ]);
+    
   let icon = style([fontSize(rem(2.0))]);
 
   let upperRank = style([textAlign(`left)]);
