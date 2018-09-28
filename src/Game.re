@@ -106,6 +106,9 @@ module Styles = {
   open Css;
   open Global.Styles;
 
+  let container =
+    style([maxWidth @@ rem(25.0), margin2(~v=`zero, ~h=`auto)]);
+
   let grid =
     style([
       display @@ `grid,
@@ -207,28 +210,26 @@ let make = _children => {
     },
   render: self => {
     let onClickCard = getNextMove(self.send, self.state);
-    <>
+    <div className=Styles.container>
       <div>
         <button onClick={_ev => self.send(Init)}>
           {ReasonReact.string("init")}
         </button>
       </div>
       <div className=Styles.grid>
-        <>
-          <Foundation rows={self.state.location.foundation} onClickCard />
-          <div className=Css.(style([gridColumn(5, 7)]))>
-            <Hand onClickCard hand={self.state.location.hand} />
-          </div>
-          <Stock
-            cards={self.state.location.stock}
-            onClick={() => self.send(DealHand)}
-          />
-        </>
+        <Foundation rows={self.state.location.foundation} onClickCard />
+        <div className=Css.(style([gridColumn(5, 7)]))>
+          <Hand onClickCard hand={self.state.location.hand} />
+        </div>
+        <Stock
+          cards={self.state.location.stock}
+          onClick={() => self.send(DealHand)}
+        />
         <Tableau
           rows={self.state.location.tableau}
           onClickCard={i => onClickCard(~location=Tableau(i))}
         />
       </div>
-    </>;
+    </div>;
   },
 };

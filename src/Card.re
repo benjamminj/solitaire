@@ -25,7 +25,7 @@ module Styles = {
         styles,
         [
           border_,
-          padding2(~v=rem(0.25), ~h=rem(0.5)),
+          padding(rem(0.5)),
           width_,
           height @@ cardHeight,
           color(faceUp ? textColor : dodgerblue),

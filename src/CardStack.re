@@ -23,7 +23,7 @@ module Styles = {
     let overlap =
       switch (direction) {
       | Horizontal => marginLeft(getOverlap(rem(-2.0), i))
-      | Vertical => marginTop(getOverlap(rem(-4.0), i))
+      | Vertical => marginTop(getOverlap(rem(-3.5), i))
       };
 
     [zIndex(i), overlap];

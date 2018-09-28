@@ -1,7 +1,7 @@
 module Styles = {
   open Css;
 
-  let cardHeight = rem(5.0);
+  let cardHeight = rem(4.75);
   let cardHeightMd = rem(7.25);
 
 
