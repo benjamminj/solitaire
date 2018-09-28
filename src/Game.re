@@ -92,19 +92,28 @@ let dealCards = cards => {
   (tableau, Array.to_list(stock));
 };
 
-/* NOTE -- can likely be made more testable, will need to remove the reliance on "self" */
-let getNextMove = (self, ~location, ~card: option(card)) => {
-  open ReasonReact;
-  let {moveKey, move} = self.state;
+let getNextMove = (updater, state, ~location, ~card: option(card)) => {
+  let {moveKey, move} = state;
 
   switch (moveKey) {
-  | Prev =>
-    Js.log2("set previous", location);
-    self.send(UpdateMove({prev: Some(location), next: None, card}));
-  | Next =>
-    Js.log2("set next", location);
-    self.send(MoveCard({...move, next: Some(location)}));
+  | Prev => updater(UpdateMove({prev: Some(location), next: None, card}))
+  | Next => updater(MoveCard({...move, next: Some(location)}))
   };
+};
+
+/* STYLES */
+module Styles = {
+  open Css;
+  open Global.Styles;
+
+  let grid =
+    style([
+      display @@ `grid,
+      `declaration(("gridTemplateColumns", "repeat(7, 1fr)")),
+      gridTemplateRows @@ [cardHeight, auto],
+      gridRowGap @@ rem(1.0),
+      gridColumnGap @@ rem(0.25),
+    ]);
 };
 
 /* STATE */
@@ -197,68 +206,29 @@ let make = _children => {
       });
     },
   render: self => {
-    let onClickCard = getNextMove(self);
+    let onClickCard = getNextMove(self.send, self.state);
     <>
       <div>
         <button onClick={_ev => self.send(Init)}>
           {ReasonReact.string("init")}
         </button>
-        <button onClick={_ev => self.send(DealHand)}>
-          {ReasonReact.string("deal hand")}
-        </button>
       </div>
-      <div style={ReactDOMRe.Style.make(~display="flex", ())}>
-        {
-          let rowStyle = ReactDOMRe.Style.make(~padding="0 0.25rem", ());
-          <>
-            <pre style=rowStyle>
-              <Foundation rows={self.state.location.foundation} onClickCard />
-            </pre>
-            <pre style=rowStyle>
-              {
-                let {hand} = self.state.location;
-
-                let displayedCards =
-                  switch (hand) {
-                  | [] => []
-                  | [a] => [a]
-                  | [a, b] => [a, b]
-                  | [a, b, c, ..._rest] => [a, b, c]
-                  };
-                <CardStack
-                  styles=Css.[flexDirection(`row)]
-                  cards=displayedCards
-                  direction=Horizontal
-                  onClickCard={(~card) => onClickCard(~location=Hand, ~card)}
-                />;
-              }
-            </pre>
-            <pre style=rowStyle>
-              <div className=Css.(style([margin(rem(0.25))]))>
-              {
-                let {stock} = self.state.location;
-
-                switch (stock) {
-                | [] => <EmptyCard onClick=(_ev => self.send(DealHand)) />
-                | [card, ..._rest] =>
-                  <Card
-                    card={...card, selectable: true}
-                    onClick=((~card as _c) => self.send(DealHand))
-                  />
-                };
-              }
-              </div>
-            </pre>
-          </>;
-        }
-      </div>
-      /* Tableau component */
-      <pre style={ReactDOMRe.Style.make(~display="flex", ())}>
+      <div className=Styles.grid>
+        <>
+          <Foundation rows={self.state.location.foundation} onClickCard />
+          <div className=Css.(style([gridColumn(5, 7)]))>
+            <Hand onClickCard hand={self.state.location.hand} />
+          </div>
+          <Stock
+            cards={self.state.location.stock}
+            onClick={() => self.send(DealHand)}
+          />
+        </>
         <Tableau
           rows={self.state.location.tableau}
           onClickCard={i => onClickCard(~location=Tableau(i))}
         />
-      </pre>
+      </div>
     </>;
   },
 };

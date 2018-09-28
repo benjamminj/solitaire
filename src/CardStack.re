@@ -12,7 +12,7 @@ module Styles = {
     let rules =
       List.append(
         overrides,
-        [display(`flex), flexDirection(`column), padding(rem(0.25))],
+        [display(`flex), flexDirection(`column)],
       );
 
     style(rules);
@@ -23,7 +23,7 @@ module Styles = {
     let overlap =
       switch (direction) {
       | Horizontal => marginLeft(getOverlap(rem(-2.0), i))
-      | Vertical => marginTop(getOverlap(rem(-5.0), i))
+      | Vertical => marginTop(getOverlap(rem(-4.0), i))
       };
 
     [zIndex(i), overlap];

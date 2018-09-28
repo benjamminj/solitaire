@@ -3,14 +3,21 @@ let component = ReasonReact.statelessComponent("Card");
 
 module Styles = {
   open Css;
-  let gray = hex("333");
+  open Global.Styles;
 
-  let height_ = height(rem(6.75));
-  let width_ = width(rem(4.0));
+  let gray = hex("333");
+  
+  let width_ = width(pct(100.0));
   let border_ = border(px(1), `solid, gray);
 
   let wrapper =
     style([display(`flex), flexDirection(`column), height(pct(100.0))]);
+
+  let header =
+    style([
+      display @@ `flex,
+      justifyContent @@ `spaceBetween
+    ])
 
   let card = (~faceUp=false, ~textColor, ~styles) => {
     let rules =
@@ -18,9 +25,9 @@ module Styles = {
         styles,
         [
           border_,
-          padding(rem(0.5)),
+          padding2(~v=rem(0.25), ~h=rem(0.5)),
           width_,
-          height_,
+          height @@ cardHeight,
           color(faceUp ? textColor : dodgerblue),
           backgroundColor(faceUp ? white : dodgerblue),
         ],
@@ -77,15 +84,16 @@ let make = (~card, ~onClick, ~styles=[], _children) => {
       {
         card.faceUp ?
           <div className=Styles.wrapper>
-            <span className=Styles.upperRank>
-              {ReasonReact.string(rankText)}
-            </span>
+            <div className=Styles.header>
+              <span className=Styles.upperRank>
+                {ReasonReact.string(rankText)}
+              </span>
+
+              <span> {ReasonReact.string(text)} </span>
+            </div>
             <div className=Styles.iconWrapper>
               <span className=Styles.icon> {ReasonReact.string(text)} </span>
             </div>
-            <span className=Styles.lowerRank>
-              {ReasonReact.string(rankText)}
-            </span>
           </div> :
           <div />
       }
