@@ -4,7 +4,6 @@ module Styles = {
   let cardHeight = rem(4.75);
   let cardHeightMd = rem(7.25);
 
-
   type bp = {
     xs: int,
     sm: int,
@@ -12,6 +11,4 @@ module Styles = {
     lg: int,
     xl: int,
   }
-
-  
 }
