@@ -4,11 +4,11 @@ module Styles = {
   let cardHeight = rem(4.75);
   let cardHeightMd = rem(7.25);
 
-  type bp = {
-    xs: int,
-    sm: int,
-    md: int,
-    lg: int,
-    xl: int,
-  }
+  type theme_ = {
+    primary: Css.color,
+  };
+
+  let theme = {
+    primary: hex("2196f3")
+  };
 }

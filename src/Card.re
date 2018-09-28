@@ -28,8 +28,8 @@ module Styles = {
           padding(rem(0.5)),
           width_,
           height @@ cardHeight,
-          color(faceUp ? textColor : dodgerblue),
-          backgroundColor(faceUp ? white : dodgerblue),
+          color(faceUp ? textColor : theme.primary),
+          backgroundColor(faceUp ? white : theme.primary),
         ],
       );
 

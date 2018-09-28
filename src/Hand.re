@@ -41,7 +41,7 @@ let make = (~hand, ~onClickCard, _children) => {
                key={card.id |> string_of_int}
                card
                styles={Styles.card(i)}
-               onClick={(~card) => onClickCard(~location=Hand, ~card)}
+               onClick={(~card) => onClickCard(~location=Hand, ~card=Some(card))}
              />
            )
         |> Array.of_list
