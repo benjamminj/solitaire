@@ -12,7 +12,7 @@ module Styles = {
     let rules =
       List.append(
         overrides,
-        [display(`flex), flexDirection(`column), padding(rem(0.25))],
+        [display(`flex), flexDirection(`column)],
       );
 
     style(rules);
@@ -23,7 +23,7 @@ module Styles = {
     let overlap =
       switch (direction) {
       | Horizontal => marginLeft(getOverlap(rem(-2.0), i))
-      | Vertical => marginTop(getOverlap(rem(-5.0), i))
+      | Vertical => marginTop(getOverlap(rem(-3.5), i))
       };
 
     [zIndex(i), overlap];
@@ -33,31 +33,23 @@ module Styles = {
 let make = (~cards, ~styles=[], ~direction=Vertical, ~onClickCard, _children) => {
   ...component,
   render: _self =>
-    cards
-    |> Array.mapi((i, cardList) =>
-         <div
-           key={"row-" ++ string_of_int(i)} className={Styles.stack(styles)}>
-           {
-             List.length(cardList) == 0 ?
-               <EmptyCard onClick={_ev => onClickCard(i, ~card=None)} /> :
-               cardList
-               |> List.rev
-               |> List.mapi((j, card) =>
-                    <Card
-                      styles={Styles.card(~direction, ~i=j)}
-                      key={card.id |> string_of_int}
-                      card
-                      onClick={
-                        (~card) =>
-                          card.selectable ?
-                            onClickCard(i, ~card=Some(card)) : ()
-                      }
-                    />
-                  )
-               |> Array.of_list
-               |> ReasonReact.array
-           }
-         </div>
-       )
-    |> ReasonReact.array,
+    <div className={Styles.stack(styles)}>
+      {
+        cards
+        |> List.rev
+        |> List.mapi((i, card) =>
+             <Card
+               styles={Styles.card(~direction, ~i)}
+               key={card.id |> string_of_int}
+               card
+               onClick={
+                 (~card) =>
+                   card.selectable ? onClickCard(~card=Some(card)) : ()
+               }
+             />
+           )
+        |> Array.of_list
+        |> ReasonReact.array
+      }
+    </div>,
 };

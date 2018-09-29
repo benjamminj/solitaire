@@ -4,8 +4,8 @@ let buttonStyle =
   Css.(
     style([
       background(hex("dedede")),
-      height(rem(6.75)),
-      width(rem(4.0)),
+      height(Global.Styles.cardHeight),
+      width(pct(100.0)),
       borderWidth(`zero),
     ])
   );
