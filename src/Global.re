@@ -5,14 +5,14 @@ module Styles = {
   let cardHeightMd = rem(7.25);
 
   type theme_ = {
-    text: Css.color,
+    white: Css.color,
+    black: Css.color,
     primary: Css.color,
-    primaryLight: Css.color,
   };
 
   let theme = {
-    text: hex("444"),
-    primary: hex("2196f3"),
-    primaryLight: hex("bbdefb")
+    white: hex("FFF"),
+    black: hex("222"),
+    primary: hex("1976D2"),
   };
 }

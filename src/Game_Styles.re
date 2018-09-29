@@ -15,8 +15,8 @@ let grid =
 let newGame =
   style([
     borderWidth(`zero),
-    backgroundColor(theme.primaryLight),
-    color(theme.text),
+    backgroundColor(theme.primary),
+    color(theme.white),
     padding(rem(0.5)),
   ]);
 
