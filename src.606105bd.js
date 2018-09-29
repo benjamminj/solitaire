@@ -196,4 +196,4 @@ var o=require("process"),r=require("./caml_builtin_exceptions.js");function t(t)
 },{"react":"HdMw","reason-react/src/ReasonReact.js":"87I6","./Game.bs.js":"Xsda"}],"EcSs":[function(require,module,exports) {
 "use strict";var e=require("reason-react/src/ReactDOMRe.js"),r=require("reason-react/src/ReasonReact.js"),s=require("./App.bs.js");e.renderToElementWithId(r.element(void 0,void 0,s.make([])),"app");
 },{"reason-react/src/ReactDOMRe.js":"sQmA","reason-react/src/ReasonReact.js":"87I6","./App.bs.js":"NPk7"}]},{},["EcSs"], null)
-//# sourceMappingURL=/src.606105bd.map
+//# sourceMappingURL=https://benjamminj.github.io/solitaire/src.606105bd.map
