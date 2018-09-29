@@ -50,9 +50,9 @@ let make = _children => {
         Utils.generateDeck() |> Utils.shuffleDeck |> Utils.dealCards;
 
       ReasonReact.Update({
-        ...state,
+        ...initialState,
         location: {
-          ...state.location,
+          ...initialState.location,
           tableau,
           stock,
         },
