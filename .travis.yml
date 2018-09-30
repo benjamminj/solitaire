@@ -4,9 +4,10 @@ node_js:
 cache: yarn
 before_script: yarn build
 script: yarn test
+before_deploy: yarn build:prod
 deploy:
   provider: pages
-  local-dir: ./dist/
+  local-dir: dist
   skip-cleanup: true
   github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   keep-history: true
