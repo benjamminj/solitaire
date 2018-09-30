@@ -36,7 +36,7 @@ module Styles = {
         styles,
         [
           border_,
-          padding(rem(0.5)),
+          padding(rem(0.25)),
           width_,
           height(cardHeight),
           `declaration(("color", faceUp ? textColor : "black")),
@@ -59,10 +59,14 @@ module Styles = {
     style([
       width(pct(100.0)),
       height(`auto),
-      fontSize(rem(2.0)),
-      maxWidth(pct(100.0)),
       `declaration(("fill", fill)),
     ]);
+
+  let headerIcon = fill => style([
+    maxWidth(rem(0.75)),
+    height(`auto),
+    `declaration(("fill", fill)),
+  ])
 
   let upperRank = style([textAlign(`left)]);
   let lowerRank = style([textAlign(`right)]);
@@ -104,7 +108,7 @@ let make = (~card, ~onClick, ~styles=[], _children) => {
               <span className=Styles.upperRank>
                 {ReasonReact.string(rankText)}
               </span>
-              <span> {ReasonReact.string(text)} </span>
+              <CardIcon className={Styles.headerIcon(color)} suit />
             </div>
             <div className=Styles.iconWrapper>
               <CardIcon className={Styles.icon(color)} suit />
