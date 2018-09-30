@@ -3,4 +3,11 @@ node_js:
   - lts/*
 cache: yarn
 before_script: yarn build
-script: yarn test
+script: yarn testdeploy:
+  provider: pages
+  local-dir: ./dist/
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep-history: true
+  on:
+    branch: master

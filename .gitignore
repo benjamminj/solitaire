@@ -11,3 +11,4 @@ lib/
 dist/
 .cache/
 .bsb.lock
+.merlin
