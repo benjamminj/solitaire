@@ -10,7 +10,7 @@ module Styles = {
   ]);
 
   let card = i => {
-    let overlap = i == 0 ? `zero : rem(-2.0);
+    let overlap = i == 0 ? `zero : pct(-25.0);
 
     [marginLeft(overlap), maxWidth(pct(50.0))];
   };
