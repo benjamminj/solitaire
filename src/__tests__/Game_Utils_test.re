@@ -1,6 +1,7 @@
 open Jest;
 open Expect;
 open Game_Utils;
+open Belt;
 
 describe("Game.Utils", () => {
   describe("generateSuit", () =>
@@ -33,14 +34,14 @@ describe("Game.Utils", () => {
       "should deal number of cards to each teableau row that correspond to their index",
       () => {
         let (isEachRowCorrect, _i) =
-          Array.fold_left(
+          Array.reduce(
+            tableau,
+            (true, 0),
             ((isValid, i), row) => (
               /* Make sure that each & every row has only the number of cards as its' number */
               isValid && List.length(row) == i + 1,
               i + 1,
             ),
-            (true, 0),
-            tableau,
           );
 
         expect(isEachRowCorrect) |> toEqual(true);
@@ -49,26 +50,28 @@ describe("Game.Utils", () => {
 
     test("only the top card of each row should be visible", () => {
       open Types;
-      
+
       let isEachRowValid =
         tableau
-          |> Array.map(row => {
-            switch(row) {
-              | [] => false
-              | [a, ...rest] => a.faceUp && List.for_all(card => card.faceUp == false, rest)
+        ->Array.map(row =>
+            switch (row) {
+            | [] => false
+            | [a, ...rest] =>
+              a.faceUp && List.every(rest, card => card.faceUp == false)
             }
-          })
-          |> arr => Belt.Array.every(arr, row => row)
+          )
+        ->Array.every(row => row);
 
       expect(isEachRowValid) |> toEqual(true);
     });
 
     test("should put the remaining cards face down in the `stock`", () => {
-      let isEveryCardFaceDown = Belt.List.every(stock, card => card.faceUp == false);
-      let isStockCorrectLength = Belt.List.length(stock) == 24;
+      let isEveryCardFaceDown =
+        List.every(stock, card => card.faceUp == false);
+      let isStockCorrectLength = List.length(stock) == 24;
 
       let result = (isEveryCardFaceDown, isStockCorrectLength);
-      expect(result) |> toEqual((true, true))
-    })
+      expect(result) |> toEqual((true, true));
+    });
   });
 });

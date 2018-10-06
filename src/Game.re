@@ -47,7 +47,7 @@ let make = _children => {
     switch (action) {
     | Init =>
       let (tableau, stock) =
-        Utils.generateDeck() |> Utils.shuffleDeck(Js.Date.now()) |> Utils.dealCards;
+        Utils.generateDeck() |> Utils.shuffleDeck(Js.Math.random()) |> Utils.dealCards;
 
       ReasonReact.Update({
         ...initialState,
