@@ -5,6 +5,9 @@
 # dependencies
 node_modules/
 
+# testing
+coverage/
+
 # build artifacts
 lib/
 **/*.bs.js

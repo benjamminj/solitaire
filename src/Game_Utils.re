@@ -1,26 +1,26 @@
 open Types;
 
-let generateDeck = (): list(card) => {
-  let generateSuit = (idPrefix, suit: suit): list(card) => {
-    let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-    List.map(
-      rank => {
-        id: idPrefix * 100 + rank,
-        suit,
-        rank,
-        selectable: false,
-        faceUp: false,
-      },
-      ranks,
-    );
-  };
+let generateSuit = (idPrefix, suit: suit): list(card) => {
+  let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  List.map(
+    rank => {
+      id: idPrefix * 100 + rank,
+      suit,
+      rank,
+      selectable: false,
+      faceUp: false,
+    },
+    ranks,
+  );
+};
 
+let generateDeck = (): list(card) => {
   let suits = [Hearts, Diamonds, Clubs, Spades];
 
   suits |> List.mapi(generateSuit) |> List.flatten;
 };
 
-let shuffleDeck = (deck: list(card)): list(card) => {
+let shuffleDeck = (seed, deck: list(card)): list(card) => {
   let arr = Array.(deck |> of_list |> copy);
 
   let start = Array.length(arr) - 1;
@@ -28,13 +28,8 @@ let shuffleDeck = (deck: list(card)): list(card) => {
   for (i in start downto 1) {
     let temp = arr[i];
 
-    /*
-     * In order to get actual random data, we need to seed Random with something that isn't
-     * deterministic.
-     * NOTE -- likely can move this further up in the call tree & inject
-     */
-    let seed = Js.Date.now();
-    Random.init(int_of_float(seed));
+    /* Start the random generator with the seed data */
+    seed |> int_of_float |> Random.init;
 
     let random =
       Random.float(1.0) *. float_of_int(i - 1) |> floor |> int_of_float;
@@ -51,7 +46,12 @@ let dealCards = cards => {
     Array.(
       cards
       |> of_list
-      |> (arr => (sub(arr, 0, 28), sub(arr, 28, length(arr) - 28)))
+      |> (
+        arr => (
+          sub(arr, 0, 28),
+          sub(arr, 28, length(arr) - 28) |> Array.to_list,
+        )
+      )
     );
 
   /*
@@ -79,5 +79,5 @@ let dealCards = cards => {
       }
     );
 
-  (tableau, Array.to_list(stock));
+  (tableau, stock);
 };

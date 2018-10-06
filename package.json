@@ -14,7 +14,8 @@
     "serve:prod": "serve -d dist",
     "deploy:prod": "gh-pages -d dist",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "bs-css": "^7.2.0",
