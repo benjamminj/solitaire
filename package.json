@@ -31,5 +31,9 @@
     "concurrently": "^3.6.1",
     "gh-pages": "^2.0.0",
     "serve": "^10.0.1"
+  },
+  "jest": {
+    "testMatch": ["**/*_test.bs.js"],
+    "collectCoverageFrom": ["src/**/*.bs.js"]
   }
 }
