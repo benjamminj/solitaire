@@ -72,102 +72,91 @@ let splitAt = (item, list) => {
   search(list, []);
 };
 
-let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~state) => {
+let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
   let filterOutCard = filterOutCard(card);
 
-  /**
-   * NOTE -- still need to add validation, however, this logic is starting to get a bit verbose.
-   * It might be best to break this out into a separate module to keep this part of the app more lean
-   */
-  (
-    switch (prevLocation, nextLocation) {
-    | (Tableau(rowT), Foundation(rowF)) =>
-      let {foundation, tableau} = state.location;
-      let isValid =
-        validateMoveToFoundation(~card, ~destination=foundation[rowF]);
+  switch (prevLocation, nextLocation) {
+  | (Tableau(rowT), Foundation(rowF)) =>
+    let {foundation, tableau} = location;
+    let isValid =
+      validateMoveToFoundation(~card, ~destination=foundation[rowF]);
 
-      let flipLastCardInPrevRow = arr => {
-        let copy = Array.copy(arr);
+    let flipLastCardInPrevRow = arr => {
+      let copy = Array.copy(arr);
 
-        let list = copy[rowT];
-        copy[rowT] = flipLastCard(list);
+      let list = copy[rowT];
+      copy[rowT] = flipLastCard(list);
 
-        copy;
-      };
+      copy;
+    };
 
-      let tableauMinusCard =
-        isValid ?
-          getListWithoutCard(card, rowT, tableau) |> flipLastCardInPrevRow :
-          tableau;
-      let foundationPlusCard =
-        isValid ? getListPlusCard(card, rowF, foundation) : foundation;
+    let tableauMinusCard =
+      isValid ?
+        getListWithoutCard(card, rowT, tableau) |> flipLastCardInPrevRow :
+        tableau;
+    let foundationPlusCard =
+      isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
-      {
-        ...state.location,
-        foundation: foundationPlusCard,
-        tableau: tableauMinusCard,
-      };
-    | (Hand, Foundation(rowF)) =>
-      let {hand, foundation} = state.location;
-      let isValid =
-        validateMoveToFoundation(~card, ~destination=foundation[rowF]);
-      /**
+    {
+      ...location,
+      foundation: foundationPlusCard,
+      tableau: tableauMinusCard,
+    };
+  | (Hand, Foundation(rowF)) =>
+    let {hand, foundation} = location;
+    let isValid =
+      validateMoveToFoundation(~card, ~destination=foundation[rowF]);
+    /**
      * Remove the card from the hand & add to tableau.
      * Once there is validation set up around _which_ cards in the hand can be selected we
      * can get rid of the `filterOutCard` function and just grab from the head of the list
      */
-      let handMinusCard =
-        isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
-      let foundationPlusCard =
-        isValid ? getListPlusCard(card, rowF, foundation) : foundation;
+    let handMinusCard =
+      isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
+    let foundationPlusCard =
+      isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
-      {
-        ...state.location,
-        hand: handMinusCard,
-        foundation: foundationPlusCard,
+    {...location, hand: handMinusCard, foundation: foundationPlusCard};
+  | (Foundation(rowF), Tableau(rowT)) =>
+    let {foundation, tableau} = location;
+    let isValid = validateMoveToTableau(~card, ~destination=tableau[rowT]);
+
+    let foundationMinusCard =
+      isValid ? getListWithoutCard(card, rowF, foundation) : foundation;
+    let tableauPlusCard =
+      isValid ? getListPlusCard(card, rowT, tableau) : tableau;
+
+    {
+      ...location,
+      tableau: tableauPlusCard,
+      foundation: foundationMinusCard,
+    };
+  | (Tableau(rowPrev), Tableau(rowNext)) =>
+    let {tableau} = location;
+    let isValid = validateMoveToTableau(~card, ~destination=tableau[rowNext]);
+
+    let (cardsToMove, rest) = splitAt(card, tableau[rowPrev]);
+
+    let updateSelection = (i, list) =>
+      switch (i) {
+      | i when i == rowPrev && i == rowNext => list
+      | i when i == rowPrev => flipLastCard(rest)
+      | i when i == rowNext => List.append(cardsToMove, list)
+      | _ => list
       };
-    | (Foundation(rowF), Tableau(rowT)) =>
-      let {foundation, tableau} = state.location;
-      let isValid = validateMoveToTableau(~card, ~destination=tableau[rowT]);
 
-      let foundationMinusCard =
-        isValid ? getListWithoutCard(card, rowF, foundation) : foundation;
-      let tableauPlusCard =
-        isValid ? getListPlusCard(card, rowT, tableau) : tableau;
+    let next = isValid ? Array.mapi(updateSelection, tableau) : tableau;
 
-      {
-        ...state.location,
-        tableau: tableauPlusCard,
-        foundation: foundationMinusCard,
-      };
-    | (Tableau(rowPrev), Tableau(rowNext)) =>
-      let {tableau} = state.location;
-      let isValid =
-        validateMoveToTableau(~card, ~destination=tableau[rowNext]);
+    {...location, tableau: next};
+  | (Hand, Tableau(row)) =>
+    let {hand, tableau} = location;
+    let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
 
-      let (cardsToMove, rest) = splitAt(card, tableau[rowPrev]);
-
-      let updateSelection = (i, list) =>
-        switch (i) {
-        | i when i == rowPrev && i == rowNext => list
-        | i when i == rowPrev => flipLastCard(rest)
-        | i when i == rowNext => List.append(cardsToMove, list)
-        | _ => list
-        };
-
-      let next = isValid ? Array.mapi(updateSelection, tableau) : tableau;
-
-      {...state.location, tableau: next};
-    | (Hand, Tableau(row)) =>
-      let {hand, tableau} = state.location;
-      let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
-
-      let handMinusCard =
-        isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
-      let tableauPlusCard =
-        isValid ? getListPlusCard(card, row, tableau) : tableau;
-      {...state.location, tableau: tableauPlusCard, hand: handMinusCard};
-    | _ => state.location
-    }
-  );
+    let handMinusCard =
+      isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
+    let tableauPlusCard =
+      isValid ? getListPlusCard(card, row, tableau) : tableau;
+    {...location, tableau: tableauPlusCard, hand: handMinusCard};
+  | _ => location
+  };
 };

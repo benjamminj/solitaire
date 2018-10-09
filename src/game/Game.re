@@ -103,7 +103,7 @@ let make = _children => {
             ~prevLocation,
             ~nextLocation,
             ~card,
-            ~state,
+            ~location=state.location,
           )
         | _ => state.location
         };
