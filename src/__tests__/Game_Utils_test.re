@@ -21,7 +21,7 @@ describe("Game.Utils", () => {
   describe("shuffleDeck", () =>
     test("should return a new deck that is not equal to the first deck", () => {
       let deck = generateDeck();
-      let shuffled = shuffleDeck(123.0, deck);
+      let shuffled = shuffleDeck(0.234, deck);
 
       expect(deck) |> not_ |> toEqual(shuffled);
     })
