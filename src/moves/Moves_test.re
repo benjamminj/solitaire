@@ -292,8 +292,11 @@ describe("Moves", () => {
   describe("getUpdatedLocation", () => {
     open Types;
     let getUpdatedLocation = Moves.getUpdatedLocation;
-    let mapTupleFirst = (mapFirst, (first, second)) => (mapFirst(first), second);
-    let getListLengthTuple = mapTupleFirst(List.length)
+    let mapTupleFirst = (mapFirst, (first, second)) => (
+      mapFirst(first),
+      second,
+    );
+    let getListLengthTuple = mapTupleFirst(List.length);
 
     let location = {
       tableau: [|
@@ -332,127 +335,246 @@ describe("Moves", () => {
       expect(actual) |> toEqual(expected);
     });
 
-    test("should not modify tableau when invalid move from table --> foundation", () => {
+    test(
+      "should not modify tableau when invalid move from table --> foundation",
+      () => {
       let indexT = 1;
       let indexF = 0;
-      let card =location.tableau[indexT] |> List.hd;
+      let card = location.tableau[indexT] |> List.hd;
 
       let {tableau, foundation} =
         getUpdatedLocation(
-          ~prevLocation=(Tableau(indexT)),
-          ~nextLocation=(Foundation(indexF)),
+          ~prevLocation=Tableau(indexT),
+          ~nextLocation=Foundation(indexF),
           ~card,
-          ~location
+          ~location,
         );
-      
+
       let (actual, expected) =
         [(tableau[indexT], 2), (foundation[indexF], 0)]
         |> List.map(getListLengthTuple)
-        |> List.split
+        |> List.split;
 
-      expect(actual) |> toEqual(expected)
+      expect(actual) |> toEqual(expected);
     });
 
-    test("should update location when making valid move from hand --> tableau", () => {
-      let location = {
-        ...location,
-        hand: [genCard(3, Spades)],
-      };
+    test(
+      "should update location when making valid move from hand --> tableau", () => {
+      let location = {...location, hand: [genCard(3, Spades)]};
 
       let indexT = 1;
 
       /* first card == 4-Hearts */
       let card = location.hand |> List.hd;
 
-      let {tableau, hand} = getUpdatedLocation(
-        ~prevLocation=Hand,
-        ~nextLocation=Tableau(indexT),
-        ~card,
-        ~location,
-      );
+      let {tableau, hand} =
+        getUpdatedLocation(
+          ~prevLocation=Hand,
+          ~nextLocation=Tableau(indexT),
+          ~card,
+          ~location,
+        );
 
       let (actual, expected) =
         [(tableau[indexT], 3), (hand, 0)]
         |> List.map(getListLengthTuple)
-        |> List.split
+        |> List.split;
 
-      expect(actual) |> toEqual(expected)
+      expect(actual) |> toEqual(expected);
     });
 
     test("shouldn`t update location if invalid move from hand --> tableau", () => {
-      let location = {
-        ...location,
-        hand: [genCard(3, Spades)],
-      };
+      let location = {...location, hand: [genCard(3, Spades)]};
 
       let indexT = 2;
 
       /* first card == 7-Clubs */
       let card = location.hand |> List.hd;
 
-      let {tableau, hand} = getUpdatedLocation(
-        ~prevLocation=Hand,
-        ~nextLocation=Tableau(indexT),
-        ~card,
-        ~location,
-      );
+      let {tableau, hand} =
+        getUpdatedLocation(
+          ~prevLocation=Hand,
+          ~nextLocation=Tableau(indexT),
+          ~card,
+          ~location,
+        );
 
       let (actual, expected) =
         [(tableau[indexT], 3), (hand, 1)]
         |> List.map(getListLengthTuple)
-        |> List.split
+        |> List.split;
 
-      expect(actual) |> toEqual(expected)
+      expect(actual) |> toEqual(expected);
     });
 
-    test("should update location when making valid move from foundation --> tableau", () => {
+    test(
+      "should update location when making valid move from foundation --> tableau",
+      () => {
       let location = {
         ...location,
-        foundation: [|[], [genCard(2, Diamonds)], [], []|]
+        foundation: [|[], [genCard(2, Diamonds)], [], []|],
       };
 
       let indexT = 6;
       let indexF = 1;
       let card = location.foundation[indexF] |> List.hd;
 
-      let {tableau, foundation} = getUpdatedLocation(
-        ~prevLocation=Foundation(indexF),
-        ~nextLocation=Tableau(indexT),
-        ~card,
-        ~location
-      );
+      let {tableau, foundation} =
+        getUpdatedLocation(
+          ~prevLocation=Foundation(indexF),
+          ~nextLocation=Tableau(indexT),
+          ~card,
+          ~location,
+        );
 
       let (actual, expected) =
         [(tableau[indexT], 4), (foundation[indexF], 0)]
         |> List.map(getListLengthTuple)
-        |> List.split
+        |> List.split;
 
       expect(actual) |> toEqual(expected);
     });
 
-    test("shouldn`t update location when making invalid move from foundation --> tableau", () => {
+    test(
+      "shouldn`t update location when making invalid move from foundation --> tableau",
+      () => {
+        let location = {
+          ...location,
+          foundation: [|[], [genCard(9, Diamonds)], [], []|],
+        };
+
+        let indexT = 6;
+        let indexF = 1;
+        let card = location.foundation[indexF] |> List.hd;
+
+        let {tableau, foundation} =
+          getUpdatedLocation(
+            ~prevLocation=Foundation(indexF),
+            ~nextLocation=Tableau(indexT),
+            ~card,
+            ~location,
+          );
+
+        let (actual, expected) =
+          [(tableau[indexT], 3), (foundation[indexF], 1)]
+          |> List.map(getListLengthTuple)
+          |> List.split;
+
+        expect(actual) |> toEqual(expected);
+      },
+    );
+
+    test(
+      "should update location when making valid move from hand --> foundation",
+      () => {
       let location = {
         ...location,
-        foundation: [|[], [genCard(9, Diamonds)], [], []|]
+        foundation: [|[genCard(1, Hearts)], [], [], []|],
+        hand: [genCard(2, Hearts)],
       };
 
-      let indexT = 6;
-      let indexF = 1;
-      let card = location.foundation[indexF] |> List.hd;
+      let indexF = 0;
+      let card = List.hd(location.hand);
 
-      let {tableau, foundation} = getUpdatedLocation(
-        ~prevLocation=Foundation(indexF),
-        ~nextLocation=Tableau(indexT),
-        ~card,
-        ~location
-      );
+      let {foundation, hand} =
+        getUpdatedLocation(
+          ~prevLocation=Hand,
+          ~nextLocation=Foundation(indexF),
+          ~card,
+          ~location,
+        );
 
       let (actual, expected) =
-        [(tableau[indexT], 3), (foundation[indexF], 1)]
+        [(foundation[indexF], 2), (hand, 0)]
         |> List.map(getListLengthTuple)
-        |> List.split
+        |> List.split;
 
       expect(actual) |> toEqual(expected);
+    });
+
+    test(
+      "shouldn`t update location when making invvalid move from hand --> foundation",
+      () => {
+      let location = {
+        ...location,
+        foundation: [|[genCard(1, Spades)], [], [], []|],
+        hand: [genCard(12, Diamonds)],
+      };
+
+      let indexF = 0;
+      let card = List.hd(location.hand);
+
+      let {foundation, hand} =
+        getUpdatedLocation(
+          ~prevLocation=Hand,
+          ~nextLocation=Foundation(indexF),
+          ~card,
+          ~location,
+        );
+
+      let (actual, expected) =
+        [(foundation[indexF], 1), (hand, 1)]
+        |> List.map(getListLengthTuple)
+        |> List.split;
+
+      expect(actual) |> toEqual(expected);
+    });
+
+    test(
+      "should update location when making valid move from tableau --> tableau",
+      () => {
+      let indexPrev = 1;
+      let indexDest = 4;
+      let card = location.tableau[indexPrev] |> List.hd;
+
+      let {tableau} =
+        getUpdatedLocation(
+          ~prevLocation=Tableau(indexPrev),
+          ~nextLocation=Tableau(indexDest),
+          ~card,
+          ~location,
+        );
+
+      let (actual, expected) =
+        [(tableau[indexPrev], 1), (tableau[indexDest], 4)]
+        |> List.map(getListLengthTuple)
+        |> List.split;
+
+      expect(actual) |> toEqual(expected);
+    });
+
+    test(
+      "shouldn`t update location when making invalid move from tableau --> tableau",
+      () => {
+      let indexPrev = 1;
+      let indexDest = 3;
+      let card = location.tableau[indexPrev] |> List.hd;
+
+      let {tableau} =
+        getUpdatedLocation(
+          ~prevLocation=Tableau(indexPrev),
+          ~nextLocation=Tableau(indexDest),
+          ~card,
+          ~location,
+        );
+
+      let (actual, expected) =
+        [(tableau[indexPrev], 2), (tableau[indexDest], 3)]
+        |> List.map(getListLengthTuple)
+        |> List.split;
+
+      expect(actual) |> toEqual(expected);
+    });
+
+    test("shouldn`t update location if pattern is not matched", () => {
+      let updated =
+        getUpdatedLocation(
+          ~prevLocation=Foundation(0),
+          ~nextLocation=Hand,
+          ~card=genCard(1, Spades),
+          ~location,
+        );
+      expect(updated) |> toEqual(location)
     });
   });
 });
