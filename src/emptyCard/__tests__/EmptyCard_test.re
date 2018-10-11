@@ -2,12 +2,12 @@ open Jest;
 open Expect;
 open ReactTestingLibrary;
 
-describe("<EmptyCard />", () => {
-  test("renders correctly", () => {
+describe("<EmptyCard />", () =>
+  test("renders correctly", () =>
     <EmptyCard onClick={_ev => ()} />
-      |> render
-      |> container
-      |> expect
-      |> toMatchSnapshot
-  })
-})
+    |> render
+    |> container
+    |> expect
+    |> toMatchSnapshot
+  )
+);
