@@ -1,7 +1,16 @@
 open Css;
 open Global.Styles;
 
-let container = style([maxWidth @@ rem(25.0), margin2(~v=`zero, ~h=`auto)]);
+global("body", [
+  backgroundColor(theme.lightGrey),
+  minHeight(vh(100.0)),
+  margin(`zero)
+])
+
+let container = style([
+  maxWidth(rem(25.0)), 
+  margin2(~v=`zero, ~h=`auto),
+]);
 
 let grid =
   style([
