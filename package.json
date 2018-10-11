@@ -14,7 +14,8 @@
     "serve:prod": "serve -d dist",
     "deploy:prod": "gh-pages -d dist",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "bs-css": "^7.2.0",
@@ -30,5 +31,9 @@
     "concurrently": "^3.6.1",
     "gh-pages": "^2.0.0",
     "serve": "^10.0.1"
+  },
+  "jest": {
+    "testMatch": ["**/*_test.bs.js"],
+    "collectCoverageFrom": ["src/**/*.bs.js"]
   }
 }

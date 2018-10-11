@@ -47,7 +47,7 @@ let make = _children => {
     switch (action) {
     | Init =>
       let (tableau, stock) =
-        Utils.generateDeck() |> Utils.shuffleDeck |> Utils.dealCards;
+        Utils.generateDeck() |> Utils.shuffleDeck(Js.Math.random()) |> Utils.dealCards;
 
       ReasonReact.Update({
         ...initialState,
@@ -103,7 +103,7 @@ let make = _children => {
             ~prevLocation,
             ~nextLocation,
             ~card,
-            ~state,
+            ~location=state.location,
           )
         | _ => state.location
         };

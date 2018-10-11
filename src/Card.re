@@ -77,12 +77,12 @@ let make = (~card, ~onClick, ~styles=[], _children) => {
   render: _self => {
     let {id, rank, suit} = card;
     let idStr = string_of_int(id);
-    let (text, color) =
+    let color =
       switch (suit) {
-      | Hearts => ({js|♥︎|js}, "red")
-      | Diamonds => ({js|♦︎|js}, "red")
-      | Clubs => ({js|♣︎|js}, "black")
-      | Spades => ({js|♠︎|js}, "black")
+      | Hearts => "red"
+      | Diamonds => "red"
+      | Clubs => "black"
+      | Spades => "black"
       };
 
     let rankText =
