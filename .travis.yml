@@ -3,7 +3,7 @@ node_js:
   - lts/*
 cache: yarn
 before_script: yarn build
-script: yarn test
+script: yarn test --ci
 before_deploy: yarn build:prod
 deploy:
   provider: pages
