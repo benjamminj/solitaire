@@ -3,7 +3,7 @@ let component = ReasonReact.statelessComponent("EmptyCard");
 let buttonStyle =
   Css.(
     style([
-      background(hex("dedede")),
+      background(rgba(0, 0, 0, 0.1)),
       height(Global.Styles.cardHeight),
       width(pct(100.0)),
       borderWidth(`zero),
