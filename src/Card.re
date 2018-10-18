@@ -1,8 +1,11 @@
 open Types;
+let css = Emotion.css;
+
 let component = ReasonReact.statelessComponent("Card");
 
 module CardIcon = {
   let component = ReasonReact.statelessComponent("CardIcon");
+
   let make = (~className, ~suit, _children) => {
     ...component,
     render: _self => {
@@ -24,11 +27,32 @@ module Styles = {
 
   let width_ = width(pct(100.0));
   let border_ = border(px(1), `solid, gray);
+  
+  let wrapper = css({| 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  |});
 
-  let wrapper =
-    style([display(`flex), flexDirection(`column), height(pct(100.0))]);
+  let header = css({| 
+    display: flex;
+    justify-content: space-between;
+  |});
 
-  let header = style([display(`flex), justifyContent(`spaceBetween)]);
+  /** TODO -- add `styles` prop handling in, then we can do this! */
+  /* let card = (~faceUp=false, ~textColor, ~styles) => {
+    let color = faceUp ? textColor : "black";
+    let bg = faceUp ? "white" : "#1976D2";
+
+    css({js|
+      border: 1px solid gray;
+      padding: 0.25rem;
+      width: 100%;
+      height: $cardHeight_;
+      color: $color;
+      background-color: $bg;
+    |js})
+  }; */
 
   let card = (~faceUp=false, ~textColor, ~styles) => {
     let rules =
@@ -47,29 +71,28 @@ module Styles = {
     style(rules);
   };
 
-  let iconWrapper =
-    style([
-      display(`flex),
-      alignItems(`center),
-      flexGrow(1),
-      justifyContent(`center),
-    ]);
+  let iconWrapper = css({| 
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+  |});
 
-  let icon = fill =>
-    style([
-      width(pct(100.0)),
-      height(`auto),
-      `declaration(("fill", fill)),
-    ]);
+  let icon = fill => css({j| 
+    width: 100%;
+    height: auto;
+    fill: $fill;
+  |j});
 
-  let headerIcon = fill => style([
-    maxWidth(rem(0.75)),
-    height(`auto),
-    `declaration(("fill", fill)),
-  ])
+  let headerIcon = fill => css({j| 
+    max-width: 0.75rem;
+    height: auto;
+    fill: $fill;
+  |j});
 
-  let upperRank = style([textAlign(`left)]);
-  let lowerRank = style([textAlign(`right)]);
+  let upperRank = css({| 
+    text-align: left;
+  |});
 };
 
 let make = (~card, ~onClick, ~styles=[], _children) => {

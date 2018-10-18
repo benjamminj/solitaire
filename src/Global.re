@@ -4,6 +4,8 @@ module Styles = {
   let cardHeight = rem(4.75);
   let cardHeightMd = rem(7.25);
 
+  let cardHeight_ = "4.75rem";
+
   type theme_ = {
     white: Css.color,
     black: Css.color,
