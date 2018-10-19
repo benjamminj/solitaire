@@ -3,7 +3,7 @@
 exports[`<EmptyCard /> renders correctly 1`] = `
 <div>
   <button
-    class="css-myjhmi"
+    class="css-13oeul2"
   />
 </div>
 `;
