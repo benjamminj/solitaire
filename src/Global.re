@@ -12,9 +12,21 @@ module Styles = {
     primary: Css.color,
   };
 
-  let theme = {
+  type xtheme_ = {
+    white: string,
+    black: string,
+    primary: string,
+  }
+
+  let theme: theme_ = {
     white: hex("FFF"),
     black: hex("222"),
     primary: hex("1976D2"),
   };
+
+  let xtheme: xtheme_ = {
+    white: "#FFF",
+    black: "#222",
+    primary: "#1976D2",
+  }
 }
