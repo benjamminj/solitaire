@@ -17,6 +17,7 @@ module Styles = {
     white: string,
     black: string,
     primary: string,
+    lightGrey: string,
   }
 
   let theme: theme_ = {
@@ -30,5 +31,6 @@ module Styles = {
     white: "#FFF",
     black: "#222",
     primary: "#1976D2",
+    lightGrey: "#eee"
   }
 }

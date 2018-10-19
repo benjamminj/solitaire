@@ -4,3 +4,4 @@
  * and still authoring in modern-JS "everything in a single file type of fashion"
  */
 [@bs.module "emotion"] external css : string => string = "css";
+[@bs.module "emotion"] external injectGlobal : string => unit = "injectGlobal";
