@@ -14,7 +14,12 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": ["reason-react", "@glennsl/bs-jest", "bs-css"],
+  "bs-dependencies": [
+    "reason-react",
+    "@glennsl/bs-jest",
+    "bs-css",
+    "bs-react-testing-library"
+  ],
   "bs-dev-dependencies": [],
   "warnings": {
     "error": "+101"

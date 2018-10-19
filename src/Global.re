@@ -10,6 +10,7 @@ module Styles = {
     white: Css.color,
     black: Css.color,
     primary: Css.color,
+    lightGrey: Css.color,
   };
 
   type xtheme_ = {
@@ -22,6 +23,7 @@ module Styles = {
     white: hex("FFF"),
     black: hex("222"),
     primary: hex("1976D2"),
+    lightGrey: hex("eee")
   };
 
   let xtheme: xtheme_ = {
