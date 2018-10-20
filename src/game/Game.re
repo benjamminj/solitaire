@@ -1,6 +1,13 @@
 /* type cardList = list(card); */
 open Types;
 
+type state = {
+  location,
+  move,
+  moves,
+  moveKey,
+};
+
 type action =
   | UpdateMove(move)
   | MoveCard(move)
@@ -37,6 +44,7 @@ let initialState = {
     card: None,
   },
   moveKey: Prev,
+  moves: [],
 };
 
 /* COMPONENT */
@@ -47,7 +55,9 @@ let make = _children => {
     switch (action) {
     | Init =>
       let (tableau, stock) =
-        Utils.generateDeck() |> Utils.shuffleDeck(Js.Math.random()) |> Utils.dealCards;
+        Utils.generateDeck()
+        |> Utils.shuffleDeck(Js.Math.random())
+        |> Utils.dealCards;
 
       ReasonReact.Update({
         ...initialState,
@@ -96,7 +106,7 @@ let make = _children => {
       });
     | UpdateMove(move) => ReasonReact.Update({...state, move, moveKey: Next})
     | MoveCard({prev, next, card}) =>
-      let location =
+      let (location, wasValidMove) =
         switch (prev, next, card) {
         | (Some(prevLocation), Some(nextLocation), Some(card)) =>
           Moves.getUpdatedLocation(
@@ -105,12 +115,14 @@ let make = _children => {
             ~card,
             ~location=state.location,
           )
-        | _ => state.location
+        | _ => (state.location, false)
         };
+
       ReasonReact.Update({
         location,
         move: initialState.move,
         moveKey: initialState.moveKey,
+        moves: wasValidMove ? [{prev, next, card}, ...state.moves] : state.moves,
       });
     },
   render: self => {
@@ -124,7 +136,7 @@ let make = _children => {
       </header>
       <div className=Styles.grid>
         <Foundation rows={self.state.location.foundation} onClickCard />
-        <div className=Emotion.css("grid-column: 5 / 7")>
+        <div className={Emotion.css("grid-column: 5 / 7")}>
           <Hand onClickCard hand={self.state.location.hand} />
         </div>
         <Stock

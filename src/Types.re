@@ -41,8 +41,4 @@ type moveKey =
   | Prev
   | Next;
 
-type state = {
-  location,
-  move,
-  moveKey,
-};
+type moves = list(move);

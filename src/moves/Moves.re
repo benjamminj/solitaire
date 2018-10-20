@@ -97,11 +97,10 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
     let foundationPlusCard =
       isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
-    {
-      ...location,
-      foundation: foundationPlusCard,
-      tableau: tableauMinusCard,
-    };
+    (
+      {...location, foundation: foundationPlusCard, tableau: tableauMinusCard},
+      isValid,
+    );
   | (Hand, Foundation(rowF)) =>
     let {hand, foundation} = location;
     let isValid =
@@ -116,7 +115,10 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
     let foundationPlusCard =
       isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
-    {...location, hand: handMinusCard, foundation: foundationPlusCard};
+    (
+      {...location, hand: handMinusCard, foundation: foundationPlusCard},
+      isValid,
+    );
   | (Foundation(rowF), Tableau(rowT)) =>
     let {foundation, tableau} = location;
     let isValid = validateMoveToTableau(~card, ~destination=tableau[rowT]);
@@ -126,11 +128,10 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
     let tableauPlusCard =
       isValid ? getListPlusCard(card, rowT, tableau) : tableau;
 
-    {
-      ...location,
-      tableau: tableauPlusCard,
-      foundation: foundationMinusCard,
-    };
+    (
+      {...location, tableau: tableauPlusCard, foundation: foundationMinusCard},
+      isValid,
+    );
   | (Tableau(rowPrev), Tableau(rowNext)) =>
     let {tableau} = location;
     let isValid = validateMoveToTableau(~card, ~destination=tableau[rowNext]);
@@ -147,7 +148,7 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
 
     let next = isValid ? Array.mapi(updateSelection, tableau) : tableau;
 
-    {...location, tableau: next};
+    ({...location, tableau: next}, isValid);
   | (Hand, Tableau(row)) =>
     let {hand, tableau} = location;
     let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
@@ -156,7 +157,7 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
       isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
     let tableauPlusCard =
       isValid ? getListPlusCard(card, row, tableau) : tableau;
-    {...location, tableau: tableauPlusCard, hand: handMinusCard};
-  | _ => location
+    ({...location, tableau: tableauPlusCard, hand: handMinusCard}, isValid);
+  | _ => (location, false)
   };
 };
