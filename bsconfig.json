@@ -17,7 +17,6 @@
   "bs-dependencies": [
     "reason-react",
     "@glennsl/bs-jest",
-    "bs-css",
     "bs-react-testing-library"
   ],
   "bs-dev-dependencies": [],

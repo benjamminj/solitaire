@@ -2,9 +2,9 @@ open Types;
 let component = ReasonReact.statelessComponent("Foundation");
 
 module Styles = {
-  open Css;
-
-  let container = style([display(`flex)]);
+  let container = Emotion.css({|
+    display: flex;
+  |});
 };
 
 let make = (~rows, ~onClickCard, _children) => {

@@ -124,7 +124,7 @@ let make = _children => {
       </header>
       <div className=Styles.grid>
         <Foundation rows={self.state.location.foundation} onClickCard />
-        <div className=Css.(style([gridColumn(5, 7)]))>
+        <div className=Emotion.css("grid-column: 5 / 7")>
           <Hand onClickCard hand={self.state.location.hand} />
         </div>
         <Stock

@@ -1,20 +1,17 @@
 module Styles = {
-  open Css;
+  let cardHeight_ = "4.75rem";
 
-  let cardHeight = rem(4.75);
-  let cardHeightMd = rem(7.25);
+  type xtheme_ = {
+    white: string,
+    black: string,
+    primary: string,
+    lightGrey: string,
+  }
 
-  type theme_ = {
-    white: Css.color,
-    black: Css.color,
-    primary: Css.color,
-    lightGrey: Css.color,
-  };
-
-  let theme = {
-    white: hex("FFF"),
-    black: hex("222"),
-    primary: hex("1976D2"),
-    lightGrey: hex("eee")
-  };
+  let xtheme: xtheme_ = {
+    white: "#FFF",
+    black: "#222",
+    primary: "#1976D2",
+    lightGrey: "#eee"
+  }
 }

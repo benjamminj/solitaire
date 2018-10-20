@@ -1,32 +1,45 @@
-open Css;
 open Global.Styles;
 
-global("body", [
-  backgroundColor(theme.lightGrey),
-  minHeight(vh(100.0)),
-  margin(`zero)
-])
+let css = Emotion.css;
 
-let container = style([
-  maxWidth(rem(25.0)), 
-  margin2(~v=`zero, ~h=`auto),
-]);
+let {primary, white, lightGrey} = xtheme;
+
+Emotion.injectGlobal(
+  {j|
+  body {
+    background-color: $lightGrey;
+    min-height: 100vh;
+    margin: 0;
+  }
+|j},
+);
+
+let container = css({|
+  max-width: 25rem;
+  margin: 0 auto;
+|});
 
 let grid =
-  style([
-    display(`grid),
-    `declaration(("gridTemplateColumns", "repeat(7, 1fr)")),
-    gridTemplateRows([cardHeight, auto]),
-    gridRowGap(rem(1.0)),
-    gridColumnGap(rem(0.25)),
-  ]);
+  css(
+    {j|
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: $cardHeight_;
+  grid-row-gap: 1rem;
+  grid-column-gap: 0.25rem;
+|j},
+  );
 
 let newGame =
-  style([
-    borderWidth(`zero),
-    backgroundColor(theme.primary),
-    color(theme.white),
-    padding(rem(0.5)),
-  ]);
+  css(
+    {j|
+  border-width: 0;
+  background-color: $primary;
+  color: $white;
+  padding: 0.5rem;
+|j},
+  );
 
-let header = style([padding2(~v=rem(0.5), ~h=`zero)]);
+let header = css({|
+  padding: 0.5rem 0;
+|});

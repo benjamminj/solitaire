@@ -1,8 +1,11 @@
 open Types;
+let css = Emotion.css;
+
 let component = ReasonReact.statelessComponent("Card");
 
 module CardIcon = {
   let component = ReasonReact.statelessComponent("CardIcon");
+
   let make = (~className, ~suit, _children) => {
     ...component,
     render: _self => {
@@ -17,62 +20,59 @@ module CardIcon = {
 }
 
 module Styles = {
-  open Css;
   open Global.Styles;
+  
+  let wrapper = css({| 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  |});
 
-  let gray = hex("333");
+  let header = css({| 
+    display: flex;
+    justify-content: space-between;
+  |});
 
-  let width_ = width(pct(100.0));
-  let border_ = border(px(1), `solid, gray);
+  let card = (~faceUp=false, ~textColor) => {
+    let color = faceUp ? textColor : "black";
+    let bg = faceUp ? "white" : xtheme.primary;
+    let black = xtheme.black;
 
-  let wrapper =
-    style([display(`flex), flexDirection(`column), height(pct(100.0))]);
-
-  let header = style([display(`flex), justifyContent(`spaceBetween)]);
-
-  let card = (~faceUp=false, ~textColor, ~styles) => {
-    let rules =
-      List.append(
-        styles,
-        [
-          border_,
-          padding(rem(0.25)),
-          width_,
-          height(cardHeight),
-          `declaration(("color", faceUp ? textColor : "black")),
-          backgroundColor(faceUp ? white : theme.primary),
-        ],
-      );
-
-    style(rules);
+    css({j|
+      border: 1px solid $black;
+      padding: 0.25rem;
+      width: 100%;
+      height: $cardHeight_;
+      color: $color;
+      background-color: $bg;
+    |j});
   };
 
-  let iconWrapper =
-    style([
-      display(`flex),
-      alignItems(`center),
-      flexGrow(1),
-      justifyContent(`center),
-    ]);
+  let iconWrapper = css({| 
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+  |});
 
-  let icon = fill =>
-    style([
-      width(pct(100.0)),
-      height(`auto),
-      `declaration(("fill", fill)),
-    ]);
+  let icon = fill => css({j| 
+    width: 100%;
+    height: auto;
+    fill: $fill;
+  |j});
 
-  let headerIcon = fill => style([
-    maxWidth(rem(0.75)),
-    height(`auto),
-    `declaration(("fill", fill)),
-  ])
+  let headerIcon = fill => css({j| 
+    max-width: 0.75rem;
+    height: auto;
+    fill: $fill;
+  |j});
 
-  let upperRank = style([textAlign(`left)]);
-  let lowerRank = style([textAlign(`right)]);
+  let upperRank = css({| 
+    text-align: left;
+  |});
 };
 
-let make = (~card, ~onClick, ~styles=[], _children) => {
+let make = (~card, ~onClick, ~styles="", _children) => {
   ...component,
   render: _self => {
     let {id, rank, suit} = card;
@@ -99,7 +99,10 @@ let make = (~card, ~onClick, ~styles=[], _children) => {
     <button
       key=idStr
       id=idStr
-      className={Styles.card(~textColor=color, ~faceUp=card.faceUp, ~styles)}
+      className={Emotion.cx([
+        Styles.card(~textColor=color, ~faceUp=card.faceUp),
+        styles,
+      ])}
       onClick>
       {
         card.faceUp ?

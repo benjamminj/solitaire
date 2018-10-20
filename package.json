@@ -18,7 +18,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "bs-css": "^7.2.0",
+    "emotion": "^9.2.12",
     "parcel-bundler": "^1.9.7",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
