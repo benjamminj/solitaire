@@ -1,4 +1,3 @@
-open Css;
 open Global.Styles;
 
 let css = Emotion.css;

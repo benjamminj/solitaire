@@ -20,13 +20,7 @@ module CardIcon = {
 }
 
 module Styles = {
-  open Css;
   open Global.Styles;
-
-  let gray = hex("333");
-
-  let width_ = width(pct(100.0));
-  let border_ = border(px(1), `solid, gray);
   
   let wrapper = css({| 
     display: flex;
@@ -39,36 +33,19 @@ module Styles = {
     justify-content: space-between;
   |});
 
-  /** TODO -- add `styles` prop handling in, then we can do this! */
-  /* let card = (~faceUp=false, ~textColor, ~styles) => {
+  let card = (~faceUp=false, ~textColor) => {
     let color = faceUp ? textColor : "black";
-    let bg = faceUp ? "white" : "#1976D2";
+    let bg = faceUp ? "white" : xtheme.primary;
+    let black = xtheme.black;
 
-    css({js|
-      border: 1px solid gray;
+    css({j|
+      border: 1px solid $black;
       padding: 0.25rem;
       width: 100%;
       height: $cardHeight_;
       color: $color;
       background-color: $bg;
-    |js})
-  }; */
-
-  let card = (~faceUp=false, ~textColor, ~styles) => {
-    let rules =
-      List.append(
-        styles,
-        [
-          border_,
-          padding(rem(0.25)),
-          width_,
-          height(cardHeight),
-          `declaration(("color", faceUp ? textColor : "black")),
-          backgroundColor(faceUp ? white : theme.primary),
-        ],
-      );
-
-    style(rules);
+    |j});
   };
 
   let iconWrapper = css({| 
@@ -95,7 +72,7 @@ module Styles = {
   |});
 };
 
-let make = (~card, ~onClick, ~styles=[], _children) => {
+let make = (~card, ~onClick, ~styles="", _children) => {
   ...component,
   render: _self => {
     let {id, rank, suit} = card;
@@ -122,7 +99,10 @@ let make = (~card, ~onClick, ~styles=[], _children) => {
     <button
       key=idStr
       id=idStr
-      className={Styles.card(~textColor=color, ~faceUp=card.faceUp, ~styles)}
+      className={Emotion.cx([
+        Styles.card(~textColor=color, ~faceUp=card.faceUp),
+        styles,
+      ])}
       onClick>
       {
         card.faceUp ?

@@ -5,3 +5,6 @@
  */
 [@bs.module "emotion"] external css : string => string = "css";
 [@bs.module "emotion"] external injectGlobal : string => unit = "injectGlobal";
+
+[@bs.module "emotion"] external cx : list(string) => string = "cx";
+

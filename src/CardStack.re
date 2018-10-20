@@ -6,34 +6,32 @@ type direction =
   | Vertical;
 
 module Styles = {
-  open Css;
+  let css = Emotion.css;
 
-  let stack = overrides => {
-    let rules =
-      List.append(
-        overrides,
-        [display(`flex), flexDirection(`column)],
-      );
-
-    style(rules);
-  };
+  let stack = css({|
+    display: flex;
+    flex-direction: column;
+  |});
 
   let card = (~i, ~direction) => {
-    let getOverlap = (amt, i) => i == 0 ? px(0) : amt;
+    let getOverlap = (amt, i) => i == 0 ? "0" : amt;
     let overlap =
       switch (direction) {
-      | Horizontal => marginLeft(getOverlap(rem(-2.0), i))
-      | Vertical => marginTop(getOverlap(rem(-3.5), i))
+      | Horizontal => "margin-left: " ++ getOverlap("-2rem", i)
+      | Vertical => "margin-top: " ++ getOverlap("-3.5rem", i)
       };
 
-    [zIndex(i), overlap];
+    css({j|
+      z-index: $i;
+      $overlap;
+    |j});
   };
 };
 
-let make = (~cards, ~styles=[], ~direction=Vertical, ~onClickCard, _children) => {
+let make = (~cards, ~styles="", ~direction=Vertical, ~onClickCard, _children) => {
   ...component,
   render: _self =>
-    <div className={Styles.stack(styles)}>
+    <div className={Emotion.cx([Styles.stack, styles])}>
       {
         cards
         |> List.rev

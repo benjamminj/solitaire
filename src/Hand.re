@@ -2,17 +2,21 @@ open Types;
 let component = ReasonReact.statelessComponent("Hand");
 
 module Styles = {
-  open Css;
+  let css = Emotion.css;
 
-  let wrapper = style([
-    display(`flex),
-    justifyContent(`flexEnd),
-  ]);
+  let wrapper =
+    css({|
+    display: flex;
+    justify-content: flex-end;
+  |});
 
   let card = i => {
-    let overlap = i == 0 ? `zero : pct(-25.0);
+    let pct = i == 0 ? "0" : "-25%";
 
-    [marginLeft(overlap), maxWidth(pct(50.0))];
+    css({j|
+    margin-left: $pct;
+    max-width: 50%;
+  |j});
   };
 };
 
@@ -41,7 +45,9 @@ let make = (~hand, ~onClickCard, _children) => {
                key={card.id |> string_of_int}
                card
                styles={Styles.card(i)}
-               onClick={(~card) => onClickCard(~location=Hand, ~card=Some(card))}
+               onClick={
+                 (~card) => onClickCard(~location=Hand, ~card=Some(card))
+               }
              />
            )
         |> Array.of_list
