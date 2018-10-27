@@ -319,7 +319,7 @@ describe("Moves", () => {
       let indexF = 0;
       let card = location.tableau[indexT] |> List.hd;
 
-      let {tableau, foundation} =
+      let ({tableau, foundation}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Tableau(indexT),
           ~nextLocation=Foundation(indexF),
@@ -342,7 +342,7 @@ describe("Moves", () => {
       let indexF = 0;
       let card = location.tableau[indexT] |> List.hd;
 
-      let {tableau, foundation} =
+      let ({tableau, foundation}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Tableau(indexT),
           ~nextLocation=Foundation(indexF),
@@ -367,7 +367,7 @@ describe("Moves", () => {
       /* first card == 4-Hearts */
       let card = location.hand |> List.hd;
 
-      let {tableau, hand} =
+      let ({tableau, hand}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Hand,
           ~nextLocation=Tableau(indexT),
@@ -391,7 +391,7 @@ describe("Moves", () => {
       /* first card == 7-Clubs */
       let card = location.hand |> List.hd;
 
-      let {tableau, hand} =
+      let ({tableau, hand}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Hand,
           ~nextLocation=Tableau(indexT),
@@ -419,7 +419,7 @@ describe("Moves", () => {
       let indexF = 1;
       let card = location.foundation[indexF] |> List.hd;
 
-      let {tableau, foundation} =
+      let ({tableau, foundation}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Foundation(indexF),
           ~nextLocation=Tableau(indexT),
@@ -447,7 +447,7 @@ describe("Moves", () => {
         let indexF = 1;
         let card = location.foundation[indexF] |> List.hd;
 
-        let {tableau, foundation} =
+        let ({tableau, foundation}, _wasValid) =
           getUpdatedLocation(
             ~prevLocation=Foundation(indexF),
             ~nextLocation=Tableau(indexT),
@@ -476,7 +476,7 @@ describe("Moves", () => {
       let indexF = 0;
       let card = List.hd(location.hand);
 
-      let {foundation, hand} =
+      let ({foundation, hand}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Hand,
           ~nextLocation=Foundation(indexF),
@@ -504,7 +504,7 @@ describe("Moves", () => {
       let indexF = 0;
       let card = List.hd(location.hand);
 
-      let {foundation, hand} =
+      let ({foundation, hand}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Hand,
           ~nextLocation=Foundation(indexF),
@@ -527,7 +527,7 @@ describe("Moves", () => {
       let indexDest = 4;
       let card = location.tableau[indexPrev] |> List.hd;
 
-      let {tableau} =
+      let ({tableau}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Tableau(indexPrev),
           ~nextLocation=Tableau(indexDest),
@@ -550,7 +550,7 @@ describe("Moves", () => {
       let indexDest = 3;
       let card = location.tableau[indexPrev] |> List.hd;
 
-      let {tableau} =
+      let ({tableau}, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Tableau(indexPrev),
           ~nextLocation=Tableau(indexDest),
@@ -567,7 +567,7 @@ describe("Moves", () => {
     });
 
     test("shouldn`t update location if pattern is not matched", () => {
-      let updated =
+      let (updated, _wasValid) =
         getUpdatedLocation(
           ~prevLocation=Foundation(0),
           ~nextLocation=Hand,

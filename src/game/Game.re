@@ -11,6 +11,7 @@ type state = {
 type action =
   | UpdateMove(move)
   | MoveCard(move)
+  | Undo
   | DealHand
   | Init;
 
@@ -70,7 +71,6 @@ let make = _children => {
     | DealHand =>
       /* Go grab the first 3 from the list */
       let {stock, hand} = state.location;
-      Js.log("deal hand");
       let prepareHand = (listA, listB) => {
         /* Flip all the cards in listA */
         let flippedListA =
@@ -96,8 +96,14 @@ let make = _children => {
         | [a, b, c, ...rest] => (prepareHand([c, b, a], hand), rest)
         };
 
+      let move =
+        List.length(stock) == 0 ?
+          {prev: Some(Hand), next: Some(Stock), card: None} :
+          {prev: Some(Stock), next: Some(Hand), card: None};
+
       ReasonReact.Update({
         ...state,
+        moves: [move, ...state.moves],
         location: {
           ...state.location,
           hand: nextHand,
@@ -105,6 +111,17 @@ let make = _children => {
         },
       });
     | UpdateMove(move) => ReasonReact.Update({...state, move, moveKey: Next})
+    /* TODO -- undo whatever the last move was */
+    | Undo =>
+      let {moves} = state;
+      
+      let nextState =
+        switch (moves) {
+        | [] => state.location
+        | [lastMove, ..._rest] => Undo.undoMove(lastMove, state.location)
+        };
+
+      ReasonReact.Update({ ...state, location: nextState });
     | MoveCard({prev, next, card}) =>
       let (location, wasValidMove) =
         switch (prev, next, card) {
@@ -122,7 +139,8 @@ let make = _children => {
         location,
         move: initialState.move,
         moveKey: initialState.moveKey,
-        moves: wasValidMove ? [{prev, next, card}, ...state.moves] : state.moves,
+        moves:
+          wasValidMove ? [{prev, next, card}, ...state.moves] : state.moves,
       });
     },
   render: self => {
@@ -132,6 +150,9 @@ let make = _children => {
       <header className=Styles.header>
         <button className=Styles.newGame onClick={_ev => self.send(Init)}>
           {ReasonReact.string("New Game")}
+        </button>
+        <button className=Styles.newGame onClick={_ev => self.send(Undo)}>
+          {ReasonReact.string("Undo")}
         </button>
       </header>
       <div className=Styles.grid>
