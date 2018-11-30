@@ -98,8 +98,8 @@ let make = _children => {
 
       let move =
         List.length(stock) == 0 ?
-          {prev: Some(Hand), next: Some(Stock), card: None} :
-          {prev: Some(Stock), next: Some(Hand), card: None};
+          {prev: Hand, next: Stock, card: None, didFlip: false} :
+          {prev: Stock, next: Hand, card: None, didFlip: false};
 
       ReasonReact.Update({
         ...state,
@@ -114,34 +114,39 @@ let make = _children => {
     /* TODO -- undo whatever the last move was */
     | Undo =>
       let {moves} = state;
-      
+
       let nextState =
         switch (moves) {
         | [] => state.location
         | [lastMove, ..._rest] => Undo.undoMove(lastMove, state.location)
         };
 
-      ReasonReact.Update({ ...state, location: nextState });
+      ReasonReact.Update({...state, location: nextState});
     | MoveCard({prev, next, card}) =>
-      let (location, wasValidMove) =
-        switch (prev, next, card) {
-        | (Some(prevLocation), Some(nextLocation), Some(card)) =>
+      switch (prev, next, card) {
+      | (Some(prevLocation), Some(nextLocation), Some(cardActual)) =>
+        let (location, wasValidMove, didFlip) =
           Moves.getUpdatedLocation(
             ~prevLocation,
             ~nextLocation,
-            ~card,
+            ~card=cardActual,
             ~location=state.location,
-          )
-        | _ => (state.location, false)
-        };
+          );
 
-      ReasonReact.Update({
-        location,
-        move: initialState.move,
-        moveKey: initialState.moveKey,
-        moves:
-          wasValidMove ? [{prev, next, card}, ...state.moves] : state.moves,
-      });
+        ReasonReact.Update({
+          location,
+          move: initialState.move,
+          moveKey: initialState.moveKey,
+          moves:
+            wasValidMove ?
+              [
+                {prev: prevLocation, next: nextLocation, card, didFlip},
+                ...state.moves,
+              ] :
+              state.moves,
+        });
+      | _ => ReasonReact.NoUpdate
+      }
     },
   render: self => {
     let onClickCard = getNextMove(self.send, self.state);

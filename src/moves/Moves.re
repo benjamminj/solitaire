@@ -48,11 +48,11 @@ let getListWithoutCard = (card, row, arr) => {
 
 let flipLastCard = list =>
   switch (list) {
-  | [bottomCard, ...rest] => [
-      {...bottomCard, selectable: true, faceUp: true},
-      ...rest,
-    ]
-  | [] => list
+  | [x, ...xs] when x.faceUp != true => (
+      [{...x, selectable: true, faceUp: true}, ...xs],
+      true,
+    )
+  | _ => (list, false)
   };
 
 let makeFirstCardSelectable = list =>
@@ -85,21 +85,23 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
       let copy = Array.copy(arr);
 
       let list = copy[rowT];
-      copy[rowT] = flipLastCard(list);
+      let (flipped, didFlip) = flipLastCard(list);
+      copy[rowT] = flipped;
 
-      copy;
+      (copy, didFlip);
     };
 
-    let tableauMinusCard =
+    let (tableauMinusCard, didFlip) =
       isValid ?
         getListWithoutCard(card, rowT, tableau) |> flipLastCardInPrevRow :
-        tableau;
+        (tableau, false);
     let foundationPlusCard =
       isValid ? getListPlusCard(card, rowF, foundation) : foundation;
 
     (
       {...location, foundation: foundationPlusCard, tableau: tableauMinusCard},
       isValid,
+      didFlip
     );
   | (Hand, Foundation(rowF)) =>
     let {hand, foundation} = location;
@@ -118,6 +120,7 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
     (
       {...location, hand: handMinusCard, foundation: foundationPlusCard},
       isValid,
+      false,
     );
   | (Foundation(rowF), Tableau(rowT)) =>
     let {foundation, tableau} = location;
@@ -131,6 +134,7 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
     (
       {...location, tableau: tableauPlusCard, foundation: foundationMinusCard},
       isValid,
+      false
     );
   | (Tableau(rowPrev), Tableau(rowNext)) =>
     let {tableau} = location;
@@ -140,15 +144,25 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
 
     let updateSelection = (i, list) =>
       switch (i) {
-      | i when i == rowPrev && i == rowNext => list
+      | i when i == rowPrev && i == rowNext => (list, false)
       | i when i == rowPrev => flipLastCard(rest)
-      | i when i == rowNext => List.append(cardsToMove, list)
-      | _ => list
+      | i when i == rowNext => (List.append(cardsToMove, list), false)
+      | _ => (list, false)
       };
 
-    let next = isValid ? Array.mapi(updateSelection, tableau) : tableau;
+    let next =
+      isValid ?
+        Array.mapi(updateSelection, tableau) :
+        tableau |> Array.map(row => (row, false));
+    let (nextTableau, didFlip) =
+      Belt.Array.reduce(
+        next,
+        (Array.make(0, []), false),
+        ((acc, hasFlipped), (x, didFlip)) =>
+        (Array.concat([acc, [|x|]]), hasFlipped || didFlip)
+      );
 
-    ({...location, tableau: next}, isValid);
+    ({...location, tableau: nextTableau}, isValid, didFlip);
   | (Hand, Tableau(row)) =>
     let {hand, tableau} = location;
     let isValid = validateMoveToTableau(~card, ~destination=tableau[row]);
@@ -157,7 +171,7 @@ let getUpdatedLocation = (~prevLocation, ~nextLocation, ~card, ~location) => {
       isValid ? filterOutCard(hand) |> makeFirstCardSelectable : hand;
     let tableauPlusCard =
       isValid ? getListPlusCard(card, row, tableau) : tableau;
-    ({...location, tableau: tableauPlusCard, hand: handMinusCard}, isValid);
-  | _ => (location, false)
+    ({...location, tableau: tableauPlusCard, hand: handMinusCard}, isValid, false);
+  | _ => (location, false, false)
   };
 };

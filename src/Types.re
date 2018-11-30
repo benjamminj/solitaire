@@ -37,8 +37,15 @@ type move = {
   card: option(card),
 };
 
+type moveEntry = {
+  prev: locationKey,
+  next: locationKey,
+  card: option(card),
+  didFlip: bool,
+}
+
 type moveKey =
   | Prev
   | Next;
 
-type moves = list(move);
+type moves = list(moveEntry);
