@@ -120,6 +120,7 @@ let make = _children => {
       | None => None
       | Some(card) => Some(card.id)
       };
+    Js.log(selectedCardId);
 
     <div className=Styles.container>
       <header className=Styles.header>

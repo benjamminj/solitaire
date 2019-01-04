@@ -16,12 +16,13 @@ let header =
     justify-content: space-between;
   |});
 
-/* TODO - actually do this portion after fixing all the compiler errors */
 let card = (~faceUp=false, ~textColor, ~isSelected) => {
   let color = faceUp ? textColor : "black";
   let bg = faceUp ? "white" : xtheme.primary;
   let black = xtheme.black;
+  let boxShadow = isSelected ? "0 0 3px 1px rgba(0,0,0,0.5)" : "none";
 
+  /* TODO -- fix the outline for focus state...need to figure out how to show something is selected */
   css(
     {j|
       border: 1px solid $black;
@@ -30,6 +31,11 @@ let card = (~faceUp=false, ~textColor, ~isSelected) => {
       height: $cardHeight_;
       color: $color;
       background-color: $bg;
+      box-shadow: $boxShadow;
+
+      &:focus {
+        outline: none;
+      }
     |j},
   );
 };
