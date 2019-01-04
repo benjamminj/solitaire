@@ -7,10 +7,9 @@ module Styles = {
   |});
 };
 
-let make = (~rows, ~onClickCard, _children) => {
+let make = (~rows, ~selectedCardId, ~onClickCard, _children) => {
   ...component,
   render: _self =>
-    /* <div className=Styles.container> */
     rows
     |> Array.mapi((i, row) => {
          let handleClick = (~card) =>
@@ -24,6 +23,7 @@ let make = (~rows, ~onClickCard, _children) => {
            />
          | [card, ..._rest] =>
            <Card
+             isSelected={Utils.isCardSelected(selectedCardId, card.id)}
              key={string_of_int(card.id)}
              card
              onClick=((~card) => handleClick(~card=Some(card)))

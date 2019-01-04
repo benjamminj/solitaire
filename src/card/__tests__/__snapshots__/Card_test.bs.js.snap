@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Card /> displays face down 1`] = `
+<div>
+  <button
+    class="css-o9rdpw"
+    id="3"
+  >
+    <div />
+  </button>
+</div>
+`;

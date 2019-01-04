@@ -20,7 +20,7 @@ module Styles = {
   };
 };
 
-let make = (~hand, ~onClickCard, _children) => {
+let make = (~hand, ~selectedCardId, ~onClickCard, _children) => {
   ...component,
   render: _self => {
     let displayedCards =
@@ -44,6 +44,7 @@ let make = (~hand, ~onClickCard, _children) => {
              <Card
                key={card.id |> string_of_int}
                card
+               isSelected={Utils.isCardSelected(selectedCardId, card.id)}
                styles={Styles.card(i)}
                onClick={
                  (~card) => onClickCard(~location=Hand, ~card=Some(card))
