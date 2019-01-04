@@ -1,4 +1,3 @@
-/* type cardList = list(card); */
 open Types;
 
 type action =
@@ -60,7 +59,6 @@ let make = _children => {
     | DealHand =>
       /* Go grab the first 3 from the list */
       let {stock, hand} = state.location;
-      Js.log("deal hand");
       let prepareHand = (listA, listB) => {
         /* Flip all the cards in listA */
         let flippedListA =
