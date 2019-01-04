@@ -1,4 +1,6 @@
 open Types;
+let isCardSelected = Utils.isCardSelected;
+
 let component = ReasonReact.statelessComponent("CardStack");
 
 type direction =
@@ -28,7 +30,7 @@ module Styles = {
   };
 };
 
-let make = (~cards, ~styles="", ~direction=Vertical, ~onClickCard, _children) => {
+let make = (~cards, ~styles="", ~selectedCardId, ~direction=Vertical, ~onClickCard, _children) => {
   ...component,
   render: _self =>
     <div className={Emotion.cx([Styles.stack, styles])}>
@@ -37,6 +39,7 @@ let make = (~cards, ~styles="", ~direction=Vertical, ~onClickCard, _children) =>
         |> List.rev
         |> List.mapi((i, card) =>
              <Card
+               isSelected={isCardSelected(selectedCardId, card.id)}
                styles={Styles.card(~direction, ~i)}
                key={card.id |> string_of_int}
                card

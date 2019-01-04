@@ -16,7 +16,8 @@ let header =
     justify-content: space-between;
   |});
 
-let card = (~faceUp=false, ~textColor) => {
+/* TODO - actually do this portion after fixing all the compiler errors */
+let card = (~faceUp=false, ~textColor, ~isSelected) => {
   let color = faceUp ? textColor : "black";
   let bg = faceUp ? "white" : xtheme.primary;
   let black = xtheme.black;

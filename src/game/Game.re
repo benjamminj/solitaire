@@ -46,7 +46,9 @@ let make = _children => {
     switch (action) {
     | Init =>
       let (tableau, stock) =
-        Utils.generateDeck() |> Utils.shuffleDeck(Js.Math.random()) |> Utils.dealCards;
+        Utils.generateDeck()
+        |> Utils.shuffleDeck(Js.Math.random())
+        |> Utils.dealCards;
 
       ReasonReact.Update({
         ...initialState,
@@ -113,6 +115,11 @@ let make = _children => {
     },
   render: self => {
     let onClickCard = getNextMove(self.send, self.state);
+    let selectedCardId =
+      switch (self.state.move.card) {
+      | None => None
+      | Some(card) => Some(card.id)
+      };
 
     <div className=Styles.container>
       <header className=Styles.header>
@@ -121,9 +128,13 @@ let make = _children => {
         </button>
       </header>
       <div className=Styles.grid>
-        <Foundation rows={self.state.location.foundation} onClickCard />
-        <div className=Emotion.css("grid-column: 5 / 7")>
-          <Hand onClickCard hand={self.state.location.hand} />
+        <Foundation
+          selectedCardId
+          rows={self.state.location.foundation}
+          onClickCard
+        />
+        <div className={Emotion.css("grid-column: 5 / 7")}>
+          <Hand onClickCard hand={self.state.location.hand} selectedCardId />
         </div>
         <Stock
           cards={self.state.location.stock}
@@ -132,6 +143,7 @@ let make = _children => {
         <Tableau
           rows={self.state.location.tableau}
           onClickCard={i => onClickCard(~location=Tableau(i))}
+          selectedCardId
         />
       </div>
     </div>;

@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("Tableau");
 
-let make = (~rows, ~onClickCard, _children) => {
+let make = (~rows, ~selectedCardId, ~onClickCard, _children) => {
   ...component,
   render: _self =>
     rows
@@ -12,6 +12,7 @@ let make = (~rows, ~onClickCard, _children) => {
              | [_a, ..._rest] =>
                <CardStack
                  cards=cardStack
+                 selectedCardId
                  onClickCard=((~card) => onClickCard(i, ~card))
                />
              }

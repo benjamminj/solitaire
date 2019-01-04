@@ -7,6 +7,7 @@ let make = (~cards, ~onClick, _children) => {
     | [] => <EmptyCard onClick=(_ev => onClick()) />
     | [card, ..._rest] =>
       <Card
+        isSelected={false}
         card={...card, selectable: true}
         onClick=((~card as _c) => onClick())
       />

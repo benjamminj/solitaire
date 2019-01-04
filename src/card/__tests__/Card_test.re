@@ -15,7 +15,7 @@ let onClickMock = (~card) => ();
 
 describe("<Card />", () => {
     test("displays face up", () => {
-      <Card card={...mockCard, faceUp: true} onClick=onClickMock />
+      <Card card={...mockCard, faceUp: true} onClick=onClickMock isSelected=true />
       |> render
       |> getByText(~matcher=`Str("3"))
       |> expect
@@ -23,12 +23,11 @@ describe("<Card />", () => {
     })
 
   test("displays face down", () => {
-    <Card card={mockCard} onClick={onClickMock} />
+    <Card card={mockCard} onClick={onClickMock} isSelected=true />
     |> render
     |> container
     |> Expect.expect
     |> Expect.toMatchSnapshot
   });
-  /* test("fires event handler with the card data when clicked"); */
 }
   );

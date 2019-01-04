@@ -23,7 +23,7 @@ let getCardText = rank =>
   | num => num |> string_of_int
   };
 
-let make = (~card, ~onClick, ~styles="", _children) => {
+let make = (~card, ~isSelected, ~onClick, ~styles="", _children) => {
   ...component,
   render: _self => {
     let {id, rank, suit, faceUp} = card;
@@ -38,7 +38,10 @@ let make = (~card, ~onClick, ~styles="", _children) => {
       key=idStr
       id=idStr
       className={
-        Emotion.cx([Styles.card(~textColor=color, ~faceUp), styles])
+        Emotion.cx([
+          Styles.card(~textColor=color, ~faceUp, ~isSelected),
+          styles,
+        ])
       }
       onClick>
       {
